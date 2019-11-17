@@ -1,0 +1,11 @@
+node_modules
+bower_components
+npm-debug.log
+.DS_Storecd
+yarn.lock
+*.sublime-*
+# Exclude compiled files from the repo.
+/dist
+# Exclude temporary office files.
+/**/~$*x
+.node-version

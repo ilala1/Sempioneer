@@ -1,0 +1,10 @@
+[
+    {
+        "id": "active",
+        "title": "Active"
+    },
+    {
+        "id": "deleted",
+        "title": "Deleted"
+    }
+]
