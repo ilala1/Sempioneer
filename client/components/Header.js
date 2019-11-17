@@ -38,8 +38,7 @@ class Header extends Component {
     render() {
         return (
             <HeaderWrapper>
-                <h1><span>D</span>o&nbsp;<span>G</span>reat&nbsp;<span>W</span>ork&nbsp;<span>W</span>in&nbsp;<span>P</span>rizes</h1>
-                <img src="./static/images/logo.png" alt="logo" />
+                <h1><span>Sempioneer</span></h1>
                 <h3>{this.props.title}</h3>
             </HeaderWrapper>
         );

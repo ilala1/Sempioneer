@@ -57,6 +57,10 @@ const LoginStyle = styled.section`
         text-align: center;
     }
 
+    .passwordWrap {
+        padding-top: 1rem;
+    }
+
 `;
 
 class Login extends Component {
@@ -182,16 +186,18 @@ class Login extends Component {
                         helperMessage="* Required"
                         errorMessage="Must be a valid Enigma address"
                     />
-                    <Input
-                        label="Password"
-                        type="password"
-                        name="password"
-                        value={this.state.password}
-                        changeState={this.updatePasswordState}
-                        isValid={this.state.passwordValid}
-                        helperMessage="* Required"
-                        errorMessage="Wrong password"
-                    />
+                    <div className="passwordWrap">
+                        <Input
+                            label="Password"
+                            type="password"
+                            name="password"
+                            value={this.state.password}
+                            changeState={this.updatePasswordState}
+                            isValid={this.state.passwordValid}
+                            helperMessage="* Required"
+                            errorMessage="Wrong password"
+                        />
+                    </div>
                     <div className="loginBtn">
                         <button type="submit">Login</button>
                     </div>

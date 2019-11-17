@@ -80,7 +80,7 @@ class Home extends Component {
         return (
             <HomeStyle>
                 <Nav/>
-                <Header title="What do you want to do?" />
+                <Header title="What App do you want to use?" />
                 <Options />
                 
                 <button id="sign-in-or-out-button">Sign In/Authorize</button>

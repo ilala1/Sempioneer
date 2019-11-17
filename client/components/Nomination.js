@@ -185,7 +185,7 @@ class Nomination extends Component {
 
     validateForm = () => {
         let { isValid } = this.state;
-        const { nomId, textarea, values } = this.state;
+        const { nomId, values } = this.state;
         if (nomId === '') {
             isValid = false;
             // Add a flash error
@@ -193,13 +193,13 @@ class Nomination extends Component {
 
             this.flashesComponent.current.addFlash(flash);
         }
-        if (textarea === '') {
-            isValid = false;
-            // Add a flash error
-            const flash = createFlash('error', 'Must give a reason for nomination.');
+        // if (textarea === '') {
+        //     isValid = false;
+        //     // Add a flash error
+        //     const flash = createFlash('error', 'Must give a reason for nomination.');
 
-            this.flashesComponent.current.addFlash(flash);
-        }
+        //     this.flashesComponent.current.addFlash(flash);
+        // }
         if (values.length === 0) {
             isValid = false;
             // Add a flash error
@@ -256,15 +256,15 @@ class Nomination extends Component {
             <FormWrapper className="formwrapper">
                 <form id="nominationForm" onSubmit={this.submitForm}>
                     <Select
-                        label="Who?"
+                        label="Which website"
                         name="nominationName"
                         value={this.state.nomId}
                         options={listOfNames}
                         changeState={this.updateListofNamesState}
                         isValid={this.state.listOfNamesValid}
-                        errorMessage="Must choose a name"
+                        errorMessage="Must choose a website"
                     />
-                    <Textarea
+                    {/* <Textarea
                         class="textbox"
                         label="Why?"
                         name="textarea"
@@ -272,17 +272,13 @@ class Nomination extends Component {
                         value={this.state.textarea}
                         changeState={this.updateTextareaState}
                         errorMessage="Must give a reason"
-                    />
+                    /> */}
                     <Checkbox
                         className="checkbox"
-                        placeholder="Pick some values"
+                        placeholder="Pick required service"
                         options={[
-                            { value: 'Supportive' },
-                            { value: 'Customer Centric' },
-                            { value: 'Responsible' },
-                            { value: 'Innovative' },
-                            { value: 'Passionate' },
-                            { value: 'Team Oriented' },
+                            { value: 'Service1' },
+                            { value: 'Service 2' },,
                         ]}
                         sendData={this.getValues}
                         onMouseLeave={this.handleHoverOff}
