@@ -5,7 +5,7 @@ exports.auth = async (req, res) => {
     res.send(result);
 };
 
-exports.google = async (req, res) => {
+exports.google = async (req, res, next) => {
     const {google} = require('googleapis');
 
     const oauth2Client = new google.auth.OAuth2(
@@ -24,9 +24,16 @@ exports.google = async (req, res) => {
       scope: 'https://www.googleapis.com/auth/webmasters'
     });
 
-    console.log(url)
+    req.body.url = url;
+    
+    next();
+}
 
-    // req.redirect(url);
+exports.GoogleLogin = (req, res) => {
+    console.log('hello');
+    console.log(req.body)
+    return res.redirect(req.body.url);
+    // return;
 }
 
 exports.access = async (req, res) => {
@@ -47,12 +54,12 @@ exports.access = async (req, res) => {
 
         console.log("refresh " + tokens.refresh_token);
         
-        oauth2Client.on('tokens', (tokens) => {
-                if (tokens.refresh_token) {
-                      // store the refresh_token in my database!
-                      console.log(tokens.refresh_token);
-                    }
-                    console.log(tokens.access_token);
-                  });
+        // oauth2Client.on('tokens', (tokens) => {
+        //         if (tokens.refresh_token) {
+        //               // store the refresh_token in my database!
+        //               console.log(tokens.refresh_token);
+        //             }
+        //             console.log(tokens.access_token);
+        //           });
     res.redirect('/index');
 }

@@ -6,7 +6,7 @@ export const login = (user) => {
     console.log(user);
     addCookie({}, 'user', user);
 
-    redirect('/');
+    // redirect('/');
 };
 
 export const adminLogin = (email, password) => {

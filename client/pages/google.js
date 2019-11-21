@@ -96,62 +96,16 @@ class google extends Component {
     async componentDidMount() {
         const google = await apiPost({}, '/google');
         const allNominations = await apiGet({}, '/nominations');
-        const allNoms = allNominations.map(nominee => this.formatNominee(nominee));
 
-        const { includeDeleted } = false;
-        const updatedNominations = this.showHideDeleted(allNoms, includeDeleted);
 
-        // only show nominations from current month
-        const date = new Date();
-        const month = date.getMonth() + 1;
-        const thisMonthsNoms = [];
-        const nominationsSplit = updatedNominations.map((nom) => {
-            let extracted = null;
-            const split = nom.createdAt.split('-');
-            if (split.length === 3) {
-                extracted = split[1];
-                if (extracted.includes(month)) {
-                    thisMonthsNoms.push(nom);
-                }
-            }
-        });
-        const cleanList = this.getUnique(thisMonthsNoms, 'id');
-        console.log(cleanList);
-        if (cleanList.length === 0) {
-            console.log('empty');
-            const flash = createFlash('message', 'No nominations made for current month. <a href="/nominate">Make a nomination</a>');
-            this.flashesComponent.current.addFlash(flash);
-        }
-        this.setState({ updatedNominations: cleanList });
     }
 
-    // get rid of duplicates in array
-    getUnique = (nominations, comp) => {
-        const unique = nominations
-            .map(e => e[comp])
-
-            // store the keys of the unique objects
-            .map((e, i, final) => final.indexOf(e) === i && i)
-
-            // eliminate the dead keys & store unique objects
-            .filter(e => nominations[e]).map(e => nominations[e]);
-
-        return unique;
-    }
 
     addFlash = (flash) => {
         console.log(flash);
         this.flashesComponent.current.addFlash(flash);
     };
 
-    formatNominee = (nominee) => {
-        const updatedNominee = nominee;
-        const personObj = dataNominees.find(a => a.id === nominee.nomId);
-
-        updatedNominee.id = personObj;
-
-        return updatedNominee;
-    };
 
     voteSuccess = (response) => {
         if (response.status === 200) {

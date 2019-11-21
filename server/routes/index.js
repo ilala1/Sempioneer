@@ -25,7 +25,10 @@ module.exports = (nextApp, expressApp) => {
     expressApp.post('/api/vote', voteController.vote);
     expressApp.get('/api/allVotes', voteController.getVotes);
 
-    expressApp.post('/api/google', authController.google);
+    expressApp.post('/api/google', 
+        authController.google,
+        authController.GoogleLogin
+    );
     expressApp.get('/', authController.access);
 
     // Default all remaining routes to nextJs (client-side)
