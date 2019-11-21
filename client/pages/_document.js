@@ -20,8 +20,8 @@ export default class MyDocument extends Document {
                     <NextScript />
                     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
                     {/* <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> */}
-                    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()">
-                    </script>
+                    {/* <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()">
+                    </script> */}
                     {/* <script src="https://images.enigma-hosting.co.uk/enigma/verne-imran/gsc.js" /> */}
                 </body>
             </html>

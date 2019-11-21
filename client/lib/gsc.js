@@ -1,5 +1,5 @@
 var GoogleAuth;
-console.log('hello')
+// console.log('hello')
 // var SCOPE = 'https://www.googleapis.com/auth/drive.metadata.readonly';
 var SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
 function handleClientLoad() {
