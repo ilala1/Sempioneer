@@ -3,7 +3,6 @@ exports.auth = async (req, res) => {
     result.status = 200;
     console.log('valid!');
     res.send(result);
-
 };
 
 exports.google = async (req, res) => {
