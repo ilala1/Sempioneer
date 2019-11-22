@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { getCookie, removeCookie } from '../lib/session';
 import { redirectIfNotAuthenticated } from '../lib/auth';
 import { handleClientLoad } from '../lib/gsc';
+import { apiPost } from '../lib/api';
 
 import Nav from '../components/Nav';
 import Header from '../components/Header';
@@ -46,20 +47,21 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        const userCookie = getCookie({}, 'user');
-        if (userCookie) {
-            const user = userCookie.split('@')[0];
-            this.setState({
-                user,
-            });
-        }
+        this.getTokens();
     }
 
-    googleSign = () => {
-        document.querySelector('#sign-in-or-out-button').addEventListener('click', function() {
-            console.log('hello');
-        })
+    getTokens = async () => {
+        const response = await apiPost({}, '/access', {});
+        console.log("test" + response);
+
+        // document.querySelector('.vote').href = response;
     }
+
+    // googleSign = () => {
+    //     document.querySelector('#sign-in-or-out-button').addEventListener('click', function() {
+    //         console.log('hello');
+    //     })
+    // }
 
     logout = () => {
         const userCookie = getCookie({}, 'user');

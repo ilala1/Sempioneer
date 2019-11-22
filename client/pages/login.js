@@ -72,36 +72,23 @@ class Login extends Component {
         return {};
     }
 
+    componentDidMount() {
+        this.getURL();
+    }
+
+    getURL = async () => {
+        const response = await apiPost({}, '/valid', {});
+        console.log("test" + response);
+
+        document.querySelector('.vote').href = response;
+    }
+
     constructor(props) {
         super(props);
 
         this.flashesComponent = createRef();
         this.state = {};
     }
-
-
-    validateForm = () => {
-        let isValid = true;
-
-        return isValid;
-    };
-
-    // Event handlers
-    submitForm = async (e) => {
-        e.preventDefault();
-
-        const response = await apiPost({}, '/valid', {});
-
-        console.log(response);
-        if (response.status === 200) {
-            login(this.state.email);
-        } else if (response.status === 400) {
-            const flash = createFlash('error', 'Wrong Email and password');
-
-            this.flashesComponent.current.addFlash(flash);
-        }
-
-    };
 
     render() {
         return (
@@ -114,7 +101,7 @@ class Login extends Component {
                     ref={this.flashesComponent}
                     flashes={this.props.flashes}
                 />
-                <a className="options vote" href='/google'>Google Login</a>
+                <a className="options vote">Google Login</a>
             </LoginStyle>
         );
     }

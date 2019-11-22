@@ -94,7 +94,7 @@ class google extends Component {
     }
 
     async componentDidMount() {
-        const google = await apiPost({}, '/google');
+        // const google = await apiPost({}, '/google');
         const allNominations = await apiGet({}, '/nominations');
 
 
