@@ -38,7 +38,7 @@ class Header extends Component {
     render() {
         return (
             <HeaderWrapper>
-                <h1><span>Testing</span></h1>
+                <h1><span>Sempioneer</span></h1>
                 <h3>{this.props.title}</h3>
             </HeaderWrapper>
         );

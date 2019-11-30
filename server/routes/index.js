@@ -30,6 +30,9 @@ module.exports = (nextApp, expressApp) => {
     //     authController.GoogleLogin
     // );
     expressApp.get('/', authController.access);
+    // expressApp.post('/api/test', authController.access);
+    // expressApp.post('/api/index', authController.tokens);
+    // expressApp.post('/api/access', authController.tokens);
 
     // Default all remaining routes to nextJs (client-side)
     const handler = nextApp.getRequestHandler();

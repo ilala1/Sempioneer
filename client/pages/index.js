@@ -2,9 +2,9 @@ import { Component } from 'react';
 import styled from 'styled-components';
 
 import { getCookie, removeCookie } from '../lib/session';
-import { redirectIfNotAuthenticated } from '../lib/auth';
+import { login, redirectIfAuthenticated, redirectIfNotAuthenticated } from '../lib/auth';
 import { handleClientLoad } from '../lib/gsc';
-import { apiPost } from '../lib/api';
+import { apiGet, apiPost } from '../lib/api';
 
 import Nav from '../components/Nav';
 import Header from '../components/Header';
@@ -36,6 +36,10 @@ const HomeStyle = styled.section`
 
 class Home extends Component {
     static async getInitialProps(ctx) {
+        // if (redirectIfNotAuthenticated(ctx)) {
+        //     return { };
+        // }
+        // login();
         return { };
     }
 
@@ -44,31 +48,28 @@ class Home extends Component {
         this.state = {
             user: '',
         };
+        
     }
 
-    componentDidMount() {
-        this.getTokens();
-    }
+    // componentDidUpdate() {
+    //     this.getTokens();
+    // }
 
     getTokens = async () => {
-        const response = await apiPost({}, '/access', {});
-        console.log("test" + response);
+        console.log('tokenss');
+        const testTokens = await apiPost({}, '/test', {});
 
-        // document.querySelector('.vote').href = response;
+        // console.log("test" + test);
+        // if (response) {
+        //     login();
+        // }
+        console.log(testTokens);
     }
-
-    // googleSign = () => {
-    //     document.querySelector('#sign-in-or-out-button').addEventListener('click', function() {
-    //         console.log('hello');
-    //     })
-    // }
 
     logout = () => {
         const userCookie = getCookie({}, 'user');
-        const adminCookie = getCookie({}, 'admin');
-        if (userCookie || adminCookie) {
+        if (userCookie) {
             removeCookie({}, 'user');
-            removeCookie({}, 'admin');
             window.location.reload();
         }
     }
@@ -81,11 +82,7 @@ class Home extends Component {
                 <Nav/>
                 <Header title="What App do you want to use?" />
                 <Options />
-                
-                <button id="sign-in-or-out-button">Sign In/Authorize</button>
-                <button id="revoke-access-button">Revoke access</button>
 
-                <div id="auth-status"></div><hr></hr>
             </HomeStyle>
         );
     }

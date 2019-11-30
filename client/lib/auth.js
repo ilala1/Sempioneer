@@ -1,12 +1,20 @@
 import { createFlash, addFlash } from './flashes';
 import redirect from './redirect';
 import { addCookie, getCookie } from './session';
+import { apiGet, apiPost } from '../lib/api';
 
-export const login = (user) => {
-    console.log(user);
-    addCookie({}, 'user', user);
+export const login = async () => {
 
-    redirect('/login');
+    addCookie({}, 'user', 'confirmed');
+    // redirect('/login');
+    console.log('tokenss');
+    const testTokens = await apiPost({}, '/test', {});
+
+    // console.log("test" + test);
+    // if (response) {
+    //     login();
+    // }
+    console.log(testTokens);
 };
 
 export const adminLogin = (email, password) => {
