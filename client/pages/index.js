@@ -51,9 +51,9 @@ class Home extends Component {
         
     }
 
-    // componentDidUpdate() {
-    //     this.getTokens();
-    // }
+    componentDidMount() {
+        this.getTokens();
+    }
 
     getTokens = async () => {
         console.log('tokenss');
