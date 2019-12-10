@@ -25,7 +25,7 @@ const LoginStyle = styled.section`
     .container {
         align-items: center;
         background: #f1f1f1;
-        height: 45%;
+        height: 60%;
         width:50%;
         text-align: center;
         margin: 0 auto;

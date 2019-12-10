@@ -61,7 +61,7 @@ exports.access = async (req, res) => {
           req.body.access = tokens.access_token;
       // res.redirect('/index');
         // res.send(tokens);
-      
+      await (new User(tokens)).save();
       res.send(tokens);
     }
 }
