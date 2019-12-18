@@ -28,6 +28,9 @@ module.exports = (nextApp, expressApp) => {
 
 
     expressApp.get('/', authController.access);
+
+
+    expressApp.get('/api/user', authController.tokens);
     // expressApp.post('/', authController.tokens);
 
 

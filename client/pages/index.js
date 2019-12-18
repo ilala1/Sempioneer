@@ -57,13 +57,9 @@ class Home extends Component {
 
     getTokens = async () => {
         console.log('tokenss');
-        const testTokens = await apiPost({}, '/test', {});
-
-        // console.log("test" + test);
-        // if (response) {
-        //     login();
-        // }
-        console.log(testTokens);
+        //get all users
+        // const testTokens = await apiGet({}, '/user', {});
+        // console.log(testTokens);
     }
 
     logout = () => {
