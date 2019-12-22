@@ -36,10 +36,9 @@ const HomeStyle = styled.section`
 
 class Home extends Component {
     static async getInitialProps(ctx) {
-        // if (redirectIfNotAuthenticated(ctx)) {
-        //     return { };
-        // }
-        // login();
+        if (redirectIfNotAuthenticated(ctx)) {
+            return { };
+        }
         return { };
     }
 

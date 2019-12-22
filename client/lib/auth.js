@@ -7,14 +7,12 @@ export const login = async () => {
 
     addCookie({}, 'user', 'confirmed');
     // redirect('/login');
-    console.log('tokenss');
-    const testTokens = await apiPost({}, '/test', {});
 
     // console.log("test" + test);
     // if (response) {
     //     login();
     // }
-    console.log(testTokens);
+    redirect('/');
 };
 
 export const adminLogin = (email, password) => {

@@ -54,11 +54,11 @@ exports.access = async (req, res) => {
           req.body.code = code;
           req.body.refresh = tokens.refresh_token;
           req.body.access = tokens.access_token;
-      // res.redirect('/index');
+      res.redirect('/index');
         // res.send(tokens);
       await (new User(tokens)).save();
 
-      res.redirect(userDetails);
+      // res.redirect(userDetails);
     }
 }
 
