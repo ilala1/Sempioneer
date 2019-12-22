@@ -73,15 +73,8 @@ exports.access = async (req, res) => {
               return
             }
           });
-
-          // req.body.code = code;
-          // req.body.refresh = tokens.refresh_token;
-          // req.body.access = tokens.access_token;
+          
       res.redirect('/index');
-        // res.send(tokens);
-      
-
-      // res.redirect(userDetails);
     }
 }
 
