@@ -31,12 +31,6 @@ module.exports = (nextApp, expressApp) => {
 
 
     expressApp.get('/api/user', authController.tokens);
-    // expressApp.post('/', authController.tokens);
-
-
-    // expressApp.get('/api/test', authController.access);
-    // expressApp.post('/api/test', authController.tokens);
-    // expressApp.post('/api/access', authController.tokens);
 
     // Default all remaining routes to nextJs (client-side)
     const handler = nextApp.getRequestHandler();
