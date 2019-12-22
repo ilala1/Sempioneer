@@ -4,6 +4,10 @@ const access = require('../data/users/access.json');
 // const statuses = require('../data/users/statuses.json');
 
 const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        trim: true,
+    },
     access_token: {
         type: String,
         trim: true,
