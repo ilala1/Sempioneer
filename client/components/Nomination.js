@@ -109,192 +109,146 @@ class Nomination extends Component {
     }
 
     // State handlers
-    getValues = (value) => {
-        const allValues = [];
-        allValues.push(value);
-        this.setState({
-            values: allValues,
-        });
-    }
+    // getValues = (value) => {
+    //     const allValues = [];
+    //     allValues.push(value);
+    //     this.setState({
+    //         values: allValues,
+    //     });
+    // }
 
-    updateListofNamesState = (e) => {
-        const { value } = e.target;
-        const prettyName = listOfNames.map((name) => {
-            if (value === name.value) {
-                this.setState({ nomId: value, name: name.label });
-            }
-        });
-    }
+    // updateListofNamesState = (e) => {
+    //     const { value } = e.target;
+    //     const prettyName = listOfNames.map((name) => {
+    //         if (value === name.value) {
+    //             this.setState({ nomId: value, name: name.label });
+    //         }
+    //     });
+    // }
 
-    updateListofValueState = (e) => {
-        const { value } = e.target;
-        const prettyValue = listOfValues.map((val) => {
-            if (value === val.value) {
-                this.setState({ valueId: value, value: val.label });
-            }
-        });
-    }
+    // updateListofValueState = (e) => {
+    //     const { value } = e.target;
+    //     const prettyValue = listOfValues.map((val) => {
+    //         if (value === val.value) {
+    //             this.setState({ valueId: value, value: val.label });
+    //         }
+    //     });
+    // }
 
-    updateTextareaState = (e) => {
-        const { value } = e.target;
+    // updateTextareaState = (e) => {
+    //     const { value } = e.target;
 
-        if (value.length < 0) {
-            this.validateText(value);
-        }
+    //     if (value.length < 0) {
+    //         this.validateText(value);
+    //     }
 
-        this.setState({ textarea: value });
-    }
+    //     this.setState({ textarea: value });
+    // }
 
-    handleCheckboxChange = (e) => {
-        this.setState({ checked: e.target.checked });
-    }
+    // handleCheckboxChange = (e) => {
+    //     this.setState({ checked: e.target.checked });
+    // }
 
     // Validation
-    listOfNamesValid = () => {
-        let { nomIdisValid } = this.state;
-        if (this.state.nomId === '') {
-            nomIdisValid = false;
-        }
-        return nomIdisValid;
-    }
+    // listOfNamesValid = () => {
+    //     let { nomIdisValid } = this.state;
+    //     if (this.state.nomId === '') {
+    //         nomIdisValid = false;
+    //     }
+    //     return nomIdisValid;
+    // }
 
-    listOfValuesValid = () => {
-        let { valueIsValid } = this.state;
-        if (this.state.value === '') {
-            valueIsValid = false;
-        }
-        return valueIsValid;
-    }
+    // listOfValuesValid = () => {
+    //     let { valueIsValid } = this.state;
+    //     if (this.state.value === '') {
+    //         valueIsValid = false;
+    //     }
+    //     return valueIsValid;
+    // }
 
-    textareaValid = () => {
-        let { textValid } = this.state;
-        if (this.state.textarea === '') {
-            textValid = false;
-        }
-        return textValid;
-    }
+    // textareaValid = () => {
+    //     let { textValid } = this.state;
+    //     if (this.state.textarea === '') {
+    //         textValid = false;
+    //     }
+    //     return textValid;
+    // }
 
-    valuesValid = () => {
-        let { valueValid } = this.state;
-        if (this.state.values === '') {
-            valueValid = false;
-        }
-        return valueValid;
-    }
+    // valuesValid = () => {
+    //     let { valueValid } = this.state;
+    //     if (this.state.values === '') {
+    //         valueValid = false;
+    //     }
+    //     return valueValid;
+    // }
 
 
-    validateForm = () => {
-        let { isValid } = this.state;
-        const { nomId, values } = this.state;
-        if (nomId === '') {
-            isValid = false;
-            // Add a flash error
-            const flash = createFlash('error', 'Must give a reason for nomination.');
+    // validateForm = () => {
+    //     let { isValid } = this.state;
+    //     const { nomId, values } = this.state;
+    //     if (nomId === '') {
+    //         isValid = false;
+    //         // Add a flash error
+    //         const flash = createFlash('error', 'Must give a reason for nomination.');
 
-            this.flashesComponent.current.addFlash(flash);
-        }
-        // if (textarea === '') {
-        //     isValid = false;
-        //     // Add a flash error
-        //     const flash = createFlash('error', 'Must give a reason for nomination.');
+    //         this.flashesComponent.current.addFlash(flash);
+    //     }
 
-        //     this.flashesComponent.current.addFlash(flash);
-        // }
-        if (values.length === 0) {
-            isValid = false;
-            // Add a flash error
-            const flash = createFlash('error', 'Must give a reason for nomination.');
+    //     if (values.length === 0) {
+    //         isValid = false;
+    //         // Add a flash error
+    //         const flash = createFlash('error', 'Must give a reason for nomination.');
 
-            this.flashesComponent.current.addFlash(flash);
-        }
-        return isValid;
-    };
+    //         this.flashesComponent.current.addFlash(flash);
+    //     }
+    //     return isValid;
+    // };
 
-    submitForm = async (e) => {
-        e.preventDefault();
-        const { nomIdisValid } = this.state;
-        if (this.validateForm()) {
-            const { user } = this.props;
-            const {
-                status,
-                nomId,
-                name,
-                textarea,
-                values,
-            } = this.state;
+    // submitForm = async (e) => {
+    //     e.preventDefault();
+    //     const { nomIdisValid } = this.state;
+    //     if (this.validateForm()) {
+    //         const { user } = this.props;
+    //         const {
+    //             status,
+    //             nomId,
+    //             name,
+    //             textarea,
+    //             values,
+    //         } = this.state;
 
-            const response = await apiPost({}, '/nomination', {
-                user,
-                status,
-                nomId,
-                name,
-                textarea,
-                values,
-            });
+    //         const response = await apiPost({}, '/nomination', {
+    //             user,
+    //             status,
+    //             nomId,
+    //             name,
+    //             textarea,
+    //             values,
+    //         });
 
-            if (response.status === 200) {
-                const flash = createFlash('success', 'Nomination submitted');
-                document.querySelector('button.submit').disabled = true;
-                document.querySelector('.voteBtn').style.display = 'block';
+    //         if (response.status === 200) {
+    //             const flash = createFlash('success', 'Nomination submitted');
+    //             document.querySelector('button.submit').disabled = true;
+    //             document.querySelector('.voteBtn').style.display = 'block';
 
-                this.flashesComponent.current.addFlash(flash);
-                return true;
-            } if (response.status === 400) {
-                const flash = createFlash('error', 'Email must be company email');
+    //             this.flashesComponent.current.addFlash(flash);
+    //             return true;
+    //         } if (response.status === 400) {
+    //             const flash = createFlash('error', 'Email must be company email');
 
-                this.flashesComponent.current.addFlash(flash);
-            }
-        } else {
-            const flash = createFlash('error', 'Please fill in all fields.');
-            this.flashesComponent.current.addFlash(flash);
-            return nomIdisValid;
-        }
-    };
+    //             this.flashesComponent.current.addFlash(flash);
+    //         }
+    //     } else {
+    //         const flash = createFlash('error', 'Please fill in all fields.');
+    //         this.flashesComponent.current.addFlash(flash);
+    //         return nomIdisValid;
+    //     }
+    // };
 
     render() {
         return (
             <FormWrapper className="formwrapper">
-                <form id="nominationForm" onSubmit={this.submitForm}>
-                    <Select
-                        label="Which website"
-                        name="nominationName"
-                        value={this.state.nomId}
-                        options={listOfNames}
-                        changeState={this.updateListofNamesState}
-                        isValid={this.state.listOfNamesValid}
-                        errorMessage="Must choose a website"
-                    />
-                    {/* <Textarea
-                        class="textbox"
-                        label="Why?"
-                        name="textarea"
-                        isValid={this.state.textareaValid}
-                        value={this.state.textarea}
-                        changeState={this.updateTextareaState}
-                        errorMessage="Must give a reason"
-                    /> */}
-                    <Checkbox
-                        className="checkbox"
-                        placeholder="Pick required service"
-                        options={[
-                            { value: 'Service1' },
-                            { value: 'Service 2' },,
-                        ]}
-                        sendData={this.getValues}
-                        onMouseLeave={this.handleHoverOff}
-                        multiple
-                    />
-                    <div className="flash">
-                        <Flashes
-                            ref={this.flashesComponent}
-                            flashes={this.props.flashes}
-                        />
-                    </div>
-                    <div className="submitBtn">
-                        <button type="submit" className="submit">Submit</button>
-                    </div>
-                    <a className="voteBtn" href='/voting'>Make a vote!</a>
-                </form>
+                <h1>Helloooo</h1>
             </FormWrapper>
         );
     }

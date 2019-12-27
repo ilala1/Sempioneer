@@ -15,6 +15,9 @@ const userSchema = new mongoose.Schema({
     refresh_token: {
         type: String,
         trim: true,
+    },
+    date: {
+        type: Date
     }
 });
 

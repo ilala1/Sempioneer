@@ -46,7 +46,7 @@ export const isAdmin = (ctx) => {
 
 export const redirectIfAuthenticated = (ctx) => {
     if (isLoggedIn(ctx)) {
-        redirect('/', ctx);
+        redirect('/index', ctx);
         return true;
     }
 

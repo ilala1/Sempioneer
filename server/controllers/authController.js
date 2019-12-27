@@ -48,6 +48,7 @@ exports.access = async (req, res) => {
           
           const {tokens} = await oauth2Client.getToken(code)
           oauth2Client.setCredentials(tokens);
+          console.log(tokens.access_token);
           const userDetails = `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokens.access_token}`;
           let userObj;
 
@@ -66,7 +67,8 @@ exports.access = async (req, res) => {
               userObj = {
                 name: data.name,
                 access_token: tokens.access_token,
-                refresh_token: tokens.refresh_token
+                refresh_token: tokens.refresh_token,
+                date: Date.now()
               };
               (new User(userObj)).save();
 

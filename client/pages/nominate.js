@@ -7,6 +7,7 @@ import { redirectIfNotAuthenticated } from '../lib/auth';
 import Nomination from '../components/Nomination';
 import Header from '../components/Header';
 import Nav from '../components/Nav';
+import { getWebsiteList } from '../../server/controllers/nominationController';
 
 const HomeStyle = styled.section`
     display: flex;
@@ -40,7 +41,7 @@ const HomeStyle = styled.section`
     }
 `;
 
-class Home extends Component {
+class Nominate extends Component {
     static async getInitialProps(ctx) {
         if (redirectIfNotAuthenticated(ctx)) {
             return { };
@@ -48,22 +49,29 @@ class Home extends Component {
         return { };
     }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: '',
-        };
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         user: '',
+    //     };
+    // }
 
     componentDidMount() {
+        // getWebsiteList();
         const userCookie = getCookie({}, 'user');
-        if (userCookie) {
-            const user = userCookie.split('@')[0];
-            this.setState({
-                user,
-            });
-        }
+        // if (userCookie) {
+        //     const user = userCookie.split('@')[0];
+        //     this.setState({
+        //         user,
+        //     });
+        // }
     }
+
+    // getWebsiteList = async () => {
+    //     const response = await apiPost({}, '/websites', {})
+    //     console.log(response)
+    //     return;
+    // }
 
     logout = () => {
         const userCookie = getCookie({}, 'user');
@@ -80,10 +88,10 @@ class Home extends Component {
             <HomeStyle>
                 <Nav/>
                 <Header title="Submit your nomination" />
-                <Nomination user={this.state.user} />
+                <Nomination />
             </HomeStyle>
         );
     }
 }
 
-export default Home;
+export default Nominate;

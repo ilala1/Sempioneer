@@ -50,17 +50,6 @@ class Home extends Component {
         
     }
 
-    componentDidMount() {
-        this.getTokens();
-    }
-
-    getTokens = async () => {
-        console.log('tokenss');
-        //get all users
-        // const testTokens = await apiGet({}, '/user', {});
-        // console.log(testTokens);
-    }
-
     logout = () => {
         const userCookie = getCookie({}, 'user');
         if (userCookie) {

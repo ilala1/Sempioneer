@@ -51,7 +51,7 @@ class Nav extends Component {
     render() {
         return (
             <NavWrapper>
-                <a href='/'>
+                <a href='/index'>
                     Home
                 </a>
                 <div className="logout">
