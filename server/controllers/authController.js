@@ -1,6 +1,7 @@
 require('../models/User');
 
 const mongoose = require('mongoose');
+const request = require('request');
 const axios = require('axios');
 
 const User = mongoose.model('User');
@@ -33,12 +34,8 @@ exports.auth = async (req, res) => {
 
 exports.access = async (req, res) => {
     const {google} = require('googleapis');
-    console.log('getting Tokens')
-    
-
     var code = req.query.code;
     if (code) {
-      console.log("code " + code);
       const oauth2Client = new google.auth.OAuth2(
             '1056569297986-ghu1ojg1bedpfpghh4k9at82ngoajg1i.apps.googleusercontent.com',
             'V05FVaiej7AKwoD8BCLhcnuL',
@@ -51,17 +48,44 @@ exports.access = async (req, res) => {
           const userDetails = `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokens.access_token}`;
           let userObj;
 
-
           const allUsers = await User.find();
-          axios.get(userDetails, {})
-        .then((res) => {
-          console.log(`statusCode: ${res.statusCode}`)
-          console.log(res.data)
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-          console.log(userObj);
+
+
+          let getUserName = await axios.get(userDetails, {})
+          .then((res) => {
+            console.log(`statusCode: ${res.statusCode}`)
+            return res.data.name;
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+
+        
+        const updatedNomination = await User.findOne({ name: getUserName });
+
+        // if user exists in db overwrite tokens or create new
+        if (updatedNomination) {
+          updatedNomination.access_token = tokens.access_token;
+          if (tokens.refresh_token) {
+            updatedNomination.refresh_token = tokens.refresh_token;
+          }
+          updatedNomination.date = Date.now();
+  
+          try {
+            await updatedNomination.save();
+          } catch (error) {
+              return { error: mongoErrors(user, error) };
+          }
+        } else {
+          console.log('no user');
+              userObj = {
+                name: getUserName,
+                access_token: tokens.access_token,
+                refresh_token: tokens.refresh_token,
+                date: Date.now()
+              };
+              (new User(userObj)).save();
+        }
       res.redirect('/index');
     }
 }
