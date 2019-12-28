@@ -30,25 +30,6 @@ const mongoErrors = (user, error) => {
     return errorMessage;
 };
 
-exports.getWebsiteList = async (req, res) => {
-    const API = 'http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/';
-    request.post({
-        url: API,
-        json: true,
-        headers: {"content-type" : "application/json;"},
-        body: {}
-      }, (err, res, data) => {
-        if (err) {
-          console.log('Error:', err);
-        } else if (res.statusCode !== 200) {
-          console.log('Status:', res.statusCode);
-        } else {
-          // data is already parsed as JSON:
-          console.log(data);
-        }
-      });
-}
-
 exports.newNomination = async (req, res) => {
     const result = {};
     result.status = 200;
