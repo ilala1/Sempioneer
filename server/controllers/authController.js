@@ -1,8 +1,7 @@
 require('../models/User');
 
 const mongoose = require('mongoose');
-const request = require('request');
-
+const axios = require('axios');
 
 const User = mongoose.model('User');
 
@@ -48,34 +47,21 @@ exports.access = async (req, res) => {
           
           const {tokens} = await oauth2Client.getToken(code)
           oauth2Client.setCredentials(tokens);
-          console.log(tokens.access_token);
+
           const userDetails = `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokens.access_token}`;
           let userObj;
 
-          request.get({
-            url: userDetails,
-            json: true,
-            headers: {'User-Agent': 'request'}
-          }, (err, res, data) => {
-            if (err) {
-              console.log('Error:', err);
-            } else if (res.statusCode !== 200) {
-              console.log('Status:', res.statusCode);
-            } else {
-              // data is already parsed as JSON:
-              console.log(data.name);
-              userObj = {
-                name: data.name,
-                access_token: tokens.access_token,
-                refresh_token: tokens.refresh_token,
-                date: Date.now()
-              };
-              (new User(userObj)).save();
 
-              return
-            }
-          });
-          
+          const allUsers = await User.find();
+          axios.get(userDetails, {})
+        .then((res) => {
+          console.log(`statusCode: ${res.statusCode}`)
+          console.log(res.data)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+          console.log(userObj);
       res.redirect('/index');
     }
 }
