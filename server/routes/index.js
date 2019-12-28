@@ -30,8 +30,6 @@ module.exports = (nextApp, expressApp) => {
     expressApp.get('/', authController.access);
 
 
-    expressApp.post('/api/websites', nominationController.getWebsiteList);
-
     // Default all remaining routes to nextJs (client-side)
     const handler = nextApp.getRequestHandler();
 
