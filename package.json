@@ -28,6 +28,7 @@
         "cookie": "^0.3.1",
         "dotenv": "^6.2.0",
         "express": "^4.16.4",
+        "express-react-views": "^0.11.0",
         "fs": "0.0.1-security",
         "fuse.js": "^3.4.2",
         "googleapis": "^45.0.0",
@@ -41,8 +42,8 @@
         "nodemon": "^1.18.9",
         "npm": "^6.7.0",
         "prop-types": "^15.6.2",
-        "react": "^16.7.0",
-        "react-dom": "^16.7.0",
+        "react": "^16.12.0",
+        "react-dom": "^16.12.0",
         "react-particle-effect-button": "^1.0.1",
         "request": "^2.88.0",
         "sib-api-v3-sdk": "^7.0.5",
@@ -51,6 +52,7 @@
         "uuid": "^3.3.2"
     },
     "devDependencies": {
+        "@babel/plugin-proposal-class-properties": "^7.7.4",
         "@fortawesome/fontawesome-free": "^5.7.2",
         "babel-eslint": "^10.0.1",
         "eslint": "^5.12.1",

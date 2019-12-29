@@ -47,7 +47,16 @@ class Home extends Component {
         this.state = {
             user: '',
         };
-        
+    }
+
+    componentDidMount() {
+        this.getStuff();
+    }
+
+    getStuff = async () => {
+        const href = window.location.href;
+        const response = await apiGet({}, '/index', {href});
+        console.log(response);
     }
 
     logout = () => {

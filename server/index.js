@@ -17,6 +17,7 @@ const nextApp = next({
     dev,
 });
 
+
 nextApp
     .prepare()
     .then(() => {
@@ -40,8 +41,11 @@ nextApp
         const expressApp = express();
 
         // View engine (DustJS)
-        expressApp.set('views', path.join(__dirname, 'views'));
+        expressApp.set('views', path.join(__dirname, '../client/pages'));
 
+        // expressApp.engine('jsx', require('express-react-views').createEngine());
+        // expressApp.set('view engine', 'jsx');
+        
         expressApp.engine(
             'dust',
             dustjs.dust({

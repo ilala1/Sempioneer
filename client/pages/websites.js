@@ -82,7 +82,7 @@ const HomeStyle = styled.section`
 
 `;
 
-class voting extends Component {
+class websites extends Component {
     static async getInitialProps(ctx) {
         if (redirectIfNotAuthenticated(ctx)) {
             return { };
@@ -99,9 +99,8 @@ class voting extends Component {
     }
 
     async componentDidMount() {
-
         axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
-            "Access_Token": "ya29.Il-3B-WV9EyrI3e9TojGv36WPHyWSWLc0Sp5MkD0eWTxHOveQwtA5q-fneubIhkF8deS7h_7ecglwtbp9KoBqsEmb2gW4kQPRLsabPnqjvn3-pd0640ih4zZ4xAY7--1qw",
+            "Access_Token": "ya29.Il-3BwVGX1F5-frOVYSOGYP7Mxx4-97NTI19f5b12-XgDfWm0d5Hm8oRX7dQUGamC-cXonRX5BdT3QpV-Pj6bJ7aJEmQk0UDY5Er845C2fPmEvghC-gHkD8vtwJpf4dYtg",
             "Refresh_Token": "three",
             "Client_Secret": "two",
             "Authorization_Code": "one"
@@ -141,4 +140,4 @@ class voting extends Component {
     }
 }
 
-export default voting;
+export default websites;
