@@ -54,9 +54,28 @@ class Home extends Component {
     }
 
     getStuff = async () => {
-        const href = window.location.href;
-        const response = await apiGet({}, '/index', {href});
+        // get query from URL string
+        var qs = (function(a) {
+            if (a == "") return {};
+            var b = {};
+            for (var i = 0; i < a.length; ++i)
+            {
+                var p=a[i].split('=', 2);
+                if (p.length == 1)
+                    b[p[0]] = "";
+                else
+                    b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+            }
+            return b;
+        })(window.location.search.substr(1).split('&'));
+
+        let authCode = qs["code"];
+
+        const response = await apiGet({}, '/index', {authCode});
         console.log(response);
+        if (response) {
+            login(response._id);
+        }
     }
 
     logout = () => {

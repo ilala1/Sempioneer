@@ -3,9 +3,9 @@ import redirect from './redirect';
 import { addCookie, getCookie } from './session';
 import { apiGet, apiPost } from '../lib/api';
 
-export const login = async () => {
+export const login = async (id) => {
 
-    addCookie({}, 'user', 'confirmed');
+    addCookie({}, 'user', `${id}`);
     // redirect('/login');
 
     // console.log("test" + test);
