@@ -6,6 +6,31 @@ const axios = require('axios');
 
 const User = mongoose.model('User');
 
+const mongoErrors = (user, error) => {
+  let errorMessage = '';
+
+  // Incude name in error if provided
+  const { firstName, lastName } = user;
+
+  if (firstName && firstName.trim().length > 0
+      && lastName && lastName.trim().length > 0) {
+      errorMessage += `Unable to create an account for <strong>${firstName} ${lastName}</strong>.`;
+  } else {
+      errorMessage += 'Unable to create account';
+  }
+
+  // Include any mongo validation errors
+  const { errors } = error;
+
+  Object.keys(errors).forEach((key) => {
+      if (errors[key].message) {
+          errorMessage += `<br> - ${errors[key].message}`;
+      }
+  });
+
+  return errorMessage;
+};
+
 exports.auth = async (req, res) => {
     const result = {};
     result.status = 200;
@@ -36,6 +61,8 @@ exports.access = async (req, res) => {
     const {google} = require('googleapis');
 
     let code = req.query.authCode;
+
+    console.log(code);
     let updateExistingLoginTokens;
     let userObj;
     if (code) {
@@ -61,6 +88,7 @@ exports.access = async (req, res) => {
             console.error(error)
           })
 
+          console.log(getUserName);
         updateExistingLoginTokens = await User.findOne({ name: getUserName });
 
 
@@ -96,10 +124,13 @@ exports.access = async (req, res) => {
 
 exports.getUser = async (req, res) => {
 
-}
+  const userID = req.query.userCookie;
+  try {
+    const oneUser = await User.findOne({ _id: userID });
+    console.log(oneUser);
+    res.send(oneUser);
+  } catch (error) {
+      return { error: mongoErrors(userID, error) };
+  }
 
-exports.tokens = async (req, res) => {
-    const allUsers = await User.find();
-    console.log(allUsers);
-    res.send(allUsers);
 }

@@ -50,10 +50,12 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        this.getStuff();
+        this.getUser();
+        this.getTokens();
+
     }
 
-    getStuff = async () => {
+    getTokens = async () => {
         // get query from URL string
         var qs = (function(a) {
             if (a == "") return {};
@@ -72,10 +74,24 @@ class Home extends Component {
         let authCode = qs["code"];
 
         const response = await apiGet({}, '/index', {authCode});
-        console.log(response);
+        console.log(response.name);
         if (response) {
             login(response._id);
+            this.setState({
+                user: response.name
+            })
         }
+    }
+
+    getUser = async () => {
+        const userCookie = getCookie({}, 'user');
+        console.log(userCookie);
+
+        const oneUser = await apiGet({}, '/oneUser', {userCookie});
+        console.log(oneUser);
+        this.setState({
+            user: oneUser.name
+        })
     }
 
     logout = () => {
@@ -92,6 +108,7 @@ class Home extends Component {
         return (
             <HomeStyle>
                 <Nav/>
+                Hello {this.state.user}
                 <Header title="What App do you want to use?" />
                 <Options />
 

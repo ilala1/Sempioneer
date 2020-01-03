@@ -8,6 +8,8 @@ yarn-debug.log*
 yarn-error.log*
 client/.next/**
 client/.next/*
+client/.next/
+.next/
 
 # Runtime data
 pids

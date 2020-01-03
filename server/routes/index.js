@@ -29,6 +29,8 @@ module.exports = (nextApp, expressApp) => {
 
     expressApp.get('/api/index', authController.access);
 
+    expressApp.get('/api/oneUser', authController.getUser);
+
 
     // Default all remaining routes to nextJs (client-side)
     const handler = nextApp.getRequestHandler();
