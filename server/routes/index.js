@@ -1,6 +1,7 @@
 const authController = require('../controllers/authController');
 const voteController = require('../controllers/voteController');
 const nominationController = require('../controllers/nominationController');
+const defaultController = require('../controllers/defaultController');
 
 module.exports = (nextApp, expressApp) => {
     // API
@@ -30,6 +31,10 @@ module.exports = (nextApp, expressApp) => {
     expressApp.get('/api/index', authController.access);
 
     expressApp.get('/api/oneUser', authController.getUser);
+
+    // expressApp.get('/api/websites', defaultController.getWebsites);
+
+
 
 
     // Default all remaining routes to nextJs (client-side)
