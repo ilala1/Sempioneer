@@ -3,6 +3,7 @@ import moment from 'moment';
 import styled from 'styled-components';
 import Header from './Header';
 
+import { getCookie, removeCookie } from '../lib/session';
 import { apiGet, apiPut } from '../lib/api';
 
 import DataTable from './DataTable';
@@ -193,55 +194,99 @@ class Websites extends Component {
     }
 
     async componentDidMount() {
-        let WebsiteList;
+        const userCookie = getCookie({}, 'user');
+        const oneUser = await apiGet({}, '/oneUser', {userCookie});
         const test = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
-            "Access_Token": "ya29.Il-4B55TFJV4oAaQLcGR7keaLYxomjzURT0qBEr_6ERBiOBIMahNmrFrXyUhI1fS9kcpCkPFgIUpVOWol5X6G8q_qAfNp021v0RP9_gLSI_jyo66YUoDgXxjR6f9kHyKmA",
+            "Access_Token": oneUser.access_token,
             "Refresh_Token": "three",
             "Client_Secret": "two",
             "Authorization_Code": "one"
         })
         .then((res) => {
-          console.log(res.data.siteEntry);
+          const WebsiteList = res.data.siteEntry;
+          this.setState({
+            loading: false,
+            dtTitles,
+            dtData: this.createDataTable(WebsiteList),
+          });
         })
         .catch((error) => {
           console.error(error)
         })
     }
 
-
-
     createDataTable = (allNoms) => {
         // returns object with id and title
         const dtData = allNoms.map(nominee => ({
             id: nominee._id,
             data: [{
-                key: 'status',
-                value: nominee.status,
+                key: 'permissionLevel',
+                value: nominee.permissionLevel,
             }, {
-                key: 'nominator',
-                value: this.capitalizeFirstLetter(nominee.user),
-            }, {
-                key: 'name',
-                value: nominee.id.title,
-            }, {
-                key: 'description',
-                value: nominee.textarea,
-            }, {
-                key: 'values',
-                value: this.formatArray(nominee.values),
-            }, {
-                key: 'createdAt',
-                value: moment(nominee.createdAt).format('MMMM Do'),
+                key: 'siteUrl',
+                value: nominee.siteUrl,
             }],
         }));
         return dtData;
     }
 
+    bulkActionState = e => this.setState({ bulkAction: e.target.value });
+
+    bulkIdsState = ids => this.setState({ bulkIds: ids });
+
+    // Event handlers
+    bulkUpdate = async () => {
+        const { bulkAction, bulkIds } = this.state;
+
+        if (bulkIds.length > 0) {
+            // Format data
+            let status = '';
+
+            switch (bulkAction) {
+            case 'delete':
+                status = 'deleted';
+                break;
+            case 'restore':
+                status = 'active';
+                break;
+            default:
+                status = 'active';
+            }
+
+            const users = bulkIds.map(id => ({
+                id,
+                status,
+            }));
+
+            // Delete/Restore multiple
+            const response = await apiPut({}, '/bulk', {
+                users,
+            });
+            // const response = await bulkstuff(users);
+
+            if (response.length > 0) {
+                this.props.addFlash(createFlash('success', 'Success'));
+                const allNominations = await apiGet({}, '/nominations');
+                const allNoms = allNominations.map(nominee => this.formatNominee(nominee));
+                const updatedNominations = this.showHideDeleted(allNoms, false);
+                this.setState({
+                    loading: false,
+                    dtTitles,
+                    dtData: this.createDataTable(updatedNominations),
+                });
+            }
+        }
+    }
+
+    // Event Handlers
+
+    selectForEdit = (props) => {
+        this.setState({ editID: props });
+    }
+
     render() {
         return (
             <UserStyles>
-                <Header/>
-                <h2>All Sites!</h2>
                 <Flashes
                     ref={this.flashesComponent}
                     flashes={this.props.flashes}
@@ -253,6 +298,8 @@ class Websites extends Component {
                     editable={this.state.editable}
                     sortField="name"
                     sortDirection="asc"
+                    handleBulk={this.bulkIdsState}
+                    handleEdit={this.selectForEdit}
                 />
             </UserStyles>
         );

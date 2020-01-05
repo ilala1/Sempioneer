@@ -235,6 +235,7 @@ class DataTable extends Component {
     // Event handlers
     clickSingleRow = (id) => {
         if (this.props.editable === 'true') {
+            console.log(this.state.rowsSelected);
             let updated = this.state.rowsSelected;
 
             if (updated.includes(id)) {
@@ -357,7 +358,7 @@ class DataTable extends Component {
                     && <>
                         <table>
                             <thead>
-                                <tr>
+                                <tr key={titles.id}>
                                     {editable === 'true'
                                         && <BulkTH
                                             checked={this.state.bulkSelected}

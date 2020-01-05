@@ -85,7 +85,6 @@ class Home extends Component {
 
     getUser = async () => {
         const userCookie = getCookie({}, 'user');
-        console.log(userCookie);
 
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
         console.log(oneUser);

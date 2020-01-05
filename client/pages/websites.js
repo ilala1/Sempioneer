@@ -131,7 +131,7 @@ class websites extends Component {
         return (
             <HomeStyle>
                 <Nav/>
-                <Header title="Submit your votes below" />
+                <Header title="Select one website below to start creating your A/B tests." />
                 <Flashes
                     ref={this.flashesComponent}
                     flashes={this.props.flashes}
