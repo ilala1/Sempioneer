@@ -105,7 +105,8 @@ exports.access = async (req, res) => {
             await updateExistingLoginTokens.save();
             res.send(updateExistingLoginTokens);
           } catch (error) {
-              return { error: mongoErrors(user, error) };
+            console.error(error)
+            return
           }
         } else {
           console.log('no user');
@@ -130,7 +131,8 @@ exports.getUser = async (req, res) => {
     console.log(oneUser);
     res.send(oneUser);
   } catch (error) {
-      return { error: mongoErrors(userID, error) };
+      console.error(error)
+      return
   }
 
 }

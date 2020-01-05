@@ -1,68 +1,28 @@
-import Fuse from 'fuse.js';
 import { Component, createRef } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import Header from './Header';
-import Select from './forms/Select';
-import Input from './forms/Input';
 
 import { apiGet, apiPut } from '../lib/api';
 
 import DataTable from './DataTable';
-import EditForm from './EditForm';
 import Flashes from './Flashes';
 
-import dataNominees from '../data/users/nominationNames.json';
-import monthNames from '../data/users/month.json';
-import bulkOptionsJson from '../data/users/bulkOptions.json';
+const axios = require('axios');
 
 import { redirectIfNoAccess } from '../lib/auth';
 import { createFlash } from '../lib/flashes';
+import websites from '../pages/websites';
 
-const monthOptions = monthNames.map(access => ({
-    value: access.id,
-    label: access.title,
-}));
-
-monthOptions.unshift({
-    value: 'all',
-    label: 'Select one',
-});
-
-const bulkOptions = bulkOptionsJson.map(access => ({
-    value: access.id,
-    label: access.title,
-}));
-
-bulkOptions.unshift({
-    value: '',
-    label: 'Select one',
-});
 
 const dtTitles = [{
-    key: 'status',
+    key: 'permissionLevel',
     type: 'string',
-    label: 'Status',
+    label: 'Permission Level',
 }, {
-    key: 'nominator',
+    key: 'siteUrl',
     type: 'string',
-    label: 'Nominator',
-}, {
-    key: 'name',
-    type: 'string',
-    label: 'Name',
-}, {
-    key: 'description',
-    type: 'string',
-    label: 'Why?',
-}, {
-    key: 'values',
-    type: 'array',
-    label: 'Values',
-}, {
-    key: 'createdAt',
-    type: 'string',
-    label: 'When?',
+    label: 'Site Url',
 }];
 
 const UserStyles = styled.aside`
@@ -228,35 +188,24 @@ class Websites extends Component {
             loading: true,
             dtTitles: [],
             dtData: [],
-            id: '',
-            textarea: '',
-            search: '',
-            dtSearch: null,
-            month: '',
-            bulkAction: '',
-            bulkIds: [],
-            includeDeleted: false,
-            presenting: false,
-            editID: '',
             editable: 'true',
         };
     }
 
     async componentDidMount() {
-        const allNominations = await apiGet({}, '/nominations');
-        const allNoms = allNominations.map(nominee => this.formatNominee(nominee));
-        // Default remove delete
-        const { includeDeleted } = this.state;
-        const updatedNominations = this.showHideDeleted(allNoms, includeDeleted);
-        // Format for data table
-        this.setState({
-            loading: false,
-            dtTitles,
-            dtData: this.createDataTable(updatedNominations),
-        });
-
-        // Update search list
-        this.searchState(allNoms);
+        let WebsiteList;
+        const test = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
+            "Access_Token": "ya29.Il-4B55TFJV4oAaQLcGR7keaLYxomjzURT0qBEr_6ERBiOBIMahNmrFrXyUhI1fS9kcpCkPFgIUpVOWol5X6G8q_qAfNp021v0RP9_gLSI_jyo66YUoDgXxjR6f9kHyKmA",
+            "Refresh_Token": "three",
+            "Client_Secret": "two",
+            "Authorization_Code": "one"
+        })
+        .then((res) => {
+          console.log(res.data.siteEntry);
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     }
 
 
