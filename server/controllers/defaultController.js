@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 
 const axios = require('axios');
 
-const Nomination = mongoose.model('Nomination');
 
 const mongoErrors = (user, error) => {
     let errorMessage = '';
@@ -31,28 +30,15 @@ const mongoErrors = (user, error) => {
     return errorMessage;
 };
 
-exports.newNomination = async (req, res) => {
+exports.addWebsite = async (req, res) => {
     const result = {};
     result.status = 200;
     const nominationObj = req.body;
+    console.log('nominationObj');
     console.log(nominationObj);
-    await (new Nomination(nominationObj)).save();
+    console.log('nominationObj');
+    // await (new Nomination(nominationObj)).save();
     res.send(result);
-};
-
-// get
-exports.getMany = async (req, res) => {
-    const nominations = await Nomination.find();
-    res.send(nominations);
-};
-
-exports.getNomination = async (req, res) => {
-    const nomination = await Nomination
-        .findOne({
-            _id: req.params.id,
-        });
-
-    res.send({ nomination });
 };
 
 exports.getWebsites = async (req, res) => {
@@ -73,33 +59,3 @@ exports.getWebsites = async (req, res) => {
     console.log(Websites);
 };
 
-
-// update
-
-exports.updateNomination = async (req, res) => {
-    const {
-        user, status, nomId,
-    } = req.body;
-
-    const updatedNomination = {
-        _id: req.params.id,
-        user,
-        status,
-        nomId,
-        textarea: req.body.nomination.textarea,
-    };
-
-    const response = await updateNomination(req, updatedNomination);
-
-    res.send(response);
-};
-
-exports.deleteOne = async (req, res) => {
-    // const id = req.params;
-    console.log(req.body.nomination);
-    const nomination = req.body.nomination;
-    nomination.status = 'deleted';
-    console.log(nomination);
-    const response = await updateNomination(req, nomination);
-    res.send(response);
-};

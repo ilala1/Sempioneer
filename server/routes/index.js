@@ -32,6 +32,8 @@ module.exports = (nextApp, expressApp) => {
 
     expressApp.get('/api/oneUser', authController.getUser);
 
+    expressApp.post('/api/website', defaultController.addWebsite);
+
     // expressApp.get('/api/websites', defaultController.getWebsites);
 
 

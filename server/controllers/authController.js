@@ -128,7 +128,6 @@ exports.getUser = async (req, res) => {
   const userID = req.query.userCookie;
   try {
     const oneUser = await User.findOne({ _id: userID });
-    console.log(oneUser);
     res.send(oneUser);
   } catch (error) {
       console.error(error)

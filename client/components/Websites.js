@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Header from './Header';
 
 import { getCookie, removeCookie } from '../lib/session';
-import { apiGet, apiPut } from '../lib/api';
+import { apiGet, apiPut, apiPost } from '../lib/api';
 
 import DataTable from './DataTable';
 import Flashes from './Flashes';
@@ -186,6 +186,7 @@ class Websites extends Component {
         super(props);
         this.flashesComponent = createRef();
         this.state = {
+            user: '',
             loading: true,
             dtTitles: [],
             dtData: [],
@@ -196,6 +197,12 @@ class Websites extends Component {
     async componentDidMount() {
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
+        this.setState({
+            user: oneUser._id
+        })
+
+        console.log(this.state.user);
+        console.log(oneUser);
         const test = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
             "Access_Token": oneUser.access_token,
             "Refresh_Token": "three",
@@ -204,6 +211,15 @@ class Websites extends Component {
         })
         .then((res) => {
           const WebsiteList = res.data.siteEntry;
+          console.log(WebsiteList);
+          WebsiteList.forEach(element => {
+                this.addWebsite(element);
+              console.log(element)
+          });
+        //   console.log("hello");
+        //   WebsiteList.id = oneUser._id;
+        //   console.log(WebsiteList);
+        //   console.log("ehhlo");
           this.setState({
             loading: false,
             dtTitles,
@@ -213,6 +229,14 @@ class Websites extends Component {
         .catch((error) => {
           console.error(error)
         })
+    }
+
+    addWebsite = async (site) => {
+
+        const oneWebsite = await apiPost({}, '/website', {site});
+        console.log('oneWebsite')
+        console.log(oneWebsite)
+        console.log('oneWebsite')
     }
 
     createDataTable = (allNoms) => {

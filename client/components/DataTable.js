@@ -188,6 +188,12 @@ class DataTable extends Component {
         };
     }
 
+    // componentDidMount() {
+    //     console.log('Hello');
+    //     console.log(this.state.data);
+    //     console.log('Hello');
+    // }
+
     componentDidUpdate(prevProps) {
         if (prevProps.titles !== this.props.titles) {
             this.setState({ titles: this.props.titles });
@@ -234,9 +240,10 @@ class DataTable extends Component {
 
     // Event handlers
     clickSingleRow = (id) => {
+        console.log(id);
         if (this.props.editable === 'true') {
-            console.log(this.state.rowsSelected);
             let updated = this.state.rowsSelected;
+            console.log(updated);
 
             if (updated.includes(id)) {
                 updated = updated.filter(item => item !== id);
@@ -252,10 +259,11 @@ class DataTable extends Component {
     }
 
     checkSingleRow = (e) => {
+        console.log(e);
         e.persist();
-
         const { checked, value } = e.target;
         let updated = this.state.rowsSelected;
+        console.log(updated);
 
         if (checked) {
             updated.push(value);
@@ -348,6 +356,8 @@ class DataTable extends Component {
             sortDirection,
         } = this.state;
 
+        console.log(this.state.data);
+
         return (
             <DataTableStyles>
                 {/* {loading
@@ -358,12 +368,11 @@ class DataTable extends Component {
                     && <>
                         <table>
                             <thead>
-                                <tr key={titles.id}>
-                                    {editable === 'true'
-                                        && <BulkTH
+                                <tr>
+                                    <BulkTH
                                             checked={this.state.bulkSelected}
                                             handleBulkSelect={this.handleBulkSelect}
-                                        />}
+                                        />
 
                                     {titles.map(title => (
                                         <th
@@ -383,7 +392,6 @@ class DataTable extends Component {
 
                                         </th>
                                     ))}
-                                    {editable === 'true' && <th></th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -391,12 +399,11 @@ class DataTable extends Component {
                                     key={row.id}
                                     className={(row.selected) ? 'selected' : undefined}>
 
-                                    {editable === 'true'
-                                        && <BulkTR
+                                    <BulkTR
                                             value={row.id}
                                             checked={row.selected}
                                             checkSingleRow={this.checkSingleRow}
-                                        />}
+                                        />
 
                                     {titles.map((title) => {
                                         const single = row.data.find(d => d.key === title.key);
@@ -411,11 +418,11 @@ class DataTable extends Component {
                                         );
                                     })}
 
-                                    {editable === 'true'
+                                    {/* {editable === 'true'
                                         && <EditTR
                                             id={row.id}
                                             handleEdit={this.props.handleEdit}
-                                        />}
+                                        />} */}
                                 </tr>)}
                             </tbody>
                         </table>
