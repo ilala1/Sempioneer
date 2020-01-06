@@ -1,6 +1,8 @@
-require('../models/Nomination');
+require('../models/Website');
 
 const mongoose = require('mongoose');
+
+const Website = mongoose.model('Website');
 
 const axios = require('axios');
 
@@ -37,25 +39,25 @@ exports.addWebsite = async (req, res) => {
     console.log('nominationObj');
     console.log(nominationObj);
     console.log('nominationObj');
-    // await (new Nomination(nominationObj)).save();
+    await (new Website(nominationObj)).save();
     res.send(result);
 };
 
-exports.getWebsites = async (req, res) => {
-     const API = 'http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/';
-    let Websites = await axios.post(API, {
-        "Access_Token": "ya29.Il-4B2pQ_xOmXQlnnmU9pTOj6LV8Saa3yDm8PC4AhuW-UlJ4sxOu0ocQd7TQYEPTTt9iBChd4pk6bcCbbhH9lweCATHjD-AG7AB8-FuNPh1pYB2IBETUJLOJwdfa5XTS1Q",
-        "Refresh_Token": "three",
-        "Client_Secret": "two",
-        "Authorization_Code": "one"
-    })
-    .then((res) => {
-      console.log(`statusCode: ${res.statusCode}`)
-      return res;
-    })
-    .catch((error) => {
-      console.error(error)
-    })
-    console.log(Websites);
-};
+// exports.getWebsites = async (req, res) => {
+//      const API = 'http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/';
+//     let Websites = await axios.post(API, {
+//         "Access_Token": "ya29.Il-4B2pQ_xOmXQlnnmU9pTOj6LV8Saa3yDm8PC4AhuW-UlJ4sxOu0ocQd7TQYEPTTt9iBChd4pk6bcCbbhH9lweCATHjD-AG7AB8-FuNPh1pYB2IBETUJLOJwdfa5XTS1Q",
+//         "Refresh_Token": "three",
+//         "Client_Secret": "two",
+//         "Authorization_Code": "one"
+//     })
+//     .then((res) => {
+//       console.log(`statusCode: ${res.statusCode}`)
+//       return res;
+//     })
+//     .catch((error) => {
+//       console.error(error)
+//     })
+//     console.log(Websites);
+// };
 

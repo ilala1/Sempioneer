@@ -4,17 +4,11 @@ const websiteSchema = new mongoose.Schema({
     id: {
         type: String,
     },
-    permissionLevel: {
-        type: String,
-        trim: true,
-    },
-    siteURL: {
-        type: String,
-        trim: true,
-    },
-    user: {
-        type: String
-    }
+    data: [{
+        permissionLevel: String,
+        siteURL: String,
+        id: String,
+    }]
 });
 
-module.exports = mongoose.model('Website', websiteSchema, 'websites');
+module.exports = mongoose.model('Website', websiteSchema, 'website');

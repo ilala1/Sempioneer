@@ -1,6 +1,6 @@
 import { Component, createRef } from 'react';
 import moment from 'moment';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import Header from './Header';
 
 import { getCookie, removeCookie } from '../lib/session';
@@ -27,27 +27,6 @@ const dtTitles = [{
 }];
 
 const UserStyles = styled.aside`
-    .search {
-        flex: 0 0 auto;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-bottom: 2rem;
-
-        >* { flex: 0 0 auto; }
-
-        label { padding-right: 1rem; }
-
-        #filter-search {
-            border: 2px solid black;
-        }
-
-        input {
-            width: 30rem;
-        }
-    }
-
     .button {
         border: 1px solid black;
         padding: 0.6rem 0.8rem;
@@ -57,118 +36,13 @@ const UserStyles = styled.aside`
         }
     }
 
-    .sub-nav {
-        display: flex;
-        justify-content: center;
-        padding: 1rem 0;
-
-        .filter {
-            padding: 0 5rem;
-            display: flex;
-            align-items: center;
-
-            >* { flex: 0 0 auto; }
-
-            label { padding-right: 1rem; }
-
-            input[type="checkbox"] {
-                width: 1.8rem;
-                height: 1.8rem;
-
-                background: white;
-
-                border: 1px solid #ACACAC;
-
-                cursor: pointer;
-
-                &:checked { background-color: #9B2583; }
-            }
-        }
-
-        .bulk {
-            padding: 0 5rem;
-            flex: 0 0 auto;
-
-            display: flex;
-            align-items: center;
-
-            >* { flex: 0 0 auto; }
-
-            .select {
-                position: relative;
-                margin-right: 1rem;
-            }
-
-            select::-ms-expand {
-                display: none;
-            }
-
-            button { font-size: 1.4rem; }
-        }
-
-        .filterMonth {
-            padding: 0 5rem;
-            select::-ms-expand {
-                display: none;
-            }
-        }
-    }
-
     h2 {
         text-align:center;
         padding: 3rem 0;
     }
 
-    @media only screen and (min-width: 641px) and (max-width: 900px) {
-        .search {
-            padding-bottom: 0;
-        }
-        .sub-nav {
-            padding: 2rem;
-            flex-direction: column;
-            text-align: center;
-            .filter {
-                padding: 0 0 2rem;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            .bulk {
-                flex-direction: column;
-            }
-
-            .filterMonth {
-                padding: 2rem 0;
-            }
-        }
-    }
-
     @media only screen and (max-width: 640px) {
-        .search {
-            padding-bottom: 0;
-        }
-        .sub-nav {
-            padding: 2rem;
-            flex-direction: column;
-            text-align: center;
-            .filter {
-                padding: 1rem 0 2rem;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            .filter:first-of-type {
-                padding: 0;
-            }
-            .bulk {
-                flex-direction: column;
-            }
 
-            .filterMonth {
-                padding: 2rem 0;
-                .floatingLabel {
-                    width: 100%;
-                }
-            }
-        }
     }       
 `;
 
@@ -187,6 +61,8 @@ class Websites extends Component {
         this.flashesComponent = createRef();
         this.state = {
             user: '',
+            siteUrl: [],
+            permissionLevel: [],
             loading: true,
             dtTitles: [],
             dtData: [],
@@ -211,19 +87,23 @@ class Websites extends Component {
         })
         .then((res) => {
           const WebsiteList = res.data.siteEntry;
-          console.log(WebsiteList);
-          WebsiteList.forEach(element => {
-                this.addWebsite(element);
-              console.log(element)
-          });
-        //   console.log("hello");
-        //   WebsiteList.id = oneUser._id;
         //   console.log(WebsiteList);
-        //   console.log("ehhlo");
+          let testObj = {};
+          for(var i = 0; i < WebsiteList.length; i++) {
+              WebsiteList[i].id = this.state.user;
+            //   console.log(WebsiteList[i]);
+              testObj = {
+                id: this.state.user,
+                data: WebsiteList
+              }
+            //   console.log(testObj);
+            }
+            this.addWebsite(testObj);
+            // console.log(testObj);
           this.setState({
             loading: false,
             dtTitles,
-            dtData: this.createDataTable(WebsiteList),
+            dtData: this.createDataTable(testObj),
           });
         })
         .catch((error) => {
@@ -240,8 +120,9 @@ class Websites extends Component {
     }
 
     createDataTable = (allNoms) => {
+        console.log(allNoms);
         // returns object with id and title
-        const dtData = allNoms.map(nominee => ({
+        const dtData = allNoms.data.map(nominee => ({
             id: nominee._id,
             data: [{
                 key: 'permissionLevel',
@@ -251,6 +132,7 @@ class Websites extends Component {
                 value: nominee.siteUrl,
             }],
         }));
+        console.log(dtData);
         return dtData;
     }
 
