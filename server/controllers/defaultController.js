@@ -35,29 +35,14 @@ const mongoErrors = (user, error) => {
 exports.addWebsite = async (req, res) => {
     const result = {};
     result.status = 200;
-    const nominationObj = req.body;
-    console.log('nominationObj');
-    console.log(nominationObj);
-    console.log('nominationObj');
-    await (new Website(nominationObj)).save();
+    const UserObj = req.body.site;
+    console.log('UserObj');
+    console.log(UserObj);
+    console.log('UserObj');
+
+
+
+    await (new Website(UserObj)).save();
     res.send(result);
 };
-
-// exports.getWebsites = async (req, res) => {
-//      const API = 'http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/';
-//     let Websites = await axios.post(API, {
-//         "Access_Token": "ya29.Il-4B2pQ_xOmXQlnnmU9pTOj6LV8Saa3yDm8PC4AhuW-UlJ4sxOu0ocQd7TQYEPTTt9iBChd4pk6bcCbbhH9lweCATHjD-AG7AB8-FuNPh1pYB2IBETUJLOJwdfa5XTS1Q",
-//         "Refresh_Token": "three",
-//         "Client_Secret": "two",
-//         "Authorization_Code": "one"
-//     })
-//     .then((res) => {
-//       console.log(`statusCode: ${res.statusCode}`)
-//       return res;
-//     })
-//     .catch((error) => {
-//       console.error(error)
-//     })
-//     console.log(Websites);
-// };
 

@@ -3,6 +3,8 @@ import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
 import Header from './Header';
 
+var uniqid = require('uniqid');
+
 import { getCookie, removeCookie } from '../lib/session';
 import { apiGet, apiPut, apiPost } from '../lib/api';
 
@@ -98,6 +100,7 @@ class Websites extends Component {
               }
             //   console.log(testObj);
             }
+            console.log(uniqid());
             this.addWebsite(testObj);
             // console.log(testObj);
           this.setState({
