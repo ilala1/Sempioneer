@@ -7,7 +7,7 @@ const websiteSchema = new mongoose.Schema({
     data: [
         {
             permissionLevel: String,
-            siteURL: String,
+            siteUrl: String,
             id: String,
         }
     ]

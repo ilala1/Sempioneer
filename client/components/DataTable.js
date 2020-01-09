@@ -188,12 +188,6 @@ class DataTable extends Component {
         };
     }
 
-    // componentDidMount() {
-    //     console.log('Hello');
-    //     console.log(this.state.data);
-    //     console.log('Hello');
-    // }
-
     componentDidUpdate(prevProps) {
         if (prevProps.titles !== this.props.titles) {
             this.setState({ titles: this.props.titles });
@@ -240,10 +234,8 @@ class DataTable extends Component {
 
     // Event handlers
     clickSingleRow = (id) => {
-        console.log(id);
         if (this.props.editable === 'true') {
             let updated = this.state.rowsSelected;
-            console.log(updated);
 
             if (updated.includes(id)) {
                 updated = updated.filter(item => item !== id);
@@ -259,11 +251,9 @@ class DataTable extends Component {
     }
 
     checkSingleRow = (e) => {
-        console.log(e);
         e.persist();
         const { checked, value } = e.target;
         let updated = this.state.rowsSelected;
-        console.log(updated);
 
         if (checked) {
             updated.push(value);
@@ -285,7 +275,6 @@ class DataTable extends Component {
 
         // Add to selected array
         const { checked } = e.target;
-        console.log(checked);
 
         const { data } = this.state;
         const selected = (checked) ? data.map(d => d.id) : [];
@@ -355,8 +344,6 @@ class DataTable extends Component {
             sortField,
             sortDirection,
         } = this.state;
-
-        console.log(this.state.data);
 
         return (
             <DataTableStyles>
