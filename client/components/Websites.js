@@ -90,17 +90,15 @@ class Websites extends Component {
           let userObj = {};
           for(var i = 0; i < WebsiteList.length; i++) {
                 WebsiteList[i].id = this.state.user;
-                console.log(WebsiteList[i]);
                 if (WebsiteList[i].permissionLevel === 'siteUnverifiedUser') {
                     WebsiteList.splice(i, 1); 
-                    console.log(WebsiteList);
                 }
                 userObj = {
                     id: this.state.user,
                     data: WebsiteList
                 }
             }
-            // console.log(uniqid());
+            // console.log();
             this.addWebsite(userObj);
           this.setState({
             loading: false,
@@ -127,7 +125,7 @@ class Websites extends Component {
     createDataTable = (allNoms) => {
         // returns object with id and title
         const dtData = allNoms.data.map(nominee => ({
-            id: nominee._id,
+            id: uniqid(),
             data: [{
                 key: 'permissionLevel',
                 value: nominee.permissionLevel,
@@ -191,6 +189,10 @@ class Websites extends Component {
 
     selectForEdit = (props) => {
         this.setState({ editID: props });
+    }
+
+    btnClick = () => {
+        console.log(u)
     }
 
     render() {

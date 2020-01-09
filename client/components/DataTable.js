@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import styled from 'styled-components';
 
+const axios = require('axios');
+import { apiGet, apiPut, apiPost } from '../lib/api';
+import { getCookie, removeCookie } from '../lib/session';
+
 // Styles
 const LoadingStyles = styled.aside`
     font-size: 2rem;
@@ -69,6 +73,11 @@ const DataTableStyles = styled.section`
 
     .editCol {
         width: 8rem;
+    }
+
+    .btnWrap {
+        padding-top: 2rem;
+        text-align: center;
     }
 
     /*
@@ -185,7 +194,16 @@ class DataTable extends Component {
             rowsSelected: [],
             sortField: props.sortField || '',
             sortDirection: props.sortDirection || '',
+            selected: [],
         };
+    }
+
+    async componentDidMount() {
+        const userCookie = getCookie({}, 'user');
+        const oneUser = await apiGet({}, '/oneUser', {userCookie});
+        this.setState({
+            user: oneUser
+        })
     }
 
     componentDidUpdate(prevProps) {
@@ -236,6 +254,11 @@ class DataTable extends Component {
     clickSingleRow = (id) => {
         if (this.props.editable === 'true') {
             let updated = this.state.rowsSelected;
+            console.log('test');
+            console.log(updated);
+            console.log('test');
+
+            console.log(this.state.data);
 
             if (updated.includes(id)) {
                 updated = updated.filter(item => item !== id);
@@ -254,20 +277,52 @@ class DataTable extends Component {
         e.persist();
         const { checked, value } = e.target;
         let updated = this.state.rowsSelected;
-
+        
         if (checked) {
             updated.push(value);
         } else {
             updated = updated.filter(item => item !== value);
         }
-
+        
         this.setState({ rowsSelected: updated });
-
+        
+        this.validateSelectedSite();
         // Update user state
         this.updateDataState(updated);
 
         // Continue to parent handler
         this.props.handleBulk(updated);
+    }
+
+    validateSelectedSite = () => {
+        console.log('validating');
+        const { user, data, rowsSelected } = this.state;
+
+        // loop through data and match with row selected to get all details of row
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].id === rowsSelected[0]) {
+                console.log(data[i].data[1].value)
+                console.log('match!');
+                const getWebsitesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/test_single_website_for_traffic/', {
+                    "Access_Token": user.access_token,
+                     "Refresh_Token": "three",
+                     "Client_Secret": "two",
+                     "Authorization_Code": "one",
+                     "site_url": data[i].data[1].value
+                 })
+                .then((res) => {
+                    console.log(res.data.clicks)
+                })
+                .catch((error) => {
+                  console.error(error)
+                })
+            }
+        }
+    }
+
+    btnClick = () => {
+        console.log('helloo');
+
     }
 
     handleBulkSelect = (e) => {
@@ -413,6 +468,9 @@ class DataTable extends Component {
                                 </tr>)}
                             </tbody>
                         </table>
+                        <div className="btnWrap">
+                            <button onClick={this.btnClick}>Submit</button>
+                        </div>
                     </>
                 }
             </DataTableStyles>
