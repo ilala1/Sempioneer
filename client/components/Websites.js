@@ -79,7 +79,7 @@ class Websites extends Component {
             user: oneUser._id
         })
 
-        const test = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
+        const getWebsitesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
             "Access_Token": oneUser.access_token,
             "Refresh_Token": "three",
             "Client_Secret": "two",
@@ -88,13 +88,18 @@ class Websites extends Component {
         .then((res) => {
           const WebsiteList = res.data.siteEntry;
           let userObj = {};
-            userObj = {
-                id: this.state.user,
-                data: WebsiteList
-            }      
-
-            const sortedWebsiteList = this.sortByKey(WebsiteList, 'permissionLevel');
-
+          for(var i = 0; i < WebsiteList.length; i++) {
+                WebsiteList[i].id = this.state.user;
+                console.log(WebsiteList[i]);
+                if (WebsiteList[i].permissionLevel === 'siteUnverifiedUser') {
+                    WebsiteList.splice(i, 1); 
+                    console.log(WebsiteList);
+                }
+                userObj = {
+                    id: this.state.user,
+                    data: WebsiteList
+                }
+            }
             // console.log(uniqid());
             this.addWebsite(userObj);
           this.setState({
@@ -108,15 +113,15 @@ class Websites extends Component {
         })
     }
 
+    addWebsite = async (site) => {
+        const oneWebsite = await apiPost({}, '/website', {site});
+    }
+
     sortByKey = (array, key) => {
         return array.sort(function(a, b) {
             var x = a[key]; var y = b[key];
             return ((x < y) ? -1 : ((x > y) ? 1 : 0));
         });
-    }
-
-    addWebsite = async (site) => {
-        const oneWebsite = await apiPost({}, '/website', {site});
     }
 
     createDataTable = (allNoms) => {
