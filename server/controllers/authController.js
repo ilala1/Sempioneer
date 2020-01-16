@@ -62,11 +62,9 @@ exports.access = async (req, res) => {
 
     let code = req.query.authCode;
 
-    console.log(code);
     let updateExistingLoginTokens;
     let userObj;
     if (code) {
-      console.log('code')
       const oauth2Client = new google.auth.OAuth2(
             '1056569297986-ghu1ojg1bedpfpghh4k9at82ngoajg1i.apps.googleusercontent.com',
             'V05FVaiej7AKwoD8BCLhcnuL',
@@ -88,7 +86,7 @@ exports.access = async (req, res) => {
             console.error(error)
           })
 
-          console.log(getUserName);
+          // console.log(getUserName);
         updateExistingLoginTokens = await User.findOne({ name: getUserName });
 
 
@@ -114,9 +112,9 @@ exports.access = async (req, res) => {
             name: getUserName,
             access_token: tokens.access_token,
             refresh_token: tokens.refresh_token,
+            expiry_date: tokens.expiry_date,
             date: Date.now()
           };
-          console.log(userObj);
           (new User(userObj)).save();
           res.send(userObj);
         }

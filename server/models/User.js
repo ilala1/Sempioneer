@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
+    expiry_date: {
+        type: Date
+    },
     date: {
         type: Date
     }
