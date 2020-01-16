@@ -187,6 +187,18 @@ class Websites extends Component {
 
     // Event Handlers
 
+    addFlash = (flash) => {
+        console.log(flash);
+        this.flashesComponent.current.addFlash(flash);
+    };
+
+    test = (response) => {
+        console.log(response);
+        if (response > 100) {
+            this.props.addFlash(createFlash('success', 'Success'));
+        }
+    }
+
     selectForEdit = (props) => {
         this.setState({ editID: props });
     }
@@ -211,6 +223,7 @@ class Websites extends Component {
                     sortDirection="dsc"
                     handleBulk={this.bulkIdsState}
                     handleEdit={this.selectForEdit}
+                    getResponse={this.test}
                 />
             </UserStyles>
         );

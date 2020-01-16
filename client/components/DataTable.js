@@ -2,6 +2,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import styled from 'styled-components';
+import Flashes from './Flashes';
+import { createFlash } from '../lib/flashes';
 
 const axios = require('axios');
 import { apiGet, apiPut, apiPost } from '../lib/api';
@@ -186,7 +188,6 @@ class DataTable extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             titles: props.titles,
             data: props.data,
@@ -254,11 +255,6 @@ class DataTable extends Component {
     clickSingleRow = (id) => {
         if (this.props.editable === 'true') {
             let updated = this.state.rowsSelected;
-            console.log('test');
-            console.log(updated);
-            console.log('test');
-
-            console.log(this.state.data);
 
             if (updated.includes(id)) {
                 updated = updated.filter(item => item !== id);
@@ -270,10 +266,12 @@ class DataTable extends Component {
 
             // Update user state
             this.updateDataState(updated);
+            this.validateSelectedSite();
         }
     }
 
     checkSingleRow = (e) => {
+        console.log('testing')
         e.persist();
         const { checked, value } = e.target;
         let updated = this.state.rowsSelected;
@@ -287,11 +285,11 @@ class DataTable extends Component {
         this.setState({ rowsSelected: updated });
         
         this.validateSelectedSite();
-        // Update user state
-        this.updateDataState(updated);
+        // // Update user state
+        // this.updateDataState(updated);
 
-        // Continue to parent handler
-        this.props.handleBulk(updated);
+        // // Continue to parent handler
+        // this.props.handleBulk(updated);
     }
 
     validateSelectedSite = () => {
@@ -311,7 +309,12 @@ class DataTable extends Component {
                      "site_url": data[i].data[1].value
                  })
                 .then((res) => {
-                    console.log(res.data.clicks)
+                    const clicks = res.data.clicks
+                    if (clicks > 100) {
+                        console.log('less than 100')
+                        this.props.getResponse(clicks);
+
+                    }
                 })
                 .catch((error) => {
                   console.error(error)
