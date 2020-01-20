@@ -29,6 +29,7 @@ const dtTitles = [{
 }];
 
 const UserStyles = styled.aside`
+    width:100%;
     .button {
         border: 1px solid black;
         padding: 0.6rem 0.8rem;
@@ -194,8 +195,10 @@ class Websites extends Component {
 
     test = (response) => {
         console.log(response);
-        if (response > 100) {
+        if (response < 100) {
             this.addFlash(createFlash('error', 'Please select a website with more than 100 clicks.'));
+        } else {
+            this.addFlash(createFlash('success', 'We`re now populating your daily Google Search Console data, and will send you a link to your dashboard within the next 20 minutes. Keep your eyes open for the email!'));
         }
     }
 

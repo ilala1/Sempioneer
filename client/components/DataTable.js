@@ -1,9 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import  React,{ Component } from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import Flashes from './Flashes';
 import { createFlash } from '../lib/flashes';
+
+import Modal from './Modal';
 
 const axios = require('axios');
 import { apiGet, apiPut, apiPost } from '../lib/api';
@@ -15,6 +18,8 @@ const LoadingStyles = styled.aside`
 `;
 
 const DataTableStyles = styled.section`
+    width: 70%;
+    margin: 0 auto;
     table {
         width: 100%;
 
@@ -196,6 +201,7 @@ class DataTable extends Component {
             sortField: props.sortField || '',
             sortDirection: props.sortDirection || '',
             selected: [],
+            show: false,
         };
     }
 
@@ -323,10 +329,13 @@ class DataTable extends Component {
         }
     }
 
-    btnClick = () => {
-        console.log('helloo');
-
-    }
+    showModal = () => {
+        this.setState({ show: true });
+      };
+    
+      hideModal = () => {
+        this.setState({ show: false });
+      };
 
     handleBulkSelect = (e) => {
         e.persist();
@@ -405,19 +414,15 @@ class DataTable extends Component {
 
         return (
             <DataTableStyles>
-                {/* {loading
-                    && <LoadingStyles>
-                        <FontAwesomeIcon icon="spinner" pulse />
-                    </LoadingStyles>} */}
                 {!loading && titles && data
                     && <>
                         <table>
                             <thead>
                                 <tr>
-                                    <BulkTH
+                                    {/* <BulkTH
                                             checked={this.state.bulkSelected}
                                             handleBulkSelect={this.handleBulkSelect}
-                                        />
+                                        /> */}
 
                                     {titles.map(title => (
                                         <th
@@ -444,11 +449,11 @@ class DataTable extends Component {
                                     key={row.id}
                                     className={(row.selected) ? 'selected' : undefined}>
 
-                                    <BulkTR
+                                    {/* <BulkTR
                                             value={row.id}
                                             checked={row.selected}
                                             checkSingleRow={this.checkSingleRow}
-                                        />
+                                        /> */}
 
                                     {titles.map((title) => {
                                         const single = row.data.find(d => d.key === title.key);
@@ -462,17 +467,11 @@ class DataTable extends Component {
                                             </td>
                                         );
                                     })}
-
-                                    {/* {editable === 'true'
-                                        && <EditTR
-                                            id={row.id}
-                                            handleEdit={this.props.handleEdit}
-                                        />} */}
                                 </tr>)}
                             </tbody>
                         </table>
                         <div className="btnWrap">
-                            <button onClick={this.btnClick}>Submit</button>
+                            <button onClick={this.showModal}>Submit</button>
                         </div>
                     </>
                 }

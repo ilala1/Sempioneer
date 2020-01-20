@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { removeFlashes } from '../lib/flashes';
 
 const FlashStyle = styled.aside`
+    width: 70%;
+    margin: 0 auto;
     div {
         &:not(:first-of-type) { margin-top: 1.875rem; }
 
