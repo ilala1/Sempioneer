@@ -195,16 +195,12 @@ class Websites extends Component {
     test = (response) => {
         console.log(response);
         if (response > 100) {
-            this.props.addFlash(createFlash('success', 'Success'));
+            this.addFlash(createFlash('error', 'Please select a website with more than 100 clicks.'));
         }
     }
 
     selectForEdit = (props) => {
         this.setState({ editID: props });
-    }
-
-    btnClick = () => {
-        console.log(u)
     }
 
     render() {
@@ -214,6 +210,7 @@ class Websites extends Component {
                     ref={this.flashesComponent}
                     flashes={this.props.flashes}
                 />
+                <br/>
                 <DataTable
                     loading={this.state.loading}
                     titles={this.state.dtTitles}

@@ -116,10 +116,6 @@ class websites extends Component {
             <HomeStyle>
                 <Nav/>
                 <Header title="Select one website below to start creating your A/B tests." />
-                <Flashes
-                    ref={this.flashesComponent}
-                    flashes={this.props.flashes}
-                />
                 <Websites />
             </HomeStyle>
         );
