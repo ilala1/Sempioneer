@@ -202,6 +202,7 @@ class DataTable extends Component {
             sortDirection: props.sortDirection || '',
             selected: [],
             show: false,
+            siteURL: '',
         };
     }
 
@@ -277,7 +278,6 @@ class DataTable extends Component {
     }
 
     checkSingleRow = (e) => {
-        console.log('testing')
         e.persist();
         const { checked, value } = e.target;
         let updated = this.state.rowsSelected;
@@ -291,11 +291,6 @@ class DataTable extends Component {
         this.setState({ rowsSelected: updated });
         
         this.validateSelectedSite();
-        // // Update user state
-        // this.updateDataState(updated);
-
-        // // Continue to parent handler
-        // this.props.handleBulk(updated);
     }
 
     validateSelectedSite = () => {
@@ -305,7 +300,10 @@ class DataTable extends Component {
         // loop through data and match with row selected to get all details of row
         for (var i = 0; i < data.length; i++) {
             if (data[i].id === rowsSelected[0]) {
-                console.log(data[i].data[1].value)
+
+                this.setState({
+                    siteURL: data[i].data[1].value
+                });
                 console.log('match!');
                 const getWebsitesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/test_single_website_for_traffic/', {
                     "Access_Token": user.access_token,
@@ -316,11 +314,7 @@ class DataTable extends Component {
                  })
                 .then((res) => {
                     const clicks = res.data.clicks
-                    if (clicks > 100) {
-                        console.log('less than 100')
-                        this.props.getResponse(clicks);
-
-                    }
+                    this.props.getResponse(clicks);
                 })
                 .catch((error) => {
                   console.error(error)
@@ -329,13 +323,9 @@ class DataTable extends Component {
         }
     }
 
-    showModal = () => {
-        this.setState({ show: true });
-      };
-    
-      hideModal = () => {
-        this.setState({ show: false });
-      };
+    btnClickDT = () => {
+        this.props.btnClick(this.state.siteURL);
+    }
 
     handleBulkSelect = (e) => {
         e.persist();
@@ -471,7 +461,7 @@ class DataTable extends Component {
                             </tbody>
                         </table>
                         <div className="btnWrap">
-                            <button onClick={this.showModal}>Submit</button>
+                            <button onClick={this.btnClickDT}>Submit</button>
                         </div>
                     </>
                 }

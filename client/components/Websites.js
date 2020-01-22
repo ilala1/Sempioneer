@@ -64,6 +64,7 @@ class Websites extends Component {
         this.flashesComponent = createRef();
         this.state = {
             user: '',
+            userObject: {},
             siteUrl: [],
             permissionLevel: [],
             loading: true,
@@ -77,9 +78,9 @@ class Websites extends Component {
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
         this.setState({
-            user: oneUser._id
+            user: oneUser._id,
+            userObject: oneUser
         })
-
         const getWebsitesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
             "Access_Token": oneUser.access_token,
             "Refresh_Token": "three",
@@ -108,6 +109,7 @@ class Websites extends Component {
           });
         })
         .catch((error) => {
+            console.log('nope');
           console.error(error)
         })
     }
@@ -138,54 +140,6 @@ class Websites extends Component {
         return dtData;
     }
 
-    bulkActionState = e => this.setState({ bulkAction: e.target.value });
-
-    bulkIdsState = ids => this.setState({ bulkIds: ids });
-
-    // Event handlers
-    bulkUpdate = async () => {
-        const { bulkAction, bulkIds } = this.state;
-
-        if (bulkIds.length > 0) {
-            // Format data
-            let status = '';
-
-            switch (bulkAction) {
-            case 'delete':
-                status = 'deleted';
-                break;
-            case 'restore':
-                status = 'active';
-                break;
-            default:
-                status = 'active';
-            }
-
-            const users = bulkIds.map(id => ({
-                id,
-                status,
-            }));
-
-            // Delete/Restore multiple
-            const response = await apiPut({}, '/bulk', {
-                users,
-            });
-            // const response = await bulkstuff(users);
-
-            if (response.length > 0) {
-                this.props.addFlash(createFlash('success', 'Success'));
-                const allNominations = await apiGet({}, '/nominations');
-                const allNoms = allNominations.map(nominee => this.formatNominee(nominee));
-                const updatedNominations = this.showHideDeleted(allNoms, false);
-                this.setState({
-                    loading: false,
-                    dtTitles,
-                    dtData: this.createDataTable(updatedNominations),
-                });
-            }
-        }
-    }
-
     // Event Handlers
 
     addFlash = (flash) => {
@@ -193,17 +147,39 @@ class Websites extends Component {
         this.flashesComponent.current.addFlash(flash);
     };
 
-    test = (response) => {
+    clickValidation = (response) => {
         console.log(response);
         if (response < 100) {
             this.addFlash(createFlash('error', 'Please select a website with more than 100 clicks.'));
-        } else {
-            this.addFlash(createFlash('success', 'We`re now populating your daily Google Search Console data, and will send you a link to your dashboard within the next 20 minutes. Keep your eyes open for the email!'));
         }
     }
 
     selectForEdit = (props) => {
         this.setState({ editID: props });
+    }
+
+    btnClick = (siteURL) => {
+        const accessToken = this.state.userObject.access_token;
+        console.log('pizzaaa');
+        console.log(siteURL);
+        if (siteURL === '') {
+            this.addFlash(createFlash('error', 'Please select a website.'));
+        } else {
+            const getAvailableDatesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_available_dates/', {
+                "Access_Token": accessToken,
+                 "Refresh_Token": "three",
+                 "Client_Secret": "two",
+                 "Authorization_Code": "one",
+                 "site_url": siteURL
+             })
+            .then((res) => {
+                const clicks = res;
+                console.log(clicks);
+            })
+            .catch((error) => {
+              console.error(error)
+            })
+        }
     }
 
     render() {
@@ -223,7 +199,8 @@ class Websites extends Component {
                     sortDirection="dsc"
                     handleBulk={this.bulkIdsState}
                     handleEdit={this.selectForEdit}
-                    getResponse={this.test}
+                    getResponse={this.clickValidation}
+                    btnClick={this.btnClick}
                 />
             </UserStyles>
         );
