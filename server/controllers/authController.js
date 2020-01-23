@@ -86,7 +86,6 @@ exports.access = async (req, res) => {
             console.error(error)
           })
 
-          // console.log(getUserName);
         updateExistingLoginTokens = await User.findOne({ name: getUserName });
 
 
@@ -119,6 +118,44 @@ exports.access = async (req, res) => {
           res.send(userObj);
         }
       }
+}
+
+exports.refreshTokens = async (req, res) => {
+  const status = 200;
+  const { google } = require("googleapis");
+  const OAuth2 = google.auth.OAuth2;
+
+  const userID = req.body.userID;
+  console.log('userID');
+  console.log(userID);
+
+  const user = await User.findOne({ _id: userID });
+
+  const oauth2Client = new OAuth2(
+    '1056569297986-ghu1ojg1bedpfpghh4k9at82ngoajg1i.apps.googleusercontent.com',
+    'V05FVaiej7AKwoD8BCLhcnuL',
+    'http://localhost:3000'
+  );
+
+
+
+  oauth2Client.setCredentials({
+    refresh_token:
+      user.refresh_token
+  });
+
+  const newAccessToken = await oauth2Client.getAccessToken(); 
+  console.log(newAccessToken.token);
+
+  user.access_token = newAccessToken.token;
+  try {
+    // await user.save();
+    return status;
+} catch (error) {
+    return { error: mongoErrors(user, error) };
+}
+
+
 }
 
 exports.getUser = async (req, res) => {

@@ -110,8 +110,19 @@ class Websites extends Component {
         })
         .catch((error) => {
             console.log('nope');
-          console.error(error)
+            const userID = this.state.user;
+
+            this.updateTokens(userID);
+            // refreshAccessToken
+            console.error(error)
         })
+    }
+
+    updateTokens = async (userID) => {
+       const status = await apiPost({}, '/refreshTokens', {userID});
+
+       console.log(status);
+
     }
 
     addWebsite = async (site) => {
@@ -160,8 +171,7 @@ class Websites extends Component {
 
     btnClick = (siteURL) => {
         const accessToken = this.state.userObject.access_token;
-        console.log('pizzaaa');
-        console.log(siteURL);
+        
         if (siteURL === '') {
             this.addFlash(createFlash('error', 'Please select a website.'));
         } else {
@@ -173,8 +183,28 @@ class Websites extends Component {
                  "site_url": siteURL
              })
             .then((res) => {
-                const clicks = res;
-                console.log(clicks);
+                const daysAvailableWTime = res.data;
+                let daysAvailable = [];
+                let test = [];
+                for(var i=0; i<daysAvailableWTime.length; i++){
+                    const splitArray = daysAvailableWTime[i].split(',');
+                    daysAvailable.push(splitArray[0]);
+                    // console.log(res);
+
+                }
+                for(var k=0; k<daysAvailable.length; k++){
+                    var trimmedDays = daysAvailable[k].substring(0, 2);
+                    console.log(trimmedDays);
+                    test.push(parseInt(trimmedDays));
+
+                }
+                var smallest = test[0];
+                for (var i=0; i<test.length; i++){
+                    if (test[i]<smallest){
+                        smallest = test[i];
+                    }
+                }
+                console.log(smallest);
             })
             .catch((error) => {
               console.error(error)
