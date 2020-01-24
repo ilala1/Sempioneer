@@ -11,6 +11,13 @@ client/.next/*
 client/.next/
 .next/
 
+client/.next/build-manifest.json
+client/.next/pages-manifest.json
+
+client/.next/static/runtime/webpack.js
+client/.next/static/runtime/webpack.js.map
+
+
 # Runtime data
 pids
 *.pid
