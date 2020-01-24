@@ -148,9 +148,11 @@ exports.refreshTokens = async (req, res) => {
   console.log(newAccessToken.token);
 
   user.access_token = newAccessToken.token;
+  console.log(status);
+
   try {
-    // await user.save();
-    return status;
+    await user.save();
+    res.send(status)
 } catch (error) {
     return { error: mongoErrors(user, error) };
 }

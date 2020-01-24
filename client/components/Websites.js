@@ -122,6 +122,9 @@ class Websites extends Component {
        const status = await apiPost({}, '/refreshTokens', {userID});
 
        console.log(status);
+       if (status === 'OK') {
+            location.reload();
+       }
 
     }
 
