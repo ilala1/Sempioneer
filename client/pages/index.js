@@ -87,7 +87,6 @@ class Home extends Component {
         const userCookie = getCookie({}, 'user');
 
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
-        console.log(oneUser);
         this.setState({
             user: oneUser.name
         })

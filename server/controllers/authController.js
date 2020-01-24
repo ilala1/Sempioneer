@@ -126,9 +126,6 @@ exports.refreshTokens = async (req, res) => {
   const OAuth2 = google.auth.OAuth2;
 
   const userID = req.body.userID;
-  console.log('userID');
-  console.log(userID);
-
   const user = await User.findOne({ _id: userID });
 
   const oauth2Client = new OAuth2(
@@ -137,32 +134,23 @@ exports.refreshTokens = async (req, res) => {
     'http://localhost:3000'
   );
   
-
-
-
   oauth2Client.setCredentials({
     refresh_token:
       user.refresh_token
   });
 
   const newAccessToken = await oauth2Client.getAccessToken(); 
-  console.log(newAccessToken.token);
-
   user.access_token = newAccessToken.token;
-  console.log(status);
 
   try {
     await user.save();
     res.send(status)
-} catch (error) {
-    return { error: mongoErrors(user, error) };
-}
-
-
+  } catch (error) {
+      return { error: mongoErrors(user, error) };
+  }
 }
 
 exports.getUser = async (req, res) => {
-
   const userID = req.query.userCookie;
   try {
     const oneUser = await User.findOne({ _id: userID });

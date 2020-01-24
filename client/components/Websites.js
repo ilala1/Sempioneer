@@ -109,11 +109,9 @@ class Websites extends Component {
           });
         })
         .catch((error) => {
-            console.log('nope');
+            console.error('No website due to error (old access code maybe)');
             const userID = this.state.user;
-
             this.updateTokens(userID);
-            // refreshAccessToken
             console.error(error)
         })
     }
@@ -168,50 +166,54 @@ class Websites extends Component {
         }
     }
 
-    selectForEdit = (props) => {
-        this.setState({ editID: props });
-    }
+    // selectForEdit = (props) => {
+    //     this.setState({ editID: props });
+    // }
 
     btnClick = (siteURL) => {
         const accessToken = this.state.userObject.access_token;
-        
         if (siteURL === '') {
             this.addFlash(createFlash('error', 'Please select a website.'));
         } else {
-            const getAvailableDatesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_available_dates/', {
-                "Access_Token": accessToken,
-                 "Refresh_Token": "three",
-                 "Client_Secret": "two",
-                 "Authorization_Code": "one",
-                 "site_url": siteURL
-             })
-            .then((res) => {
-                const daysAvailableWTime = res.data;
-                let daysAvailable = [];
-                let test = [];
-                for(var i=0; i<daysAvailableWTime.length; i++){
-                    const splitArray = daysAvailableWTime[i].split(',');
-                    daysAvailable.push(splitArray[0]);
-                    // console.log(res);
+            console.log('getAvailableDatesFromAPI?');
+            localStorage.setItem('siteURL', siteURL);
+            window.location.href = '/dashboard';
+            // this.props.navigation.navigate('/dashboard', { siteURL })
+            // const getAvailableDatesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_available_dates/', {
+            //     "Access_Token": accessToken,
+            //      "Refresh_Token": "three",
+            //      "Client_Secret": "two",
+            //      "Authorization_Code": "one",
+            //      "site_url": siteURL
+            //  })
+            // .then((res) => {
+            //     const daysAvailableWTime = res.data;
+            //     let daysAvailable = [];
+            //     let test = [];
+            //     for(var i=0; i<daysAvailableWTime.length; i++){
+            //         const splitArray = daysAvailableWTime[i].split(',');
+            //         daysAvailable.push(splitArray[0]);
+            //         // console.log(res);
 
-                }
-                for(var k=0; k<daysAvailable.length; k++){
-                    var trimmedDays = daysAvailable[k].substring(0, 2);
-                    console.log(trimmedDays);
-                    test.push(parseInt(trimmedDays));
+            //     }
+            //     for(var k=0; k<daysAvailable.length; k++){
+            //         var trimmedDays = daysAvailable[k].substring(0, 2);
+            //         console.log(trimmedDays);
+            //         test.push(parseInt(trimmedDays));
 
-                }
-                var smallest = test[0];
-                for (var i=0; i<test.length; i++){
-                    if (test[i]<smallest){
-                        smallest = test[i];
-                    }
-                }
-                console.log(smallest);
-            })
-            .catch((error) => {
-              console.error(error)
-            })
+            //     }
+            //     var smallest = test[0];
+            //     for (var i=0; i<test.length; i++){
+            //         if (test[i]<smallest){
+            //             smallest = test[i];
+            //         }
+            //     }
+            //     console.log(smallest);
+                
+            // })
+            // .catch((error) => {
+            //   console.error(error)
+            // })
         }
     }
 

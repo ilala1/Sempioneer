@@ -36,6 +36,8 @@ module.exports = (nextApp, expressApp) => {
     
     expressApp.post('/api/refreshTokens', authController.refreshTokens);
 
+    expressApp.post('/api/earliestAvailableDate', defaultController.getEarliestAvailableDate);
+
 
 
     // Default all remaining routes to nextJs (client-side)

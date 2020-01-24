@@ -71,3 +71,11 @@ exports.addWebsite = async (req, res) => {
   }
   res.send(result);
 };
+
+exports.getEarliestAvailableDate = async (req, res) => {
+  const {accessToken, siteURL} = req.body;
+
+
+  console.log(getAvailableDatesFromAPI);
+  res.send(getAvailableDatesFromAPI);
+}
