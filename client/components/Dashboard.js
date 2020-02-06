@@ -3,6 +3,8 @@ import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
 import Header from './Header';
 
+import pagesData from '../data/users/test.json';
+
 var uniqid = require('uniqid');
 
 import { getCookie, removeCookie } from '../lib/session';
@@ -20,13 +22,25 @@ import websites from '../pages/websites';
 
 
 const dtTitles = [{
-    key: 'permissionLevel',
+    key: 'URL',
     type: 'string',
-    label: 'Permission Level',
+    label: 'URL',
 }, {
-    key: 'siteUrl',
+    key: 'clicks',
     type: 'string',
-    label: 'Site Url',
+    label: 'Clicks',
+}, {
+    key: 'impressions',
+    type: 'string',
+    label: 'Impressions',
+}, {
+    key: 'ctr',
+    type: 'string',
+    label: 'CTR',
+}, {
+    key: 'position',
+    type: 'string',
+    label: 'Position',
 }];
 
 const UserStyles = styled.aside`
@@ -123,30 +137,33 @@ class Dashboard extends Component {
           })
 
           console.log(getSoonestAvailableDayFromAPI);
-
-
-        const historicalDataPulling = await axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/historical_data_pulling/', {
-            "Access_Token": accessToken,
-            "Refresh_Token": "three",
-            "Client_Secret": "two",
-            "Authorization_Code": "one",
-            "site_url": siteURL,
-            "time_query": 333
-        })
-        .then((res) => {
-            console.log(res.data);
-            const pages = res.data;
-            const keys = Object.keys(pages)
-            const values = Object.values(pages)
-            console.log(keys);
-            console.log(values)
+          this.setState({
+            loading: false,
+            dtTitles,
+            dtData: this.createDataTable(pagesData),
+          });
+    //     const historicalDataPulling = await axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/historical_data_pulling/', {
+    //         "Access_Token": accessToken,
+    //         "Refresh_Token": "three",
+    //         "Client_Secret": "two",
+    //         "Authorization_Code": "one",
+    //         "site_url": siteURL,
+    //         "time_query": 333
+    //     })
+    //     .then((res) => {
+    //         console.log(res.data);
+    //         const pages = res.data;
+    //         const keys = Object.keys(pages)
+    //         const values = Object.values(pages)
+    //         console.log(keys);
+    //         console.log(values)
             
-        })
-        .catch((error) => {
-            const userID = this.state.user;
-            this.updateTokens(userID);
-            console.error(error)
-        })          
+    //     })
+    //     .catch((error) => {
+    //         const userID = this.state.user;
+    //         this.updateTokens(userID);
+    //         console.error(error)
+    //     })          
 
     }
 
@@ -167,16 +184,57 @@ class Dashboard extends Component {
         });
     }
 
-    createDataTable = (allNoms) => {
+    createDataTable = (allPages) => {
+        // console.log(allPages);
+        let totalClicks = 0;
+        let totalImpressions = 0;
+        let averageCTR = 0;
+        let averagePosition = 0;
+        let noOfDates = 0;
+        let newArrayOfPages= [];
+
+
+        for(var i=0; i<allPages.length; i++){
+            const page = allPages[i].data;
+            noOfDates = allPages[i].data.length;
+
+            for(var k=0; k<page.length; k++){
+                totalClicks += parseInt(page[k].figures[0]);
+                totalImpressions += parseInt(page[k].figures[1]);
+                averageCTR += parseInt(page[k].figures[2]/noOfDates);
+                averagePosition += parseInt(page[k].figures[3]/noOfDates);
+            }
+
+            let pageObj = {
+                url: allPages[i].URL,
+                totalClicks,
+                totalImpressions,
+                averageCTR,
+                averagePosition
+            };
+            newArrayOfPages.push(pageObj);
+
+        }
+        
+        console.log(newArrayOfPages);
         // returns object with id and title
-        const dtData = allNoms.data.map(nominee => ({
+        const dtData = newArrayOfPages.map(Page => ({
             id: uniqid(),
             data: [{
-                key: 'permissionLevel',
-                value: nominee.permissionLevel,
+                key: 'URL',
+                value: Page.url,
             }, {
-                key: 'siteUrl',
-                value: nominee.siteUrl,
+                key: 'clicks',
+                value: Page.totalClicks,
+            }, {
+                key: 'impressions',
+                value: Page.totalImpressions,
+            }, {
+                key: 'ctr',
+                value: Page.averageCTR,
+            }, {
+                key: 'position',
+                value: Page.averagePosition,
             }],
         }));
         return dtData;

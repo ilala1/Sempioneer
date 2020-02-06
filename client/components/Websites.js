@@ -102,11 +102,11 @@ class Websites extends Component {
             }
             // console.log();
             this.addWebsite(userObj);
-          this.setState({
-            loading: false,
-            dtTitles,
-            dtData: this.createDataTable(userObj),
-          });
+            this.setState({
+                loading: false,
+                dtTitles,
+                dtData: this.createDataTable(userObj),
+            });
         })
         .catch((error) => {
             console.error('No website due to error (old access code maybe)');
