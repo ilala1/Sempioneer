@@ -1,90 +1,82 @@
-var GoogleAuth;
-// console.log('hello')
-// var SCOPE = 'https://www.googleapis.com/auth/drive.metadata.readonly';
-var SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
-function handleClientLoad() {
-    // Load the API's client and auth2 modules.
-    // Call the initClient function after the modules load.
-    gapi.load('client:auth2', initClient);
-}
-
-function initClient() {
-    // Retrieve the discovery document for version 3 of Google Drive API.
-    // In practice, your app can retrieve one or more discovery documents.
-    // var discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
-    var discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/webmasters/v3/rest';
+import React from 'react';
+import { render } from 'react-dom';
+import { Line } from 'react-chartjs-2';
 
 
-    // Initialize the gapi.client object, which app uses to make API requests.
-    // Get API key and client ID from API Console.
-    // 'scope' field specifies space-delimited list of access scopes.
-    gapi.client.init({
-        'apiKey': 'AIzaSyCz5sRFBdIGYZ8GN6ax0q35SxiLeB7P03M',
-        'discoveryDocs': [discoveryUrl],
-        'access_type':'offline',
-        'clientId': '1056569297986-ghu1ojg1bedpfpghh4k9at82ngoajg1i.apps.googleusercontent.com',
-        'scope': SCOPE,
-        'include_granted_scopes':true
-    }).then(function () {
-        GoogleAuth = gapi.auth2.getAuthInstance();
-
-        // Listen for sign-in state changes.
-        GoogleAuth.isSignedIn.listen(updateSigninStatus);
-
-        // Handle initial sign-in state. (Determine if user is already signed in.)
-        var user = GoogleAuth.currentUser.get();
-        setSigninStatus();
-
-        // Call handleAuthClick function when user clicks on
-        //      "Sign In/Authorize" button.
-        $('#sign-in-or-out-button').click(function() {
-            handleAuthClick();
-        }); 
-        $('#revoke-access-button').click(function() {
-            revokeAccess();
-        }); 
-    });
-}
-
-function handleAuthClick() {
-    if (GoogleAuth.isSignedIn.get()) {
-    // User is authorized and has clicked 'Sign out' button.
-    GoogleAuth.signOut();
-    } else {
-    // User is not signed in. Start Google auth flow.
-    GoogleAuth.signIn();
-
-    // get refresh token
-    var authInstance = window.gapi.auth2.getAuthInstance();
-    authInstance.grantOfflineAccess().then(function(res) {
-        console.log(res);
-     });
+console.log('hellooo')
+const data = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
+  datasets: [
+    {
+      label: 'My First dataset',
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(75,192,192,0.4)',
+      borderColor: 'rgba(75,192,192,1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(75,192,192,1)',
+      pointBackgroundColor: '#fff',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [1500000, 3900000, 3000000, 4100000, 2300000, 1800000, 2000000],
     }
-}
+  ]
+};
 
-function revokeAccess() {
-    GoogleAuth.disconnect();
-}
+const lineOptions = {
+  scales: {
+    xAxes: [{
+      gridLines: {
+        display: false,
+      },
+    }],
+    yAxes: [{
+      // stacked: true,
+      gridLines: {
+        display: false,
+      },
+      ticks: {
+        beginAtZero: true,
+        // Return an empty string to draw the tick line but hide the tick label
+        // Return `null` or `undefined` to hide the tick line entirely
+        userCallback(value) {
+          // Convert the number to a string and splite the string every 3 charaters from the end
+          value = value.toString();
+          value = value.split(/(?=(?:...)*$)/);
 
-function setSigninStatus(isSignedIn) {
-    var user = GoogleAuth.currentUser.get();
-    console.log(user.Zi);
-    var isAuthorized = user.hasGrantedScopes(SCOPE);
-    if (isAuthorized) {
-    $('#sign-in-or-out-button').html('Sign out');
-    $('#revoke-access-button').css('display', 'inline-block');
-    $('#auth-status').html('You are currently signed in and have granted ' +
-        'access to this app.');
-    } else {
-    $('#sign-in-or-out-button').html('Sign In/Authorize');
-    $('#revoke-access-button').css('display', 'none');
-    $('#auth-status').html('You have not authorized this app or you are ' +
-        'signed out.');
-    }
-}
+          // Convert the array to a string and format the output
+          value = value.join('.');
+          return `Rp.${value}`;
+        },
+      },
+    }],
+  },
+  legend: {
+    display: false,
+  },
+  tooltips: {
+    enabled: false,
+  },
+};
 
-function updateSigninStatus(isSignedIn) {
-    setSigninStatus();
-}
 
-export default handleClientLoad;
+const styles = {
+  fontFamily: 'sans-serif',
+  textAlign: 'center',
+};
+
+const App = () => (
+  <div style={styles}>
+    <Line data={data} options={lineOptions} />
+  </div>
+);
+
+render(<App />, document.getElementById('root'));

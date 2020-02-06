@@ -12,6 +12,7 @@ import { apiGet, apiPut, apiPost } from '../lib/api';
 
 
 import DataTable from './DataTable';
+import Chart from './Chart';
 import Flashes from './Flashes';
 
 const axios = require('axios');
@@ -255,6 +256,7 @@ class Dashboard extends Component {
                     flashes={this.props.flashes}
                 />
                 <br/>
+                <Chart/>>
                 <DataTable
                     loading={this.state.loading}
                     titles={this.state.dtTitles}
