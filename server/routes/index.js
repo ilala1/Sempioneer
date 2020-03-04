@@ -36,7 +36,7 @@ module.exports = (nextApp, expressApp) => {
     
     expressApp.post('/api/refreshTokens', authController.refreshTokens);
 
-    expressApp.post('/api/earliestAvailableDate', defaultController.getEarliestAvailableDate);
+    expressApp.post('/api/pagesdata', defaultController.postPagesData);
 
 
 

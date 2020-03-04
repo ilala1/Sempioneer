@@ -3,6 +3,7 @@ require("../models/Website");
 const mongoose = require("mongoose");
 
 const Website = mongoose.model("Website");
+const Page = mongoose.model("Page");
 
 const axios = require("axios");
 
@@ -58,9 +59,9 @@ exports.addWebsite = async (req, res) => {
             } else {
                 console.log("new website in list");
                 if (dbUserWebsiteObj) {
-                await UserObj.save();
+                  await UserObj.save();
                 } else {
-                await new Website(UserObj).save();
+                  await new Website(UserObj).save();
                 }
             }
         }
@@ -72,10 +73,10 @@ exports.addWebsite = async (req, res) => {
   res.send(result);
 };
 
-exports.getEarliestAvailableDate = async (req, res) => {
-  const {accessToken, siteURL} = req.body;
+exports.postPagesData = async (req, res) => {
+  const {data} = req.body;
 
+    await new Page(data).save();
 
-  console.log(getAvailableDatesFromAPI);
-  res.send(getAvailableDatesFromAPI);
+  console.log(data);
 }

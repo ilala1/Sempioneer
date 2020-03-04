@@ -66,8 +66,11 @@ exports.access = async (req, res) => {
     let userObj;
     if (code) {
       const oauth2Client = new google.auth.OAuth2(
+            // client ID
             '1056569297986-ghu1ojg1bedpfpghh4k9at82ngoajg1i.apps.googleusercontent.com',
+            //client secret
             'V05FVaiej7AKwoD8BCLhcnuL',
+            //redirect URL
             'http://localhost:3000'
           );
           

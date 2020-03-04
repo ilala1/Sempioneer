@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+// import React, { Component } from 'react'
 import Chart from "chart.js";
 import { Line } from 'react-chartjs-2';
 
@@ -11,9 +11,9 @@ export default class LineChart extends React.Component {
     }
   
     componentDidUpdate() {
-    //   this.myChart.data.labels = this.props.data.map(d => d.time);
-    //   this.myChart.data.datasets[0].data = this.props.data.map(d => d.value);
-    //   this.myChart.update();
+      this.myChart.data.labels = this.props.data.map(d => d.time);
+      this.myChart.data.datasets[0].data = this.props.data.map(d => d.value);
+      this.myChart.update();
     }
   
     componentDidMount() {
@@ -40,7 +40,7 @@ export default class LineChart extends React.Component {
         },
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
-          datasets: [{
+            datasets: [{
             label: 'My First dataset',
             fill: false,
             lineTension: 0.1,
@@ -59,7 +59,7 @@ export default class LineChart extends React.Component {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: [1500000, 3900000, 3000000, 4100000, 2300000, 1800000, 2000000],
+            data: [1500000, 3900000, 3000000, 4100000, 2300000, 1800000, 2000000]
           }]
         }
       });

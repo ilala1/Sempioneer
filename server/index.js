@@ -58,10 +58,12 @@ nextApp
         expressApp.renderAsync = util.promisify(expressApp.render);
 
         // Requests into req.body
-        expressApp.use(bodyParser.json());
+        expressApp.use(bodyParser.json({limit: "50mb"}));
         expressApp.use(
             bodyParser.urlencoded({
-                extended: true,
+                limit: "50mb", 
+                extended: true, 
+                parameterLimit:50000
             }),
         );
 

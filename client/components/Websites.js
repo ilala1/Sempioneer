@@ -81,7 +81,7 @@ class Websites extends Component {
             user: oneUser._id,
             userObject: oneUser
         })
-        const getWebsitesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
+        const getWebsitesFromAPI = axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
             "Access_Token": oneUser.access_token,
             "Refresh_Token": "three",
             "Client_Secret": "two",

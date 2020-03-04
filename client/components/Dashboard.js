@@ -3,7 +3,7 @@ import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
 import Header from './Header';
 
-import pagesData from '../data/users/test.json';
+// import pagesData from '../data/users/desired_format.json';
 
 var uniqid = require('uniqid');
 
@@ -12,7 +12,7 @@ import { apiGet, apiPut, apiPost } from '../lib/api';
 
 
 import DataTable from './DataTable';
-import Chart from './Chart';
+// import Chart from './Chart';
 import Flashes from './Flashes';
 
 const axios = require('axios');
@@ -94,78 +94,76 @@ class Dashboard extends Component {
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
         this.setState({
+            loading: true,
             user: oneUser._id,
             userObject: oneUser
         })
         const accessToken = this.state.userObject.access_token;
         const siteURL = localStorage.getItem('siteURL');
 
-        const getSoonestAvailableDayFromAPI = await axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_available_dates/', {
-            "Access_Token": accessToken,
-             "Refresh_Token": "three",
-             "Client_Secret": "two",
-             "Authorization_Code": "one",
-             "site_url": siteURL
-         })
-          .then((res) => {
-              const daysAvailableWTime = res.data;
-              let daysAvailable = [];
-              let test = [];
-              for(var i=0; i<daysAvailableWTime.length; i++){
-                  const splitArray = daysAvailableWTime[i].split(',');
-                  daysAvailable.push(splitArray[0]);
-                  // console.log(res);
+        // const getSoonestAvailableDayFromAPI = await axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/get_available_dates/', {
+        //     "Access_Token": accessToken,
+        //      "Refresh_Token": "three",
+        //      "Client_Secret": "two",
+        //      "Authorization_Code": "one",
+        //      "site_url": siteURL
+        //  })
+        //   .then((res) => {
+        //       const daysAvailableWTime = res.data;
+        //       let daysAvailable = [];
+        //       let test = [];
+        //       for(var i=0; i<daysAvailableWTime.length; i++){
+        //           const splitArray = daysAvailableWTime[i].split(',');
+        //           daysAvailable.push(splitArray[0]);
+        //           // console.log(res);
         
-              }
-              for(var k=0; k<daysAvailable.length; k++){
-                  var trimmedDays = daysAvailable[k].substring(0, 2);
-                  test.push(parseInt(trimmedDays));
+        //       }
+        //       for(var k=0; k<daysAvailable.length; k++){
+        //           var trimmedDays = daysAvailable[k].substring(0, 2);
+        //           test.push(parseInt(trimmedDays));
         
-              }
-              var smallest = test[0];
-              for (var i=0; i<test.length; i++){
-                  if (test[i]<smallest){
-                      smallest = test[i];
-                  }
-              }
-              return(smallest);
+        //       }
+        //       var smallest = test[0];
+        //       for (var i=0; i<test.length; i++){
+        //           if (test[i]<smallest){
+        //               smallest = test[i];
+        //           }
+        //       }
+        //       return(smallest);
               
-          })
-          .catch((error) => {
-            console.error(error)
+        //   })
+        //   .catch((error) => {
+        //     console.error(error)
+        //     const userID = this.state.user;
+        //     this.updateTokens(userID);
+        //   })
+
+        const historicalDataPulling = await axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
+            "Access_Token": accessToken,
+            "Refresh_Token": "three",
+            "Client_Secret": "two",
+            "Authorization_Code": "one",
+            "site_url": siteURL
+        })
+        .then((res) => {
+            console.log(res.data);
+            const pagesData = res.data;
+            this.postPagesDataToDB(pagesData);
+            this.setState({
+                loading: false,
+                dtTitles,
+                dtData: this.createDataTable(pagesData),
+            });
+        })
+        .catch((error) => {
             const userID = this.state.user;
             this.updateTokens(userID);
-          })
+            console.error(error)
+        })          
+    }
 
-          console.log(getSoonestAvailableDayFromAPI);
-          this.setState({
-            loading: false,
-            dtTitles,
-            dtData: this.createDataTable(pagesData),
-          });
-    //     const historicalDataPulling = await axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/historical_data_pulling/', {
-    //         "Access_Token": accessToken,
-    //         "Refresh_Token": "three",
-    //         "Client_Secret": "two",
-    //         "Authorization_Code": "one",
-    //         "site_url": siteURL,
-    //         "time_query": 333
-    //     })
-    //     .then((res) => {
-    //         console.log(res.data);
-    //         const pages = res.data;
-    //         const keys = Object.keys(pages)
-    //         const values = Object.values(pages)
-    //         console.log(keys);
-    //         console.log(values)
-            
-    //     })
-    //     .catch((error) => {
-    //         const userID = this.state.user;
-    //         this.updateTokens(userID);
-    //         console.error(error)
-    //     })          
-
+    postPagesDataToDB = async (data) => {
+        const test = await apiPost({}, '/pagesdata', {data});
     }
 
     updateTokens = async (userID) => {
@@ -256,7 +254,7 @@ class Dashboard extends Component {
                     flashes={this.props.flashes}
                 />
                 <br/>
-                <Chart/>>
+                {/* <Chart/> */}
                 <DataTable
                     loading={this.state.loading}
                     titles={this.state.dtTitles}

@@ -11,6 +11,7 @@ import { createFlash } from '../lib/flashes';
 import Header from '../components/Header';
 import Nav from '../components/Nav';
 import Dashboard from '../components/Dashboard';
+import Chart from '../components/Chart';
 
 
 const DashboardStyle = styled.section`
@@ -116,6 +117,7 @@ class dashboard extends Component {
                 <Nav/>
                 <Header title="Welcome to the dashboard" />
                 <Dashboard/>
+                <Chart/>
             </DashboardStyle>
         );
     }
