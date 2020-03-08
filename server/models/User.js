@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const access = require('../data/users/access.json');
+// const access = require('../data/users/access.json');
 // const statuses = require('../data/users/statuses.json');
 
 const userSchema = new mongoose.Schema({

@@ -1,9 +1,11 @@
 require("../models/Website");
+require("../models/Page");
+
 
 const mongoose = require("mongoose");
 
 const Website = mongoose.model("Website");
-const Page = mongoose.model("Page");
+const Page = mongoose.model('Page');
 
 const axios = require("axios");
 
@@ -76,7 +78,9 @@ exports.addWebsite = async (req, res) => {
 exports.postPagesData = async (req, res) => {
   const {data} = req.body;
 
-    await new Page(data).save();
-
-  console.log(data);
+  for (let i = 0; i < data.length; i++) {
+    const page = data[i];
+    await new Page(page).save();
+    
+  }
 }

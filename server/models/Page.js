@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const pageSchema = new mongoose.Schema({
     URL: {
-        type: String,
+        type: String
     },
     data: [
         {
