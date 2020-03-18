@@ -96,7 +96,7 @@ class Websites extends Component {
                     WebsiteList.splice(i, 1); 
                 }
                 userObj = {
-                    id: this.state.user,
+                    userId: this.state.user,
                     data: WebsiteList
                 }
             }
