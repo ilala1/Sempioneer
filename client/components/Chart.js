@@ -10,34 +10,18 @@ export default class LineChart extends React.Component {
       this.chartRef = React.createRef();
     }
   
-    componentDidUpdate() {
-      this.myChart.data.labels = this.props.data.map(d => d.time);
-      this.myChart.data.datasets[0].data = this.props.data.map(d => d.value);
-      this.myChart.update();
-    }
+    // componentDidUpdate() {
+    //   this.myChart.data.labels = this.props.data.map(d => d.time);
+    //   this.myChart.data.datasets[0].data = this.props.data.map(d => d.value);
+    //   this.myChart.update();
+    // }
   
     componentDidMount() {
+
+      
+
       this.myChart = new Chart(this.chartRef.current, {
         type: 'line',
-        options: {
-          scales: {
-            xAxes: [
-              {
-                type: 'time',
-                time: {
-                  unit: 'week'
-                }
-              }
-            ],
-            yAxes: [
-              {
-                ticks: {
-                  min: 0
-                }
-              }
-            ]
-          }
-        },
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
             datasets: [{

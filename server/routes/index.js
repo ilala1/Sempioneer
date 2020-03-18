@@ -38,6 +38,8 @@ module.exports = (nextApp, expressApp) => {
 
     expressApp.post('/api/pagesdata', defaultController.postPagesData);
 
+    expressApp.get('/api/dbPageData', defaultController.getPagesData);
+
 
 
     // Default all remaining routes to nextJs (client-side)

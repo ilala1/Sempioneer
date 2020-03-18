@@ -1,5 +1,6 @@
 import { Component, createRef } from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 import Flashes from '../components/Flashes';
 import { apiGet, apiPost } from '../lib/api';
 import { getCookie, removeCookie } from '../lib/session';
@@ -11,7 +12,6 @@ import { createFlash } from '../lib/flashes';
 import Header from '../components/Header';
 import Nav from '../components/Nav';
 import Dashboard from '../components/Dashboard';
-import Chart from '../components/Chart';
 
 
 const DashboardStyle = styled.section`
@@ -117,7 +117,6 @@ class dashboard extends Component {
                 <Nav/>
                 <Header title="Welcome to the dashboard" />
                 <Dashboard/>
-                <Chart/>
             </DashboardStyle>
         );
     }

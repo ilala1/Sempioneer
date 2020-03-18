@@ -1,9 +1,8 @@
 import { Component, createRef } from 'react';
 import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
-import Header from './Header';
 
-// import pagesData from '../data/users/desired_format.json';
+import pagesData from '../data/users/desired_format.json';
 
 var uniqid = require('uniqid');
 
@@ -12,7 +11,7 @@ import { apiGet, apiPut, apiPost } from '../lib/api';
 
 
 import DataTable from './DataTable';
-// import Chart from './Chart';
+import Chart from './Chart';
 import Flashes from './Flashes';
 
 const axios = require('axios');
@@ -100,44 +99,12 @@ class Dashboard extends Component {
         })
         const accessToken = this.state.userObject.access_token;
         const siteURL = localStorage.getItem('siteURL');
-
-        // const getSoonestAvailableDayFromAPI = await axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/get_available_dates/', {
-        //     "Access_Token": accessToken,
-        //      "Refresh_Token": "three",
-        //      "Client_Secret": "two",
-        //      "Authorization_Code": "one",
-        //      "site_url": siteURL
-        //  })
-        //   .then((res) => {
-        //       const daysAvailableWTime = res.data;
-        //       let daysAvailable = [];
-        //       let test = [];
-        //       for(var i=0; i<daysAvailableWTime.length; i++){
-        //           const splitArray = daysAvailableWTime[i].split(',');
-        //           daysAvailable.push(splitArray[0]);
-        //           // console.log(res);
-        
-        //       }
-        //       for(var k=0; k<daysAvailable.length; k++){
-        //           var trimmedDays = daysAvailable[k].substring(0, 2);
-        //           test.push(parseInt(trimmedDays));
-        
-        //       }
-        //       var smallest = test[0];
-        //       for (var i=0; i<test.length; i++){
-        //           if (test[i]<smallest){
-        //               smallest = test[i];
-        //           }
-        //       }
-        //       return(smallest);
-              
-        //   })
-        //   .catch((error) => {
-        //     console.error(error)
-        //     const userID = this.state.user;
-        //     this.updateTokens(userID);
-        //   })
-
+        this.postPagesDataToDB(pagesData);
+        this.setState({
+            loading: false,
+            dtTitles,
+            dtData: this.createDataTable(pagesData),
+        });
         const historicalDataPulling = await axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
             "Access_Token": accessToken,
             "Refresh_Token": "three",
@@ -147,23 +114,48 @@ class Dashboard extends Component {
         })
         .then((res) => {
             console.log(res.data);
-            const pagesData = res.data;
-            this.postPagesDataToDB(pagesData);
-            this.setState({
-                loading: false,
-                dtTitles,
-                dtData: this.createDataTable(pagesData),
-            });
+            if (res) {
+                // const pagesData = res.data;
+                // this.postPagesDataToDB(pagesData);
+                // this.setState({
+                //     loading: false,
+                //     dtTitles,
+                //     dtData: this.createDataTable(pagesData),
+                // });
+            } else {
+                const userID = this.state.user;
+                this.updateTokens(userID);
+            }
         })
         .catch((error) => {
-            const userID = this.state.user;
-            this.updateTokens(userID);
             console.error(error)
         })          
     }
 
     postPagesDataToDB = async (data) => {
-        const test = await apiPost({}, '/pagesdata', {data});
+        const DBPages = await apiGet({}, '/dbPageData');
+
+
+        for (let i = 0; i < DBPages.length; i++) {
+            const db = DBPages[i];
+            console.log(db);
+            for (let j = 0; j < data.length; j++) {
+                const local = data[j];
+                
+                if (db.URL === !local.URL) {
+                    // need to update db data with the local
+                    console.log('no match')
+
+
+                }
+
+            }
+
+
+
+            
+        }
+        // const test = await apiPost({}, '/pagesdata', {data});
     }
 
     updateTokens = async (userID) => {
@@ -215,7 +207,7 @@ class Dashboard extends Component {
 
         }
         
-        console.log(newArrayOfPages);
+        // console.log(newArrayOfPages);
         // returns object with id and title
         const dtData = newArrayOfPages.map(Page => ({
             id: uniqid(),
@@ -254,7 +246,7 @@ class Dashboard extends Component {
                     flashes={this.props.flashes}
                 />
                 <br/>
-                {/* <Chart/> */}
+                <Chart/>
                 <DataTable
                     loading={this.state.loading}
                     titles={this.state.dtTitles}

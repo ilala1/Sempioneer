@@ -75,6 +75,16 @@ exports.addWebsite = async (req, res) => {
   res.send(result);
 };
 
+exports.getPagesData = async (req, res) => {
+  try {
+    const allPages = await Page.find({});
+    res.send(allPages);
+  } catch (error) {
+      console.error(error)
+      return
+  }
+}
+
 exports.postPagesData = async (req, res) => {
   const {data} = req.body;
 

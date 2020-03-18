@@ -305,7 +305,7 @@ class DataTable extends Component {
                     siteURL: data[i].data[1].value
                 });
                 console.log('match!');
-                const getWebsitesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/test_single_website_for_traffic/', {
+                const getWebsitesFromAPI = axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/test_single_website_for_traffic', {
                     "Access_Token": user.access_token,
                      "Refresh_Token": "three",
                      "Client_Secret": "two",
