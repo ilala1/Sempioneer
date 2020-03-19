@@ -86,11 +86,19 @@ exports.getPagesData = async (req, res) => {
 }
 
 exports.postPagesData = async (req, res) => {
-  const {data} = req.body;
-
-  for (let i = 0; i < data.length; i++) {
-    const page = data[i];
-    await new Page(page).save();
-    
+  const {data, userID} = req.body;
+  console.log(data); 
+  console.log(userID)
+  const pageObj = {
+    userID,
+    allData: data
   }
+
+      await new Page(pageObj).save();
+
+  // for (let i = 0; i < data.length; i++) {
+  //   const page = data[i];
+  //   await new Page(page).save();
+    
+  // }
 }

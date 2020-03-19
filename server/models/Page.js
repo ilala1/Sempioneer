@@ -1,15 +1,21 @@
 const mongoose = require('mongoose');
 
 const pageSchema = new mongoose.Schema({
-    URL: {
-        type: String
-    },
-    data: [
+    userID: String,
+    allData: [
         {
-            date: String,
-            figures: [Number]
-        }
+            URL: {
+                type: String
+            },
+            data:[
+                {
+                    date: String,
+                    figures: [Number]
+                }
+            ]
+        } 
     ]
+    
 });
 
 module.exports = mongoose.model('Page', pageSchema, 'page');

@@ -2,7 +2,7 @@ import { Component, createRef } from 'react';
 import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
 
-import pagesData from '../data/users/desired_format.json';
+// import pagesData from '../data/users/desired_format.json';
 
 var uniqid = require('uniqid');
 
@@ -98,14 +98,15 @@ class Dashboard extends Component {
             user: oneUser._id,
             userObject: oneUser
         })
+        const userID = this.state.user;
         const accessToken = this.state.userObject.access_token;
         const siteURL = localStorage.getItem('siteURL');
-        this.postPagesDataToDB(pagesData);
-        this.setState({
-            loading: false,
-            dtTitles,
-            dtData: this.createDataTable(pagesData),
-        });
+        // this.postPagesDataToDB(pagesData);
+        // this.setState({
+        //     loading: false,
+        //     dtTitles,
+        //     dtData: this.createDataTable(pagesData),
+        // });
         const historicalDataPulling = await axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
             "Access_Token": accessToken,
             "Refresh_Token": "three",
@@ -114,17 +115,19 @@ class Dashboard extends Component {
             "site_url": siteURL
         })
         .then((res) => {
-            console.log(res.data);
             if (res) {
-                // const pagesData = res.data;
-                // this.postPagesDataToDB(pagesData);
-                // this.setState({
-                //     loading: false,
-                //     dtTitles,
-                //     dtData: this.createDataTable(pagesData),
-                // });
+                // console.log(res.data);
+                // const allData = res.data;
+
+                const pagesData = res.data;
+                this.postPagesDataToDB(pagesData, userID);
+                this.setState({
+                    loading: false,
+                    dtTitles,
+                    dtData: this.createDataTable(pagesData),
+                });
             } else {
-                const userID = this.state.user;
+                
                 this.updateTokens(userID);
             }
         })
@@ -133,30 +136,23 @@ class Dashboard extends Component {
         })          
     }
 
-    postPagesDataToDB = async (data) => {
-        const DBPages = await apiGet({}, '/dbPageData');
+    postPagesDataToDB = async (data, userID) => {
+        // const DBPages = await apiGet({}, '/dbPageData');
 
 
-        for (let i = 0; i < DBPages.length; i++) {
-            const db = DBPages[i];
-            console.log(db);
-            for (let j = 0; j < data.length; j++) {
-                const local = data[j];
+        // for (let i = 0; i < DBPages.length; i++) {
+        //     const db = DBPages[i];
+        //     console.log(db);
+        //     for (let j = 0; j < data.length; j++) {
+        //         const local = data[j];
                 
-                if (db.URL === !local.URL) {
-                    // need to update db data with the local
-                    console.log('no match')
-
-
-                }
-
-            }
-
-
-
-            
-        }
-        // const test = await apiPost({}, '/pagesdata', {data});
+        //         if (db.URL === !local.URL) {
+        //             // need to update db data with the local
+        //             console.log('no match')
+        //         }
+        //     }
+        // }
+        const test = await apiPost({}, '/pagesdata', {data, userID});
     }
 
     updateTokens = async (userID) => {

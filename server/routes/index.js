@@ -38,7 +38,7 @@ module.exports = (nextApp, expressApp) => {
 
     expressApp.post('/api/pagesdata', defaultController.postPagesData);
 
-    expressApp.get('/api/dbPageData', defaultController.getPagesData);
+    // expressApp.get('/api/dbPageData', defaultController.getPagesData);
 
 
 
