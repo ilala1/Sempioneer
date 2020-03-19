@@ -3,7 +3,7 @@ import Page from '../components/Page';
 
 import { getFlashes } from '../lib/flashes';
 
-// import '../lib/fontAwesome';
+import '../lib/gsc';
 
 
 class MyApp extends App {

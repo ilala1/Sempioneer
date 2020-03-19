@@ -266,6 +266,23 @@ var addFlash = function addFlash(ctx, flash) {
 
 /***/ }),
 
+/***/ "./lib/gsc.js":
+/*!********************!*\
+  !*** ./lib/gsc.js ***!
+  \********************/
+/*! exports provided: test */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "test", function() { return test; });
+var test = function test(ctx) {
+  console.log('hellooo');
+};
+test();
+
+/***/ }),
+
 /***/ "./lib/session.js":
 /*!************************!*\
   !*** ./lib/session.js ***!
@@ -372,6 +389,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var next_app__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_app__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _components_Page__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Page */ "./components/Page.js");
 /* harmony import */ var _lib_flashes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../lib/flashes */ "./lib/flashes.js");
+/* harmony import */ var _lib_gsc__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../lib/gsc */ "./lib/gsc.js");
 
 
 
@@ -399,7 +417,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
- // import '../lib/fontAwesome';
+
+
 
 var MyApp =
 /*#__PURE__*/

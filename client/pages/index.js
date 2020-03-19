@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { getCookie, removeCookie } from '../lib/session';
 import { login, redirectIfAuthenticated, redirectIfNotAuthenticated } from '../lib/auth';
-import { handleClientLoad } from '../lib/gsc';
 import { apiGet, apiPost } from '../lib/api';
 
 import Nav from '../components/Nav';

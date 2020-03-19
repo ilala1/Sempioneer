@@ -17,6 +17,7 @@ import Flashes from './Flashes';
 const axios = require('axios');
 
 import { redirectIfNoAccess } from '../lib/auth';
+import { test } from '../lib/gsc';
 import { createFlash } from '../lib/flashes';
 import websites from '../pages/websites';
 
