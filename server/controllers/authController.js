@@ -82,7 +82,7 @@ exports.access = async (req, res) => {
 
           let getUserName = await axios.get(userDetails, {})
           .then((res) => {
-            console.log(`statusCode: ${res.statusCode}`)
+            // console.log(`statusCode: ${res.statusCode}`)
             return res.data.name;
           })
           .catch((error) => {

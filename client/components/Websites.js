@@ -88,6 +88,8 @@ class Websites extends Component {
             "Authorization_Code": "one"
         })
         .then((res) => {
+            console.log('testing');
+            console.log(res);
           const WebsiteList = res.data.siteEntry;
           let userObj = {};
           for(var i = 0; i < WebsiteList.length; i++) {
@@ -96,7 +98,7 @@ class Websites extends Component {
                     WebsiteList.splice(i, 1); 
                 }
                 userObj = {
-                    userId: this.state.user,
+                    id: this.state.user,
                     data: WebsiteList
                 }
             }
