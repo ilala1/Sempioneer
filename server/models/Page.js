@@ -2,19 +2,18 @@ const mongoose = require('mongoose');
 
 const pageSchema = new mongoose.Schema({
     userID: String,
-    allData: [
+    domain: {
+        type: String
+    },
+    data:[
         {
-            URL: {
-                type: String
-            },
-            data:[
-                {
-                    date: String,
-                    figures: [Number]
-                }
-            ]
-        } 
+            date: String,
+            deviceSegment: String,
+            figures: [Number],
+            site_URL: String
+        }
     ]
+
     
 });
 
