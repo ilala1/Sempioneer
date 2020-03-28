@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const websiteSchema = new mongoose.Schema({
-    userId: {
+    id: {
         type: String,
     },
     data: [
