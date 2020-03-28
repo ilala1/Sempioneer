@@ -2,7 +2,7 @@ import { Component, createRef } from 'react';
 import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
 
-import pagesData from '../data/users/desired_format.json';
+// import pagesData from '../data/users/desired_format.json';
 
 var uniqid = require('uniqid');
 
@@ -102,32 +102,35 @@ class Dashboard extends Component {
         const accessToken = this.state.userObject.access_token;
         const siteURL = localStorage.getItem('siteURL');
 
-        // this.postPagesDataToDB(pagesData);
-        this.setState({
-            loading: false,
-            dtTitles,
-            dtData: this.createDataTable(pagesData),
-        });
+        // // this.postPagesDataToDB(pagesData);
+        // this.setState({
+        //     loading: false,
+        //     dtTitles,
+        //     dtData: this.createDataTable(pagesData),
+        // });
         const historicalDataPulling = await axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
             "Access_Token": accessToken,
             "Refresh_Token": "three",
             "Client_Secret": "two",
             "Authorization_Code": "one",
             "site_url": siteURL,
-            "userID": userID
+            "userID": userID,
+            "dimensions": ['page']
         })
         .then((res) => {
             if (res) {
                 console.log(res.data);
-                // const allData = res.data;
+                const allData = res.data;
 
-                // const pagesData = res.data;
-                // this.postPagesDataToDB(pagesData, userID);
-                // this.setState({
-                //     loading: false,
-                //     dtTitles,
-                //     dtData: this.createDataTable(pagesData),
-                // });
+                const pagesData = res.data;
+                const domain = res.data.domain;
+                console.log(domain);
+                this.postPagesDataToDB(pagesData, userID, domain);
+                this.setState({
+                    loading: false,
+                    dtTitles,
+                    dtData: this.createDataTable(pagesData),
+                });
             } else {
                 
                 this.updateTokens(userID);
@@ -138,7 +141,7 @@ class Dashboard extends Component {
         })          
     }
 
-    postPagesDataToDB = async (data, userID) => {
+    postPagesDataToDB = async (data, userID, domain) => {
         // const DBPages = await apiGet({}, '/dbPageData');
 
 
@@ -154,7 +157,7 @@ class Dashboard extends Component {
         //         }
         //     }
         // }
-        const test = await apiPost({}, '/pagesdata', {data, userID});
+        const test = await apiPost({}, '/pagesdata', {data, userID, domain});
     }
 
     updateTokens = async (userID) => {

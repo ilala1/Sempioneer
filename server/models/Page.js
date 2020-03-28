@@ -8,9 +8,9 @@ const pageSchema = new mongoose.Schema({
     data:[
         {
             date: String,
-            deviceSegment: String,
+            device_segment: String,
             figures: [Number],
-            site_URL: String
+            site_url: String
         }
     ]
 
