@@ -11,11 +11,15 @@
       "static/runtime/webpack.js",
       "static/runtime/main.js"
     ],
-    "/websites": [
+    "/dashboard": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
     ],
-    "/dashboard": [
+    "/index": [
+      "static/runtime/webpack.js",
+      "static/runtime/main.js"
+    ],
+    "/": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
     ]
