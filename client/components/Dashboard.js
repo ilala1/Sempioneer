@@ -2,7 +2,7 @@ import { Component, createRef } from 'react';
 import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
 
-// import pagesData from '../data/users/desired_format.json';
+import pagesData from '../data/users/desired_format.json';
 
 var uniqid = require('uniqid');
 
@@ -101,13 +101,14 @@ class Dashboard extends Component {
         const userID = this.state.user;
         const accessToken = this.state.userObject.access_token;
         const siteURL = localStorage.getItem('siteURL');
+        const domain = pagesData.domain;
 
-        // // this.postPagesDataToDB(pagesData);
-        // this.setState({
-        //     loading: false,
-        //     dtTitles,
-        //     dtData: this.createDataTable(pagesData),
-        // });
+        // this.postPagesDataToDB(pagesData, userID, domain);
+        this.setState({
+            loading: false,
+            dtTitles,
+            dtData: this.createDataTable(pagesData.data),
+        });
         const historicalDataPulling = await axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
             "Access_Token": accessToken,
             "Refresh_Token": "three",
@@ -119,20 +120,15 @@ class Dashboard extends Component {
         })
         .then((res) => {
             if (res) {
-                console.log(res.data);
-                const allData = res.data;
-
-                const pagesData = res.data;
-                const domain = res.data.domain;
-                console.log(domain);
-                this.postPagesDataToDB(pagesData, userID, domain);
-                this.setState({
-                    loading: false,
-                    dtTitles,
-                    dtData: this.createDataTable(pagesData),
-                });
+                // console.log(res);
+                // this.postPagesDataToDB(pagesData, userID, domain);
+                // this.setState({
+                //     loading: false,
+                //     dtTitles,
+                //     dtData: this.createDataTable(pagesData),
+                // });
             } else {
-                
+                console.log('error - potentially need new access token')
                 this.updateTokens(userID);
             }
         })
@@ -142,22 +138,7 @@ class Dashboard extends Component {
     }
 
     postPagesDataToDB = async (data, userID, domain) => {
-        // const DBPages = await apiGet({}, '/dbPageData');
-
-
-        // for (let i = 0; i < DBPages.length; i++) {
-        //     const db = DBPages[i];
-        //     console.log(db);
-        //     for (let j = 0; j < data.length; j++) {
-        //         const local = data[j];
-                
-        //         if (db.URL === !local.URL) {
-        //             // need to update db data with the local
-        //             console.log('no match')
-        //         }
-        //     }
-        // }
-        const test = await apiPost({}, '/pagesdata', {data, userID, domain});
+        // const test = await apiPost({}, '/pagesdata', {data, userID, domain});
     }
 
     updateTokens = async (userID) => {
@@ -178,28 +159,35 @@ class Dashboard extends Component {
     }
 
     createDataTable = (allPages) => {
-        // console.log(allPages);
         let totalClicks = 0;
         let totalImpressions = 0;
+        let sumOfCTR = 0;
         let averageCTR = 0;
+        let sumOfPositions = 0;
         let averagePosition = 0;
         let noOfDates = 0;
         let newArrayOfPages= [];
 
 
         for(var i=0; i<allPages.length; i++){
+            // console.log(allPages[i]);
             const page = allPages[i].data;
             noOfDates = allPages[i].data.length;
 
+
             for(var k=0; k<page.length; k++){
+                // console.log(page[k].figures);
                 totalClicks += parseInt(page[k].figures[0]);
                 totalImpressions += parseInt(page[k].figures[1]);
-                averageCTR += parseInt(page[k].figures[2]/noOfDates);
-                averagePosition += parseInt(page[k].figures[3]/noOfDates);
+                sumOfCTR += parseInt(page[k].figures[2]);
+                averageCTR = sumOfCTR/noOfDates;
+                sumOfPositions += parseInt(page[k].figures[3]);
+                averagePosition = sumOfPositions/noOfDates;
+                console.log(page[k].figures[3]);
             }
 
             let pageObj = {
-                url: allPages[i].URL,
+                url: allPages[i].Grouped_URL,
                 totalClicks,
                 totalImpressions,
                 averageCTR,
