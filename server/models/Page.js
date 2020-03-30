@@ -7,10 +7,15 @@ const pageSchema = new mongoose.Schema({
     },
     data:[
         {
-            date: String,
-            device_segment: String,
-            figures: [Number],
-            site_url: String
+            Grouped_Url: String,
+            data: [
+                {
+                    device_segment: String,
+                    date: String,
+                    figures: [Number],
+                    site_url: String
+                }
+            ]
         }
     ]
 
