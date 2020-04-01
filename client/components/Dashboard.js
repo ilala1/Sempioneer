@@ -23,27 +23,86 @@ import { createFlash } from '../lib/flashes';
 import websites from '../pages/websites';
 
 
-// const dtTitles = [{
-//     key: 'URL',
-//     type: 'string',
-//     label: 'URL',
-// }, {
-//     key: 'clicks',
-//     type: 'string',
-//     label: 'Clicks',
-// }, {
-//     key: 'impressions',
-//     type: 'string',
-//     label: 'Impressions',
-// }, {
-//     key: 'ctr',
-//     type: 'string',
-//     label: 'CTR',
-// }, {
-//     key: 'position',
-//     type: 'string',
-//     label: 'Position',
-// }];
+const dtAllTitles = [{
+    key: 'URL',
+    type: 'string',
+    label: 'URL',
+}, {
+    key: 'clicks',
+    type: 'string',
+    label: 'Clicks',
+}, {
+    key: 'impressions',
+    type: 'string',
+    label: 'Impressions',
+}, {
+    key: 'ctr',
+    type: 'string',
+    label: 'CTR',
+}, {
+    key: 'position',
+    type: 'string',
+    label: 'Position',
+}, {
+    key: 'test',
+    type: 'string',
+    label: 'Test',
+}];
+
+const dtTitles_CTR_I = [{
+    key: 'URL',
+    type: 'string',
+    label: 'URL',
+}, {
+    key: 'impressions',
+    type: 'string',
+    label: 'Impressions',
+}, {
+    key: 'ctr',
+    type: 'string',
+    label: 'CTR',
+}, {
+    key: 'test',
+    type: 'string',
+    label: 'Test',
+}];
+
+const dtTitles_CTR_P = [{
+    key: 'URL',
+    type: 'string',
+    label: 'URL',
+}, {
+    key: 'ctr',
+    type: 'string',
+    label: 'CTR',
+}, {
+    key: 'position',
+    type: 'string',
+    label: 'Position',
+}, {
+    key: 'test',
+    type: 'string',
+    label: 'Test',
+}];
+
+const dtTitles_CTR_C = [{
+    key: 'URL',
+    type: 'string',
+    label: 'URL',
+}, {
+    key: 'clicks',
+    type: 'string',
+    label: 'Clicks',
+}, {
+    key: 'ctr',
+    type: 'string',
+    label: 'CTR',
+},  {
+    key: 'test',
+    type: 'string',
+    label: 'Test',
+}];
+
 const dtTitles = [{
     key: 'URL',
     type: 'string',
@@ -56,7 +115,54 @@ const dtTitles = [{
     key: 'impressions',
     type: 'string',
     label: 'Impressions',
+}, {
+    key: 'test',
+    type: 'string',
+    label: 'Test',
 }];
+
+const dtTitles_CTR = [{
+    key: 'URL',
+    type: 'string',
+    label: 'URL',
+}, {
+    key: 'ctr',
+    type: 'string',
+    label: 'CTR',
+}, {
+    key: 'test',
+    type: 'string',
+    label: 'Test',
+}];
+
+const dtTitles_C = [{
+    key: 'URL',
+    type: 'string',
+    label: 'URL',
+}, {
+    key: 'clicks',
+    type: 'string',
+    label: 'Clicks',
+}, {
+    key: 'test',
+    type: 'string',
+    label: 'Test',
+}];
+
+const dtTitles_P = [{
+    key: 'URL',
+    type: 'string',
+    label: 'URL',
+}, {
+    key: 'position',
+    type: 'string',
+    label: 'Position',
+}, {
+    key: 'test',
+    type: 'string',
+    label: 'Test',
+}];
+
 
 const UserStyles = styled.aside`
     width:100%;
@@ -136,7 +242,10 @@ class Dashboard extends Component {
             dtTitles: [],
             dtData: [],
             editable: 'true',
-            averageCtaVisible: false
+            averageCtaVisible: false,
+            averagePositionVisible: false,
+            clicksVisible: false,
+            impressionsVisible: false
         };
     }
 
@@ -265,6 +374,9 @@ class Dashboard extends Component {
             }, {
                 key: 'position',
                 value: Page.averagePosition,
+            }, {
+                key: 'test',
+                value: <button>Test</button>
             }],
         }));
         return dtData;
@@ -277,48 +389,95 @@ class Dashboard extends Component {
         this.flashesComponent.current.addFlash(flash);
     };
 
-    filterAverageCTR = (e) => {
-        console.log('hello'); 
-        let { averageCtaVisible } = this.state;
-        averageCtaVisible = !averageCtaVisible;
-        this.setState({
-            averageCtaVisible,
+    filterAverageCTR = async (e) => {
+        await this.setState({
+            averageCtaVisible: !this.state.averageCtaVisible
         });
-        console.log(this.state.averageCtaVisible);
 
-        if (averageCtaVisible === true) {
-            const presentTitle = [{
-                key: 'URL',
-                type: 'string',
-                label: 'URL',
-            }, {
-                key: 'clicks',
-                type: 'string',
-                label: 'Clicks',
-            }, {
-                key: 'impressions',
-                type: 'string',
-                label: 'Impressions',
-            }, {
-                key: 'ctr',
-                type: 'string',
-                label: 'CTR',
-            }];
+        let {averageCtaVisible, averagePositionVisible} = this.state;
 
-            
-            this.setState({
-                loading: false,
-                dtTitles: presentTitle,
-                editable: false,
-            });
-        } else {
-            this.setState({
-                loading: false,
-                dtTitles,
-                editable: false,
-            });
-        }
+        let titles =   (averageCtaVisible === true && averagePositionVisible === false) ? dtTitles_CTR :
+                        (averageCtaVisible === true && averagePositionVisible === true) ? dtAllTitles :
+                        (averageCtaVisible === false && averagePositionVisible === true) ? dtTitles_P :
+                        dtTitles;
+
+        this.setState({
+            dtTitles: titles
+        })
+
+        // if (averageCtaVisible === true && averagePositionVisible === false) {
+        //     this.setState({
+        //         dtTitles: dtTitles_CTR
+        //     });
+        // } else if (averageCtaVisible === true && averagePositionVisible === true) {
+        //     this.setState({
+        //         dtTitles: dtAllTitles
+        //     });  
+        // } else if (averageCtaVisible === false && averagePositionVisible === true) {
+        //     this.setState({
+        //         dtTitles: dtTitles_P
+        //     });  
+        // } else {
+        //     this.setState({
+        //         dtTitles
+        //     })
+        // }
+
     }
+
+    filterAveragePosition = async (e) => {
+        console.log('position'); 
+        await this.setState({
+            averagePositionVisible: !this.state.averagePositionVisible
+        });
+
+        let {averageCtaVisible, averagePositionVisible} = this.state;
+
+        let titles =   (averagePositionVisible === true && averageCtaVisible === false) ? dtTitles_P :
+                        (averageCtaVisible === true && averagePositionVisible === true) ? dtAllTitles :
+                        (averageCtaVisible === true && averagePositionVisible === false) ? dtTitles_CTR :
+                        dtTitles;
+
+        this.setState({
+            dtTitles: titles
+        })
+
+    }
+
+    // filterClicks = async (e) => {
+    //     await this.setState({
+    //         clicksVisible: !this.state.clicksVisible
+    //     });
+
+    //     let {averageCtaVisible, averagePositionVisible, clicksVisible} = this.state;
+    //     let arr = [];
+    //     if (clicksVisible === true) {
+    //         for (let i = 0; i < dtAllTitles.length; i++) {
+    //             arr.push(dtAllTitles[i].key);
+    //             console.log(arr)
+
+    //             const result = arr.includes("clicks");
+    //             if (result = true) {
+    //                 break
+    //             }
+    //             // if (dtAllTitles[i].key = 'clicks') {
+
+    //             // };
+                
+    //         }
+
+    //     }
+        
+    //     // if (clicksVisible === false) {
+    //     //     for (let i = 0; i < dtAllTitles.length; i++) {
+    //     //         if(dtAllTitles[i].key === 'clicks') {
+    //     //             dtAllTitles.splice(i, 1);
+    //     //         };
+    //     //     }
+    //     //     console.log(dtAllTitles)
+    //     // }
+
+    // }
 
     render() {
         return (
@@ -335,9 +494,14 @@ class Dashboard extends Component {
                     </div>
 
                     <div className="filter">
-                        <label htmlFor="filter-deleted">Include deleted?</label>
-                        {/* <input type="checkbox" id="filter-deleted" onChange={this.filterDeleted} /> */}
+                        <label htmlFor="filter-postion">Position?</label>
+                        <input type="checkbox" id="filter-postion" onChange={this.filterAveragePosition} />
                     </div>
+
+                    {/* <div className="filter">
+                        <label htmlFor="filter-clicks">Clicks?</label>
+                        <input type="checkbox" id="filter-clicks" onChange={this.filterClicks} />
+                    </div> */}
                     {/* <div className="filterMonth">
                         <Select
                             label="Month"
