@@ -18,150 +18,48 @@ import Select from './forms/Select';
 const axios = require('axios');
 
 import { redirectIfNoAccess } from '../lib/auth';
-import { test } from '../lib/gsc';
+
 import { createFlash } from '../lib/flashes';
 import websites from '../pages/websites';
 
 
 const dtAllTitles = [{
-    key: 'URL',
+    key: '0',
     type: 'string',
-    label: 'URL',
+    label: 'URLt',
 }, {
-    key: 'clicks',
+    key: '1',
     type: 'string',
-    label: 'Clicks',
+    label: 'Total Clicks',
 }, {
-    key: 'impressions',
+    key: '2',
     type: 'string',
-    label: 'Impressions',
+    label: 'Total Impressions',
 }, {
-    key: 'ctr',
-    type: 'string',
-    label: 'CTR',
-}, {
-    key: 'position',
-    type: 'string',
-    label: 'Position',
-}, {
-    key: 'test',
+    key: '5',
     type: 'string',
     label: 'Test',
 }];
 
-const dtTitles_CTR_I = [{
-    key: 'URL',
-    type: 'string',
-    label: 'URL',
-}, {
-    key: 'impressions',
-    type: 'string',
-    label: 'Impressions',
-}, {
-    key: 'ctr',
-    type: 'string',
-    label: 'CTR',
-}, {
-    key: 'test',
-    type: 'string',
-    label: 'Test',
-}];
-
-const dtTitles_CTR_P = [{
-    key: 'URL',
-    type: 'string',
-    label: 'URL',
-}, {
-    key: 'ctr',
-    type: 'string',
-    label: 'CTR',
-}, {
-    key: 'position',
-    type: 'string',
-    label: 'Position',
-}, {
-    key: 'test',
-    type: 'string',
-    label: 'Test',
-}];
-
-const dtTitles_CTR_C = [{
-    key: 'URL',
-    type: 'string',
-    label: 'URL',
-}, {
-    key: 'clicks',
-    type: 'string',
-    label: 'Clicks',
-}, {
-    key: 'ctr',
-    type: 'string',
-    label: 'CTR',
-},  {
-    key: 'test',
-    type: 'string',
-    label: 'Test',
-}];
 
 const dtTitles = [{
-    key: 'URL',
+    key: '0',
     type: 'string',
-    label: 'URL',
+    label: 'URLt',
 }, {
-    key: 'clicks',
+    key: '1',
     type: 'string',
-    label: 'Clicks',
+    label: 'Total Clicks',
 }, {
-    key: 'impressions',
+    key: '2',
     type: 'string',
-    label: 'Impressions',
+    label: 'Total Impressions',
 }, {
-    key: 'test',
+    key: '5',
     type: 'string',
     label: 'Test',
 }];
 
-const dtTitles_CTR = [{
-    key: 'URL',
-    type: 'string',
-    label: 'URL',
-}, {
-    key: 'ctr',
-    type: 'string',
-    label: 'CTR',
-}, {
-    key: 'test',
-    type: 'string',
-    label: 'Test',
-}];
-
-const dtTitles_C = [{
-    key: 'URL',
-    type: 'string',
-    label: 'URL',
-}, {
-    key: 'clicks',
-    type: 'string',
-    label: 'Clicks',
-}, {
-    key: 'test',
-    type: 'string',
-    label: 'Test',
-}];
-
-const dtTitles_P = [{
-    key: 'URL',
-    type: 'string',
-    label: 'URL',
-}, {
-    key: 'position',
-    type: 'string',
-    label: 'Position',
-}, {
-    key: 'test',
-    type: 'string',
-    label: 'Test',
-}];
 
 
 const UserStyles = styled.aside`
@@ -244,8 +142,9 @@ class Dashboard extends Component {
             editable: 'true',
             averageCtaVisible: false,
             averagePositionVisible: false,
-            clicksVisible: false,
-            impressionsVisible: false
+            clicksVisible: true,
+            impressionsVisible: true,
+            chkbox: true
         };
     }
 
@@ -297,7 +196,7 @@ class Dashboard extends Component {
     }
 
     postPagesDataToDB = async (data, userID, domain) => {
-        // const test = await apiPost({}, '/pagesdata', {data, userID, domain});
+        // const post = await apiPost({}, '/pagesdata', {data, userID, domain});
     }
 
     updateTokens = async (userID) => {
@@ -360,22 +259,22 @@ class Dashboard extends Component {
         const dtData = newArrayOfPages.map(Page => ({
             id: uniqid(),
             data: [{
-                key: 'URL',
+                key: '0',
                 value: Page.url,
             }, {
-                key: 'clicks',
+                key: '1',
                 value: Page.totalClicks,
             }, {
-                key: 'impressions',
+                key: '2',
                 value: Page.totalImpressions,
             }, {
-                key: 'ctr',
+                key: '3',
                 value: Page.averageCTR,
             }, {
-                key: 'position',
+                key: '4',
                 value: Page.averagePosition,
             }, {
-                key: 'test',
+                key: '5',
                 value: <button>Test</button>
             }],
         }));
@@ -394,34 +293,58 @@ class Dashboard extends Component {
             averageCtaVisible: !this.state.averageCtaVisible
         });
 
-        let {averageCtaVisible, averagePositionVisible} = this.state;
+        let {averageCtaVisible} = this.state;
 
-        let titles =   (averageCtaVisible === true && averagePositionVisible === false) ? dtTitles_CTR :
-                        (averageCtaVisible === true && averagePositionVisible === true) ? dtAllTitles :
-                        (averageCtaVisible === false && averagePositionVisible === true) ? dtTitles_P :
-                        dtTitles;
+        if (averageCtaVisible === true) {
+            console.log('true')
+            
+            var index = dtAllTitles.findIndex(x => x.key=="3")
+            // here you can check specific property for an object whether it exist in your array or not
+            
+            if (index === -1){
+                dtAllTitles.unshift({
+                    key: '3',
+                    type: 'string',
+                    label: 'Average CTR',
+                });
+
+                function compare(a, b) {
+                    const labelA = a.key;
+                    const labelB = b.key;
+                  
+                    let comparison = 0;
+                    if (labelA > labelB) {
+                      comparison = 1;
+                    } else if (labelA < labelB) {
+                      comparison = -1;
+                    }
+                    return comparison;
+                  }
+
+                console.log(dtAllTitles.sort(compare));
+
+            } else {
+                console.log("object already exists")
+            }
+
+            this.setState({
+                dtTitles: dtAllTitles
+            })
+        }
+
+        if (averageCtaVisible === false) {
+            console.log('false')
+            for (let i = 0; i < dtAllTitles.length; i++) {
+                if(dtAllTitles[i].key === '3') {
+                    dtAllTitles.splice(i, 1);
+                };
+            }
+            dtAllTitles.sort();
+        }
 
         this.setState({
-            dtTitles: titles
+            dtTitles: dtAllTitles
         })
-
-        // if (averageCtaVisible === true && averagePositionVisible === false) {
-        //     this.setState({
-        //         dtTitles: dtTitles_CTR
-        //     });
-        // } else if (averageCtaVisible === true && averagePositionVisible === true) {
-        //     this.setState({
-        //         dtTitles: dtAllTitles
-        //     });  
-        // } else if (averageCtaVisible === false && averagePositionVisible === true) {
-        //     this.setState({
-        //         dtTitles: dtTitles_P
-        //     });  
-        // } else {
-        //     this.setState({
-        //         dtTitles
-        //     })
-        // }
 
     }
 
@@ -431,53 +354,181 @@ class Dashboard extends Component {
             averagePositionVisible: !this.state.averagePositionVisible
         });
 
-        let {averageCtaVisible, averagePositionVisible} = this.state;
+        let {averagePositionVisible} = this.state;
 
-        let titles =   (averagePositionVisible === true && averageCtaVisible === false) ? dtTitles_P :
-                        (averageCtaVisible === true && averagePositionVisible === true) ? dtAllTitles :
-                        (averageCtaVisible === true && averagePositionVisible === false) ? dtTitles_CTR :
-                        dtTitles;
+        if (averagePositionVisible === true) {
+            console.log('true')
+            
+            var index = dtAllTitles.findIndex(x => x.key=="4")
+            // here you can check specific property for an object whether it exist in your array or not
+            
+            if (index === -1){
+                dtAllTitles.unshift({
+                    key: '4',
+                    type: 'string',
+                    label: 'Average Position',
+                });
+
+                function compare(a, b) {
+                    const labelA = a.key;
+                    const labelB = b.key;
+                  
+                    let comparison = 0;
+                    if (labelA > labelB) {
+                      comparison = 1;
+                    } else if (labelA < labelB) {
+                      comparison = -1;
+                    }
+                    return comparison;
+                  }
+
+                console.log(dtAllTitles.sort(compare));
+
+                this.setState({
+                    dtTitles: dtAllTitles
+                })
+            } else {
+                console.log("object already exists")
+            }
+        }
+
+        if (averagePositionVisible === false) {
+            console.log('false')
+            for (let i = 0; i < dtAllTitles.length; i++) {
+                if(dtAllTitles[i].key === '4') {
+                    dtAllTitles.splice(i, 1);
+                };
+            }
+
+            dtAllTitles.sort();
+        }
 
         this.setState({
-            dtTitles: titles
+            dtTitles: dtAllTitles
         })
 
     }
 
-    // filterClicks = async (e) => {
-    //     await this.setState({
-    //         clicksVisible: !this.state.clicksVisible
-    //     });
+    filterClicks = async (e) => {
+        await this.setState({
+            clicksVisible: !this.state.clicksVisible
+        });
 
-    //     let {averageCtaVisible, averagePositionVisible, clicksVisible} = this.state;
-    //     let arr = [];
-    //     if (clicksVisible === true) {
-    //         for (let i = 0; i < dtAllTitles.length; i++) {
-    //             arr.push(dtAllTitles[i].key);
-    //             console.log(arr)
+        let {clicksVisible} = this.state;
 
-    //             const result = arr.includes("clicks");
-    //             if (result = true) {
-    //                 break
-    //             }
-    //             // if (dtAllTitles[i].key = 'clicks') {
+        if (clicksVisible === true) {
+            console.log('true')
+            
+            var index = dtAllTitles.findIndex(x => x.key=="1")
+            // here you can check specific property for an object whether it exist in your array or not
+            
+            if (index === -1){
+                dtAllTitles.unshift({
+                    key: '1',
+                    type: 'string',
+                    label: 'Total Clicks',
+                });
 
-    //             // };
-                
-    //         }
+                function compare(a, b) {
+                    const labelA = a.key;
+                    const labelB = b.key;
+                  
+                    let comparison = 0;
+                    if (labelA > labelB) {
+                      comparison = 1;
+                    } else if (labelA < labelB) {
+                      comparison = -1;
+                    }
+                    return comparison;
+                  }
 
-    //     }
+                  console.log(dtAllTitles.sort(compare));
+
+                this.setState({
+                    dtTitles: dtAllTitles
+                })
+            } else {
+                console.log("object already exists")
+            }
+        }
         
-    //     // if (clicksVisible === false) {
-    //     //     for (let i = 0; i < dtAllTitles.length; i++) {
-    //     //         if(dtAllTitles[i].key === 'clicks') {
-    //     //             dtAllTitles.splice(i, 1);
-    //     //         };
-    //     //     }
-    //     //     console.log(dtAllTitles)
-    //     // }
+        if (clicksVisible === false) {
+            console.log('false')
+            for (let i = 0; i < dtAllTitles.length; i++) {
+                if(dtAllTitles[i].key === '1') {
+                    dtAllTitles.splice(i, 1);
+                };
+            }
+            dtAllTitles.sort();
+        }
 
-    // }
+        this.setState({
+            dtTitles: dtAllTitles
+        })
+
+    }
+
+    filterImpressions = async (e) => {
+        await this.setState({
+            impressionsVisible: !this.state.impressionsVisible
+        });
+
+        let {impressionsVisible} = this.state;
+        let arr = [];
+        if (impressionsVisible === true) {
+            console.log('true')
+            
+            //find index of 2 in dtAllTitles
+            var index = dtAllTitles.findIndex(x => x.key=="2")
+            // here you can check specific property for an object whether it exist in your array or not
+
+            // if it doesnt exist add it to array
+            if (index === -1){
+                dtAllTitles.unshift({
+                    key: '2',
+                    type: 'string',
+                    label: 'Total Impressions',
+                });
+
+                function compare(a, b) {
+                    const labelA = a.key;
+                    const labelB = b.key;
+                  
+                    let comparison = 0;
+                    if (labelA > labelB) {
+                      comparison = 1;
+                    } else if (labelA < labelB) {
+                      comparison = -1;
+                    }
+                    return comparison;
+                  }
+
+                  console.log(dtAllTitles.sort(compare));
+
+
+                this.setState({
+                    dtTitles: dtAllTitles
+                })
+            } else {
+                console.log("object already exists")
+            }
+        }
+        
+        if (impressionsVisible === false) {
+            console.log('false')
+            for (let i = 0; i < dtAllTitles.length; i++) {
+                if(dtAllTitles[i].key === '2') {
+                    dtAllTitles.splice(i, 1);
+                };
+            }
+            dtAllTitles.sort();
+        }
+
+        this.setState({
+            dtTitles: dtAllTitles
+        })
+
+    }
 
     render() {
         return (
@@ -488,20 +539,25 @@ class Dashboard extends Component {
                 />
                 <br/>
                 <div className="sub-nav">
+                <div className="filter">
+                        <label htmlFor="filter-clicks">Clicks?</label>
+                        <input type="checkbox" id="filter-clicks" onChange={this.filterClicks} defaultChecked={this.state.chkbox}/>
+                    </div>
+
+                    <div className="filter">
+                        <label htmlFor="filter-impressions">Impressions?</label>
+                        <input type="checkbox" id="filter-impressions" onChange={this.filterImpressions} defaultChecked={this.state.chkbox}/>
+                    </div>
                     <div className="filter">
                         <label htmlFor="filter-ctr">CTR?</label>
                         <input type="checkbox" id="filter-ctr" onChange={this.filterAverageCTR} />
                     </div>
-
+                   
                     <div className="filter">
                         <label htmlFor="filter-postion">Position?</label>
-                        <input type="checkbox" id="filter-postion" onChange={this.filterAveragePosition} />
+                        <input type="checkbox" id="filter-postion" onChange={this.filterAveragePosition} /> 
                     </div>
-
-                    {/* <div className="filter">
-                        <label htmlFor="filter-clicks">Clicks?</label>
-                        <input type="checkbox" id="filter-clicks" onChange={this.filterClicks} />
-                    </div> */}
+                    
                     {/* <div className="filterMonth">
                         <Select
                             label="Month"
