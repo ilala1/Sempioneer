@@ -19,6 +19,7 @@ const axios = require('axios');
 
 import { redirectIfNoAccess } from '../lib/auth';
 
+import { test } from '../lib/gsc';
 import { createFlash } from '../lib/flashes';
 import websites from '../pages/websites';
 
@@ -149,6 +150,9 @@ class Dashboard extends Component {
     }
 
     async componentDidMount() {
+        // testing remote js file code
+        test();
+        // end remote js file test
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
         this.setState({
@@ -159,7 +163,7 @@ class Dashboard extends Component {
         const userID = this.state.user;
         const accessToken = this.state.userObject.access_token;
         const siteURL = localStorage.getItem('siteURL');
-        const domain = pagesData.domain;
+        // const domain = pagesData.domain;
 
         // this.postPagesDataToDB(pagesData, userID, domain);
         this.setState({
@@ -179,11 +183,13 @@ class Dashboard extends Component {
         // .then((res) => {
         //     if (res) {
         //         console.log(res);
+        //         const pagesData = res.data;
+        //         const domain = pagesData.domain;
         //         this.postPagesDataToDB(pagesData, userID, domain);
         //         this.setState({
         //             loading: false,
         //             dtTitles,
-        //             dtData: this.createDataTable(pagesData),
+        //             dtData: this.createDataTable(pagesData.data),
         //         });
         //     } else {
         //         console.log('error - potentially need new access token')
@@ -196,7 +202,7 @@ class Dashboard extends Component {
     }
 
     postPagesDataToDB = async (data, userID, domain) => {
-        // const post = await apiPost({}, '/pagesdata', {data, userID, domain});
+        const post = await apiPost({}, '/pagesdata', {data, userID, domain});
     }
 
     updateTokens = async (userID) => {
@@ -569,7 +575,9 @@ class Dashboard extends Component {
                         />
                     </div> */}
                 </div>
-                <Chart/>
+                <Chart
+                    siteURL={this.siteURL}
+                />
 
                 <DataTable
                     loading={this.state.loading}

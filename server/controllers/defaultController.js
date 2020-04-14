@@ -76,8 +76,11 @@ exports.addWebsite = async (req, res) => {
 };
 
 exports.getPagesData = async (req, res) => {
+  console.log(req.query.siteURL);
+
+  const siteURL = req.query.siteURL;
   try {
-    const allPages = await Page.find({});
+    const allPages = await Page.find({"data.data.site_url" : siteURL});
     res.send(allPages);
   } catch (error) {
       console.error(error)

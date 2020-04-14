@@ -16,9 +16,10 @@ export default class LineChart extends React.Component {
     //   this.myChart.update();
     // }
   
-    componentDidMount() {
-
-      
+    async componentDidMount() {
+      const siteURL = localStorage.getItem('siteURL');
+      const get = await apiGet({}, '/pagesdata', {siteURL});
+      console.log(get);
 
       this.myChart = new Chart(this.chartRef.current, {
         type: 'line',

@@ -45,7 +45,15 @@ exports.auth = async (req, res) => {
     
     // generate a url that asks permissions for user info and GSC scopes
     const scope = ['https://www.googleapis.com/auth/userinfo.profile',
-                  'https://www.googleapis.com/auth/webmasters']
+                  'https://www.googleapis.com/auth/webmasters',
+                  'https://www.googleapis.com/auth/analytics.readonly',
+                  'https://www.googleapis.com/auth/drive',
+                  'https://www.googleapis.com/auth/drive.appdata',
+                  'https://www.googleapis.com/auth/drive.file',
+                  'https://www.googleapis.com/auth/drive.metadata',
+                  'https://www.googleapis.com/auth/spreadsheets',
+                  'https://www.googleapis.com/auth/presentations',
+                  'https://www.googleapis.com/auth/documents']
     const url = oauth2Client.generateAuthUrl({
       // 'online' (default) or 'offline' (gets refresh_token)
       access_type: 'offline',
