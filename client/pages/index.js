@@ -9,6 +9,8 @@ import Nav from '../components/Nav';
 import Header from '../components/Header';
 import Options from '../components/Options';
 
+import firebase from '../../config/config.js';
+
 const HomeStyle = styled.section`
     display: flex;
     justify-content: center;
@@ -45,7 +47,11 @@ class Home extends Component {
         super(props);
         this.state = {
             user: '',
+            currentItem: '',
+            username: ''
         };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
@@ -99,13 +105,37 @@ class Home extends Component {
         }
     }
 
+    handleChange(e) {
+        this.setState({
+          [e.target.name]: e.target.value
+        });
+      }
 
+      handleSubmit(e) {
+        e.preventDefault();
+        const itemsRef = firebase.database().ref('items');
+        const item = {
+          title: this.state.currentItem,
+          user: this.state.username
+        }
+        itemsRef.push(item);
+        this.setState({
+          currentItem: '',
+          username: ''
+        });
+      }
 
     render() {
         return (
             <HomeStyle>
                 <Nav/>
                 Hello {this.state.user}
+                <form onSubmit={this.handleSubmit}>
+                <input type="text" name="username" placeholder="What's your name?" onChange={this.handleChange} value={this.state.username} />
+    <input type="text" name="currentItem" placeholder="What are you bringing?" onChange={this.handleChange} value={this.state.currentItem} />
+                <br/>
+                <button>Add Item</button>
+              </form>
                 <Header title="What App do you want to use?" />
                 <Options />
 
