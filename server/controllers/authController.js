@@ -32,9 +32,9 @@ const mongoErrors = (user, error) => {
 };
 
 exports.auth = async (req, res) => {
+  console.log('valid!');
     const result = {};
     result.status = 200;
-    // console.log('valid!');
     // res.send(result);
     const {google} = require('googleapis');
     const oauth2Client = new google.auth.OAuth2(
@@ -57,11 +57,11 @@ exports.auth = async (req, res) => {
     const url = oauth2Client.generateAuthUrl({
       // 'online' (default) or 'offline' (gets refresh_token)
       access_type: 'offline',
-    
+  
       // If you only need one scope you can pass it as a string
       scope: scope
     });
-
+    console.log(url);
     res.send(url);
 };
 

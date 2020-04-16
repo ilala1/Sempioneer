@@ -9,5 +9,11 @@ const config = {
     appId: "1:737064923611:web:a1ec5f47df2617612c77fe",
     measurementId: "G-SKTTM1GEYP"
   };
-firebase.initializeApp(config);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(config);
+  }
+
+export const provider = new firebase.auth.GoogleAuthProvider();
+export const auth = firebase.auth();
+
 export default firebase;

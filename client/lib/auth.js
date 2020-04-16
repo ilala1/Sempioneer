@@ -12,7 +12,7 @@ export const login = async (id) => {
     // if (response) {
     //     login();
     // }
-    redirect('/');
+    // redirect('/');
 };
 
 export const adminLogin = (email, password) => {
