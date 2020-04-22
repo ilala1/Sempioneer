@@ -8,7 +8,8 @@ module.exports = (nextApp, expressApp) => {
     const api = `/api/v${process.env.API_VERSION}`;
 
     // Auth
-
+    expressApp.get('/accessToken', authController.getAccessToken);
+    
     expressApp.post('/api/valid', authController.auth);
 
     // Nomination tasks
@@ -31,6 +32,8 @@ module.exports = (nextApp, expressApp) => {
     expressApp.get('/api/index', authController.access);
 
     expressApp.get('/api/oneUser', authController.getUser);
+
+  
 
     expressApp.post('/api/website', defaultController.addWebsite);
     

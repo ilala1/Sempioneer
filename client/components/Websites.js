@@ -1,4 +1,5 @@
 import { Component, createRef } from 'react';
+
 import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
 import Header from './Header';
@@ -13,7 +14,7 @@ import Flashes from './Flashes';
 
 const axios = require('axios');
 
-import { redirectIfNoAccess } from '../lib/auth';
+import { redirectIfNotAuthenticated } from '../lib/auth';
 import { createFlash } from '../lib/flashes';
 import websites from '../pages/websites';
 
@@ -52,7 +53,7 @@ const UserStyles = styled.aside`
 
 class Websites extends Component {
     static async getInitialProps(ctx) {
-        if (redirectIfNoAccess(ctx)) {
+        if (redirectIfNotAuthenticated(ctx)) {
             return {};
         }
 
@@ -75,47 +76,53 @@ class Websites extends Component {
     }
 
     async componentDidMount() {
-        const userCookie = getCookie({}, 'user');
-        const oneUser = await apiGet({}, '/oneUser', {userCookie});
-        this.setState({
-            user: oneUser._id,
-            userObject: oneUser
-        })
-        const getWebsitesFromAPI = axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
-            "Access_Token": oneUser.access_token,
-            "Refresh_Token": "three",
-            "Client_Secret": "two",
-            "Authorization_Code": "one"
-        })
-        .then((res) => {
-            console.log('testing');
-            console.log(res);
-          const WebsiteList = res.data.siteEntry;
-          let userObj = {};
-          for(var i = 0; i < WebsiteList.length; i++) {
-                WebsiteList[i].id = this.state.user;
-                if (WebsiteList[i].permissionLevel === 'siteUnverifiedUser') {
-                    WebsiteList.splice(i, 1); 
-                }
-                userObj = {
-                    id: this.state.user,
-                    data: WebsiteList
-                }
-            }
-            // console.log();
-            this.addWebsite(userObj);
-            this.setState({
-                loading: false,
-                dtTitles,
-                dtData: this.createDataTable(userObj),
-            });
-        })
-        .catch((error) => {
-            console.error('No website due to error (old access code maybe)');
-            const userID = this.state.user;
-            this.updateTokens(userID);
-            console.error(error)
-        })
+
+        const accessToken = await apiGet({}, '/accessToken', {});
+        const test = await axios.get('/accessToken');
+
+            console.log(test)
+
+        // const userCookie = getCookie({}, 'user');
+        // const oneUser = await apiGet({}, '/oneUser', {userCookie});
+        // this.setState({
+        //     user: oneUser._id,
+        //     userObject: oneUser
+        // })
+        // const getWebsitesFromAPI = axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
+        //     "Access_Token": oneUser.access_token,
+        //     "Refresh_Token": "three",
+        //     "Client_Secret": "two",
+        //     "Authorization_Code": "one"
+        // })
+        // .then((res) => {
+        //     console.log('testing');
+        //     console.log(res);
+        //   const WebsiteList = res.data.siteEntry;
+        //   let userObj = {};
+        //   for(var i = 0; i < WebsiteList.length; i++) {
+        //         WebsiteList[i].id = this.state.user;
+        //         if (WebsiteList[i].permissionLevel === 'siteUnverifiedUser') {
+        //             WebsiteList.splice(i, 1); 
+        //         }
+        //         userObj = {
+        //             id: this.state.user,
+        //             data: WebsiteList
+        //         }
+        //     }
+        //     // console.log();
+        //     this.addWebsite(userObj);
+        //     this.setState({
+        //         loading: false,
+        //         dtTitles,
+        //         dtData: this.createDataTable(userObj),
+        //     });
+        // })
+        // .catch((error) => {
+        //     console.error('No website due to error (old access code maybe)');
+        //     const userID = this.state.user;
+        //     this.updateTokens(userID);
+        //     console.error(error)
+        // })
     }
 
     updateTokens = async (userID) => {
@@ -175,11 +182,11 @@ class Websites extends Component {
     btnClick = (siteURL) => {
         const accessToken = this.state.userObject.access_token;
         if (siteURL === '') {
-            this.addFlash(createFlash('error', 'Please select a website.'));
+            // this.addFlash(createFlash('error', 'Please select a website.'));
         } else {
-            console.log('getAvailableDatesFromAPI?');
-            localStorage.setItem('siteURL', siteURL);
-            window.location.href = '/dashboard';
+            // console.log('getAvailableDatesFromAPI?');
+            // localStorage.setItem('siteURL', siteURL);
+            // window.location.href = '/dashboard';
             // this.props.navigation.navigate('/dashboard', { siteURL })
             // const getAvailableDatesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_available_dates/', {
             //     "Access_Token": accessToken,
@@ -227,7 +234,7 @@ class Websites extends Component {
                     flashes={this.props.flashes}
                 />
                 <br/>
-                <DataTable
+                {/* <DataTable
                     loading={this.state.loading}
                     titles={this.state.dtTitles}
                     data={this.state.dtData}
@@ -238,7 +245,7 @@ class Websites extends Component {
                     handleEdit={this.selectForEdit}
                     getResponse={this.clickValidation}
                     btnClick={this.btnClick}
-                />
+                /> */}
             </UserStyles>
         );
     }
