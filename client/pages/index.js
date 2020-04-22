@@ -50,6 +50,11 @@ class Home extends Component {
     }
 
     componentDidMount() {
+        const usersRef = firebase.database().ref('users');
+        usersRef.on('value', (snapshot) => {
+          let users = snapshot.val();
+          console.log(users);
+        });
     }
 
     logout = () =>{
