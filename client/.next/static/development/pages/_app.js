@@ -46390,7 +46390,9 @@ var Meta = function Meta() {
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("meta", {
     name: "robots",
     content: "noindex"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("title", null, "Enigma DGWWP App"));
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("title", null, "Enigma DGWWP App"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
+    src: "https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"
+  }));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Meta);

@@ -4,15 +4,8 @@ import { addCookie, getCookie } from './session';
 import { apiGet, apiPost } from '../lib/api';
 
 export const login = async (id) => {
-
     addCookie({}, 'user', `${id}`);
-    // redirect('/login');
-
-    // console.log("test" + test);
-    // if (response) {
-    //     login();
-    // }
-    // redirect('/');
+    redirect('/');
 };
 
 export const adminLogin = (email, password) => {

@@ -69,26 +69,26 @@ const OptionsWrapper = styled.div`
 `;
 
 class Options extends Component {
-    // componentDidMount() {
-    //     $.fn.isInViewport = function () {
-    //         const elementTop = $(this).offset().top;
-    //         const elementBottom = elementTop + $(this).outerHeight();
+    componentDidMount() {
+        $.fn.isInViewport = function () {
+            const elementTop = $(this).offset().top;
+            const elementBottom = elementTop + $(this).outerHeight();
 
-    //         const viewportTop = $(window).scrollTop();
-    //         const viewportBottom = viewportTop + $(window).height();
+            const viewportTop = $(window).scrollTop();
+            const viewportBottom = viewportTop + $(window).height();
 
-    //         return elementBottom > viewportTop && elementTop < viewportBottom;
-    //     };
+            return elementBottom > viewportTop && elementTop < viewportBottom;
+        };
 
-    //     $('.optionsWrapper').each(function () {
-    //         if ($(this).isInViewport()) {
-    //             console.log('in view');
-    //             $(this).addClass('inView');
-    //         } else {
-    //             $(this).removeClass('inView');
-    //         }
-    //     });
-    // }
+        $('.optionsWrapper').each(function () {
+            if ($(this).isInViewport()) {
+                console.log('in view');
+                $(this).addClass('inView');
+            } else {
+                $(this).removeClass('inView');
+            }
+        });
+    }
 
 
     logout = () => {
