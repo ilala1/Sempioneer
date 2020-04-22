@@ -8,8 +8,7 @@ import Header from '../components/Header';
 import { createFlash } from '../lib/flashes';
 import { login, redirectIfAuthenticated } from '../lib/auth';
 import { emailValidate, passwordValidate } from '../lib/validation';
-import { apiPost } from '../lib/api';
-
+import { apiGet, apiPut, apiPost } from '../lib/api';
 import firebase, { auth, provider } from '../../config/config.js';
 
 const LoginStyle = styled.section`
@@ -115,17 +114,18 @@ class Login extends Component {
         this.state = {
             user: [],
             isLoggedIn: false,
-            username: ''
+            username: '',
+            accessToken: ''
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
     }
 
     login = () => {
         const usersRef = firebase.database().ref('users');
         auth.signInWithPopup(provider) 
-            .then((result) => {
+            .then( async (result) => {
                 const user = result.user;
                 console.log(user);
                 login(user.uid)
@@ -133,10 +133,12 @@ class Login extends Component {
                     user,
                     isLoggedIn: true
                 });
+                const accessToken = await apiGet({}, '/accessToken', {});
                 const userObj = {
                     uid: this.state.user.uid,
                     displayName: this.state.user.displayName,
                     email: this.state.user.email,
+                    accessToken,
                     refreshToken: this.state.user.refreshToken
                 }
                 console.log(userObj)

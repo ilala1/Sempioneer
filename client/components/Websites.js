@@ -77,10 +77,6 @@ class Websites extends Component {
 
     async componentDidMount() {
 
-        const accessToken = await apiGet({}, '/accessToken', {});
-        const test = await axios.get('/accessToken');
-
-            console.log(test)
 
         // const userCookie = getCookie({}, 'user');
         // const oneUser = await apiGet({}, '/oneUser', {userCookie});

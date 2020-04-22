@@ -8,7 +8,7 @@ module.exports = (nextApp, expressApp) => {
     const api = `/api/v${process.env.API_VERSION}`;
 
     // Auth
-    expressApp.get('/accessToken', authController.getAccessToken);
+    expressApp.get('/api/accessToken', authController.getAccessToken);
     
     expressApp.post('/api/valid', authController.auth);
 

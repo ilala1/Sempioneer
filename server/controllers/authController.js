@@ -179,8 +179,6 @@ exports.getUser = async (req, res) => {
 
 
 exports.getAccessToken = async (req, res) => {
-  let accessToken;
-
   // Define the required scopes.
   var scopes = [
     "https://www.googleapis.com/auth/userinfo.email",
@@ -202,15 +200,14 @@ exports.getAccessToken = async (req, res) => {
     } else if (tokens.access_token === null) {
       console.log("Provided service account does not have permission to generate access tokens");
     } else {
-      accessToken = tokens.access_token;
+      const accessToken = tokens.access_token;
       console.log(accessToken);
+      res.send(accessToken)
       // See the "Using the access token" section below for information
       // on how to use the access token to send authenticated requests to
       // the Realtime Database REST API.
     }
   });
-  // res.send(accessToken)
-  return accessToken;
 }
 
 
