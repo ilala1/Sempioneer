@@ -9,8 +9,6 @@ import Nav from '../components/Nav';
 import Header from '../components/Header';
 import Options from '../components/Options';
 
-import firebase, { auth, provider } from '../../config/config.js';
-
 const HomeStyle = styled.section`
     display: flex;
     justify-content: center;
@@ -49,12 +47,16 @@ class Home extends Component {
         };
     }
 
-    componentDidMount() {
-        const usersRef = firebase.database().ref('users');
-        usersRef.on('value', (snapshot) => {
-          let users = snapshot.val();
-          console.log(users);
-        });
+    async componentDidMount() {
+
+        const user = await apiPost({}, '/newUser', {});
+
+
+        // const usersRef = firebase.database().ref('users');
+        // usersRef.on('value', (snapshot) => {
+        //   let users = snapshot.val();
+        //   console.log(users);
+        // });
     }
 
     logout = () =>{

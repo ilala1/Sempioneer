@@ -9,7 +9,7 @@ import { createFlash } from '../lib/flashes';
 import { login, redirectIfAuthenticated } from '../lib/auth';
 import { emailValidate, passwordValidate } from '../lib/validation';
 import { apiGet, apiPut, apiPost } from '../lib/api';
-import firebase, { auth, provider } from '../../config/config.js';
+// import firebase, { auth, provider } from '../../config/config.js';
 
 const LoginStyle = styled.section`
     background-image: url('../static/images/login-bg.jpg');
@@ -123,7 +123,7 @@ class Login extends Component {
     }
 
     login = () => {
-        const usersRef = firebase.database().ref('users');
+        // const usersRef = firebase.database().ref('users');
         auth.signInWithPopup(provider) 
             .then( async (result) => {
                 const user = result.user;
@@ -142,12 +142,12 @@ class Login extends Component {
                     refreshToken: this.state.user.refreshToken
                 }
                 console.log(userObj)
-                usersRef.push(userObj).then(function(){
-                    console.log('success')
-                }).
-                catch(function(error){
-                        console.log(error);
-                });
+                // usersRef.push(userObj).then(function(){
+                //     console.log('success')
+                // }).
+                // catch(function(error){
+                //         console.log(error);
+                // });
         });
     }
 

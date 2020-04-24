@@ -3,10 +3,13 @@ require('../models/User');
 const mongoose = require('mongoose');
 const request = require('request');
 const axios = require('axios');
+const admin = require('firebase-admin');
 
 const {google} = require("googleapis");
-
 var serviceAccount = require("../lib/serviceAccountKey.json");
+
+
+require('../lib/config.js')
 
 const User = mongoose.model('User');
 
@@ -177,6 +180,7 @@ exports.getUser = async (req, res) => {
 
 }
 
+//firebase
 
 exports.getAccessToken = async (req, res) => {
   // Define the required scopes.
@@ -207,6 +211,19 @@ exports.getAccessToken = async (req, res) => {
       // on how to use the access token to send authenticated requests to
       // the Realtime Database REST API.
     }
+  });
+}
+
+exports.newUser = async (req, res) => {
+  let db = admin.firestore();
+
+  let pizzaRef = db.collection('users').doc('pizza');
+
+  let setPizza = pizzaRef.set({
+    'first': 'Alan',
+    'middle': 'Mathison',
+    'last': 'Turing',
+    'born': 1912
   });
 }
 

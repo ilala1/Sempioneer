@@ -31,7 +31,7 @@
         "express": "^4.16.4",
         "express-react-views": "^0.11.0",
         "firebase": "^7.14.0",
-        "firebase-admin": "^8.10.0",
+        "firebase-admin": "^8.11.0",
         "fs": "0.0.1-security",
         "fuse.js": "^3.4.2",
         "googleapis": "^45.0.0",

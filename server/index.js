@@ -9,6 +9,9 @@ const path = require('path');
 const util = require('util');
 
 const routes = require('./routes');
+const admin = require('firebase-admin');
+var serviceAccount = require("./lib/serviceAccountKey.json");
+
 
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -22,20 +25,28 @@ nextApp
     .prepare()
     .then(() => {
     // Database
-        const dbString = `mongodb://${
-            process.env.DB_USER && process.env.DB_PASS
-                ? `${process.env.DB_USER}:${encodeURIComponent(process.env.DB_PASS)}@`
-                : ''
-        }localhost:27017/${process.env.DB_NAME}`;
-        mongoose.connect(process.env.DATABASE || dbString, {
-            useNewUrlParser: true,
-            useCreateIndex: true,
-        });
 
-        mongoose.connection.on('error', (err) => {
-            console.error(err);
-            process.exit(1);
+    if (!admin.apps.length) {
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount)
         });
+      }
+
+
+        // const dbString = `mongodb://${
+        //     process.env.DB_USER && process.env.DB_PASS
+        //         ? `${process.env.DB_USER}:${encodeURIComponent(process.env.DB_PASS)}@`
+        //         : ''
+        // }localhost:27017/${process.env.DB_NAME}`;
+        // mongoose.connect(process.env.DATABASE || dbString, {
+        //     useNewUrlParser: true,
+        //     useCreateIndex: true,
+        // });
+
+        // mongoose.connection.on('error', (err) => {
+        //     console.error(err);
+        //     process.exit(1);
+        // });
 
         // Express
         const expressApp = express();
