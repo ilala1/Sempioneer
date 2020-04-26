@@ -78,14 +78,28 @@ class Websites extends Component {
     async componentDidMount() {
 
 
-        // const userCookie = getCookie({}, 'user');
-        // const oneUser = await apiGet({}, '/oneUser', {userCookie});
-        // this.setState({
-        //     user: oneUser._id,
-        //     userObject: oneUser
-        // })
+        const userCookie = getCookie({}, 'user');
+        const oneUser = await apiGet({}, '/oneUser', {userCookie});
+        
+        console.log(oneUser.accessToken);
+        this.setState({
+            user: oneUser.uid,
+            userObject: oneUser
+        })
+        const userID = this.state.userObject;
+
+
+
+
+        const accessToken = await apiGet({}, '/accessToken', {});
+        console.log(accessToken)
+
+
+
+
+
         // const getWebsitesFromAPI = axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
-        //     "Access_Token": oneUser.access_token,
+        //     "Access_Token": oneUser.accessToken,
         //     "Refresh_Token": "three",
         //     "Client_Secret": "two",
         //     "Authorization_Code": "one"
@@ -93,36 +107,36 @@ class Websites extends Component {
         // .then((res) => {
         //     console.log('testing');
         //     console.log(res);
-        //   const WebsiteList = res.data.siteEntry;
-        //   let userObj = {};
-        //   for(var i = 0; i < WebsiteList.length; i++) {
-        //         WebsiteList[i].id = this.state.user;
-        //         if (WebsiteList[i].permissionLevel === 'siteUnverifiedUser') {
-        //             WebsiteList.splice(i, 1); 
-        //         }
-        //         userObj = {
-        //             id: this.state.user,
-        //             data: WebsiteList
-        //         }
-        //     }
-        //     // console.log();
-        //     this.addWebsite(userObj);
-        //     this.setState({
-        //         loading: false,
-        //         dtTitles,
-        //         dtData: this.createDataTable(userObj),
-        //     });
+        // //   const WebsiteList = res.data.siteEntry;
+        // //   let userObj = {};
+        // //   for(var i = 0; i < WebsiteList.length; i++) {
+        // //         WebsiteList[i].id = this.state.user;
+        // //         if (WebsiteList[i].permissionLevel === 'siteUnverifiedUser') {
+        // //             WebsiteList.splice(i, 1); 
+        // //         }
+        // //         userObj = {
+        // //             id: this.state.user,
+        // //             data: WebsiteList
+        // //         }
+        // //     }
+
+        // //     // this.addWebsite(userObj);
+        // //     this.setState({
+        // //         loading: false,
+        // //         dtTitles,
+        // //         dtData: this.createDataTable(userObj),
+        // //     });
         // })
         // .catch((error) => {
         //     console.error('No website due to error (old access code maybe)');
-        //     const userID = this.state.user;
-        //     this.updateTokens(userID);
-        //     console.error(error)
+        //     // const userID = this.state.user;
+        //     // this.updateTokens(userID);
+        //     // console.error(error)
         // })
     }
 
-    updateTokens = async (userID) => {
-       const status = await apiPost({}, '/refreshTokens', {userID});
+    updateTokens = async (user) => {
+       const status = await apiPost({}, '/refreshTokens', {user});
 
        console.log(status);
        if (status === 'OK') {

@@ -14,6 +14,14 @@ module.exports = (nextApp, expressApp) => {
 
     expressApp.get('/api/accessToken', authController.getAccessToken);
     
+
+    expressApp.get('/api/oneUser', authController.getUser);
+
+
+
+
+
+
     expressApp.post('/api/valid', authController.auth);
 
     // Nomination tasks
@@ -35,7 +43,7 @@ module.exports = (nextApp, expressApp) => {
 
     expressApp.get('/api/index', authController.access);
 
-    expressApp.get('/api/oneUser', authController.getUser);
+
 
   
 

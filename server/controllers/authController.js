@@ -39,10 +39,24 @@ const mongoErrors = (user, error) => {
 //firebase
 
 exports.getAccessToken = async (req, res) => {
+
+
+
+
   // Define the required scopes.
   var scopes = [
-    "https://www.googleapis.com/auth/userinfo.email",
-    "https://www.googleapis.com/auth/firebase.database"
+    'https://www.googleapis.com/auth/firebase.database',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/webmasters',
+    'https://www.googleapis.com/auth/analytics.readonly',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/drive.appdata',
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive.metadata',
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/presentations',
+    'https://www.googleapis.com/auth/documents'
   ];
 
   // Authenticate a JWT client with the service account.
@@ -61,7 +75,7 @@ exports.getAccessToken = async (req, res) => {
       console.log("Provided service account does not have permission to generate access tokens");
     } else {
       const accessToken = tokens.access_token;
-      console.log(accessToken);
+      console.log(tokens);
       res.send(accessToken)
       // See the "Using the access token" section below for information
       // on how to use the access token to send authenticated requests to
@@ -86,6 +100,35 @@ exports.newUser = async (req, res) => {
     refreshToken: userObj.refreshToken
   });
   
+}
+
+exports.getUser = async (req, res) => {
+  let db = admin.firestore();
+  const userID = req.query.userCookie;
+  let usersRef = db.collection('users');
+  let queryRef = await usersRef.where('uid', '==', userID).get()
+  .then(snapshot => {
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }  
+
+    snapshot.forEach(doc => {
+      const user = doc.data();
+      res.send(user);
+    });
+  })
+  .catch(err => {
+    console.log('Error getting documents', err);
+  });
+
+  // try {
+  //   const oneUser = await User.findOne({ _id: userID });
+  // } catch (error) {
+  //     console.error(error)
+  //     return
+  // }
+
 }
 
 
@@ -121,7 +164,6 @@ exports.auth = async (req, res) => {
       scope: scope
     });
     console.log(url);
-    res.send(url);
 };
 
 exports.access = async (req, res) => {
@@ -196,7 +238,8 @@ exports.refreshTokens = async (req, res) => {
   const OAuth2 = google.auth.OAuth2;
 
   const userID = req.body.userID;
-  const user = await User.findOne({ _id: userID });
+  console.log(userID);
+  // const user = await User.findOne({ _id: userID });
 
   const oauth2Client = new OAuth2(
     '1056569297986-ghu1ojg1bedpfpghh4k9at82ngoajg1i.apps.googleusercontent.com',
@@ -204,32 +247,19 @@ exports.refreshTokens = async (req, res) => {
     'http://localhost:3000'
   );
   
-  oauth2Client.setCredentials({
-    refresh_token:
-      user.refresh_token
-  });
+  // oauth2Client.setCredentials({
+  //   refresh_token:
+  //     userID.refresh_token
+  // });
 
-  const newAccessToken = await oauth2Client.getAccessToken(); 
-  user.access_token = newAccessToken.token;
+  // const newAccessToken = await oauth2Client.getAccessToken(); 
+  // user.access_token = newAccessToken.token;
 
-  try {
-    await user.save();
-    res.send(status)
-  } catch (error) {
-      return { error: mongoErrors(user, error) };
-  }
+  // try {
+  //   await user.save();
+  //   res.send(status)
+  // } catch (error) {
+  //     return { error: mongoErrors(user, error) };
+  // }
 }
-
-exports.getUser = async (req, res) => {
-  const userID = req.query.userCookie;
-  try {
-    const oneUser = await User.findOne({ _id: userID });
-    res.send(oneUser);
-  } catch (error) {
-      console.error(error)
-      return
-  }
-
-}
-
 
