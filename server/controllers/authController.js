@@ -7,9 +7,7 @@ const admin = require('firebase-admin');
 
 const {google} = require("googleapis");
 var serviceAccount = require("../lib/serviceAccountKey.json");
-
-
-require('../lib/config.js')
+// require('../lib/config.js')
 
 const User = mongoose.model('User');
 
@@ -38,6 +36,60 @@ const mongoErrors = (user, error) => {
   return errorMessage;
 };
 
+//firebase
+
+exports.getAccessToken = async (req, res) => {
+  // Define the required scopes.
+  var scopes = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/firebase.database"
+  ];
+
+  // Authenticate a JWT client with the service account.
+  var jwtClient = new google.auth.JWT(
+    serviceAccount.client_email,
+    null,
+    serviceAccount.private_key,
+    scopes
+  );
+
+  // Use the JWT client to generate an access token.
+  jwtClient.authorize(function(error, tokens) {
+    if (error) {
+      console.log("Error making request to generate access token:", error);
+    } else if (tokens.access_token === null) {
+      console.log("Provided service account does not have permission to generate access tokens");
+    } else {
+      const accessToken = tokens.access_token;
+      console.log(accessToken);
+      res.send(accessToken)
+      // See the "Using the access token" section below for information
+      // on how to use the access token to send authenticated requests to
+      // the Realtime Database REST API.
+    }
+  });
+}
+
+exports.newUser = async (req, res) => {
+  let db = admin.firestore();
+  
+  console.log(req.body.userObj);
+  const userObj = req.body.userObj
+
+  let userRef = db.collection('users').doc(userObj.email);
+
+  let setUser = userRef.set({
+    uid: userObj.uid,
+    displayName: userObj.displayName,
+    email: userObj.email,
+    accessToken: userObj.accessToken,
+    refreshToken: userObj.refreshToken
+  });
+  
+}
+
+
+// old stuff
 exports.auth = async (req, res) => {
   console.log('valid!');
     const result = {};
@@ -178,53 +230,6 @@ exports.getUser = async (req, res) => {
       return
   }
 
-}
-
-//firebase
-
-exports.getAccessToken = async (req, res) => {
-  // Define the required scopes.
-  var scopes = [
-    "https://www.googleapis.com/auth/userinfo.email",
-    "https://www.googleapis.com/auth/firebase.database"
-  ];
-
-  // Authenticate a JWT client with the service account.
-  var jwtClient = new google.auth.JWT(
-    serviceAccount.client_email,
-    null,
-    serviceAccount.private_key,
-    scopes
-  );
-
-  // Use the JWT client to generate an access token.
-  jwtClient.authorize(function(error, tokens) {
-    if (error) {
-      console.log("Error making request to generate access token:", error);
-    } else if (tokens.access_token === null) {
-      console.log("Provided service account does not have permission to generate access tokens");
-    } else {
-      const accessToken = tokens.access_token;
-      console.log(accessToken);
-      res.send(accessToken)
-      // See the "Using the access token" section below for information
-      // on how to use the access token to send authenticated requests to
-      // the Realtime Database REST API.
-    }
-  });
-}
-
-exports.newUser = async (req, res) => {
-  let db = admin.firestore();
-
-  let pizzaRef = db.collection('users').doc('pizza');
-
-  let setPizza = pizzaRef.set({
-    'first': 'Alan',
-    'middle': 'Mathison',
-    'last': 'Turing',
-    'born': 1912
-  });
 }
 
 

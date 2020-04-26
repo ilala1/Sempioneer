@@ -48,10 +48,6 @@ class Home extends Component {
     }
 
     async componentDidMount() {
-
-        const user = await apiPost({}, '/newUser', {});
-
-
         // const usersRef = firebase.database().ref('users');
         // usersRef.on('value', (snapshot) => {
         //   let users = snapshot.val();
