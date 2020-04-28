@@ -1,7 +1,7 @@
 // import React, { Component } from 'react'
 import Chart from "chart.js";
 import { Line } from 'react-chartjs-2';
-
+import pagesData from '../data/users/desired_format.json';
 import { apiGet, apiPut, apiPost } from '../lib/api';
 
 export default class LineChart extends React.Component {
@@ -17,9 +17,13 @@ export default class LineChart extends React.Component {
     // }
   
     async componentDidMount() {
-      const siteURL = localStorage.getItem('siteURL');
-      const get = await apiGet({}, '/pagesdata', {siteURL});
-      console.log(get);
+
+      console.log(pagesData.data);
+
+      
+      // const siteURL = localStorage.getItem('siteURL');
+      // const get = await apiGet({}, '/pagesdata', {siteURL});
+      // console.log(get);
 
       this.myChart = new Chart(this.chartRef.current, {
         type: 'line',

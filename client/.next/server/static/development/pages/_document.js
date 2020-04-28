@@ -152,6 +152,10 @@ function (_Document) {
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("html", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_document__WEBPACK_IMPORTED_MODULE_1__["Head"], null, this.props.styleTags), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("body", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_document__WEBPACK_IMPORTED_MODULE_1__["Main"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_document__WEBPACK_IMPORTED_MODULE_1__["NextScript"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
         src: "https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
+        src: "https://www.gstatic.com/firebasejs/7.8.0/firebase-app.js"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
+        src: "https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"
       })));
     }
   }], [{

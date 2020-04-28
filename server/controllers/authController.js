@@ -39,16 +39,13 @@ const mongoErrors = (user, error) => {
 //firebase
 
 exports.getAccessToken = async (req, res) => {
-
-
-
-
   // Define the required scopes.
   var scopes = [
     'https://www.googleapis.com/auth/firebase.database',
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/webmasters',
+    'https://www.googleapis.com/auth/webmasters.readonly',
     'https://www.googleapis.com/auth/analytics.readonly',
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/drive.appdata',
@@ -75,7 +72,10 @@ exports.getAccessToken = async (req, res) => {
       console.log("Provided service account does not have permission to generate access tokens");
     } else {
       const accessToken = tokens.access_token;
+
       console.log(tokens);
+
+      
       res.send(accessToken)
       // See the "Using the access token" section below for information
       // on how to use the access token to send authenticated requests to
@@ -148,6 +148,7 @@ exports.auth = async (req, res) => {
     // generate a url that asks permissions for user info and GSC scopes
     const scope = ['https://www.googleapis.com/auth/userinfo.profile',
                   'https://www.googleapis.com/auth/webmasters',
+                  'https://www.googleapis.com/auth/webmasters.readonly',
                   'https://www.googleapis.com/auth/analytics.readonly',
                   'https://www.googleapis.com/auth/drive',
                   'https://www.googleapis.com/auth/drive.appdata',

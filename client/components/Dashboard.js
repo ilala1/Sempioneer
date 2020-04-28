@@ -576,7 +576,7 @@ class Dashboard extends Component {
                     </div> */}
                 </div>
                 <Chart
-                    siteURL={this.siteURL}
+                    siteURL='https://phoenixandpartners.co.uk/'
                 />
 
                 <DataTable

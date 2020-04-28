@@ -19,6 +19,8 @@ export default class MyDocument extends Document {
                     <Main />
                     <NextScript />
                     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+                    <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-app.js"></script>
+                    <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
                 </body>
             </html>
         );

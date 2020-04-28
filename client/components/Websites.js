@@ -88,15 +88,8 @@ class Websites extends Component {
         })
         const userID = this.state.userObject;
 
-
-
-
         const accessToken = await apiGet({}, '/accessToken', {});
         console.log(accessToken)
-
-
-
-
 
         // const getWebsitesFromAPI = axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
         //     "Access_Token": oneUser.accessToken,
