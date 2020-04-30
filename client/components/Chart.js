@@ -8,7 +8,14 @@ import { apiGet, apiPut, apiPost } from '../lib/api';
 export default class LineChart extends React.Component {
     constructor(props) {
       super(props);
-      this.chartRef = React.createRef();
+	  this.chartRef = React.createRef();
+	//   this.state = {
+	// 		averageCTRVisible: {props.averageCTRVisible},
+	// 		averagePositionVisible: false,
+	// 		clicksVisible: true,
+	// 		impressionsVisible: true,
+	// 		chkbox: true
+	// 	};
     }
   
     async componentDidMount() {    
@@ -63,8 +70,6 @@ export default class LineChart extends React.Component {
 			//create X axis labels for chart
 			xAxis.push(chartFiguresArr[j].date)
 
-
-
 			clickData.push(chartFiguresArr[j].figures[0]);
 			impressionData.push(chartFiguresArr[j].figures[1])
 			ctrData.push(chartFiguresArr[j].figures[2])
@@ -72,8 +77,7 @@ export default class LineChart extends React.Component {
 		}
 
 
-
-
+		console.log('clicks : ' + this.props.clicksVisible, 'impressions : ' + this.props.impressionsVisible, 'ctr : ' + this.props.averageCTRVisible, 'position : ' + this.props.averagePositionVisible)
       this.myChart = new Chart(this.chartRef.current, {
         type: 'line',
         data: {
@@ -97,7 +101,8 @@ export default class LineChart extends React.Component {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: clickData
+			data: clickData,
+			hidden: !this.props.clicksVisible
           },{
             label: 'Impressions',
             fill: false,
@@ -117,7 +122,8 @@ export default class LineChart extends React.Component {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: impressionData
+			data: impressionData,
+			hidden: !this.props.impressionsVisible
 		  },{
             label: 'CTR',
             fill: false,
@@ -137,7 +143,8 @@ export default class LineChart extends React.Component {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: ctrData
+			data: ctrData,
+			hidden: !this.props.averageCTRVisible
 		  },{
             label: 'Position',
             fill: false,
@@ -157,10 +164,17 @@ export default class LineChart extends React.Component {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: positionData
-		  }
-		]
-        }
+			data: positionData,
+			hidden: !this.props.averagePositionVisible
+		  }]
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: true,
+			legend: {
+				onClick: (e) => e.stopPropagation()
+			}
+		}
       });
 	}
 
@@ -185,13 +199,41 @@ export default class LineChart extends React.Component {
   }
   
     componentDidUpdate() {
-      // get all the values here
-      const {averageCTRVisible, averagePositionVisible, clicksVisible, impressionsVisible} = this.props
+		// get all the values here
+		const {averageCTRVisible, averagePositionVisible, clicksVisible, impressionsVisible} = this.props
 
+const myChart = this.myChart;
+
+		const chartDataSets = this.myChart.data.datasets;
+
+			for (let c = 0; c < chartDataSets.length; c++) {
+				const element = chartDataSets[c];
+
+				switch(element.label) {
+					case "Clicks":
+						element.hidden = !clicksVisible
+						this.myChart.update();
+					  break;
+					case "Impressions":
+						element.hidden = !impressionsVisible
+						this.myChart.update();
+					  break;
+					case "CTR":
+						element.hidden = !averageCTRVisible
+						this.myChart.update();
+					  break;
+					case "Position":
+						element.hidden = !averagePositionVisible
+						this.myChart.update();
+					  break;
+					default:
+					  // code block
+				  }
+				}
     }
 
     render() {
-      return <canvas ref={this.chartRef} />;
+      return <canvas ref={this.chartRef} id='dataChart' />;
       <div id="root"></div>
     }
   }
