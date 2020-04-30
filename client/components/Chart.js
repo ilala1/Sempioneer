@@ -18,40 +18,39 @@ export default class LineChart extends React.Component {
 	// 	};
     }
   
-    async componentDidMount() {    
+    async componentDidMount() {  
+
+		this.displayChart(this.props.month);
+	}
+
+	displayChart = (month) => {
 		let filteredDates;
-		let totalClicks = 0;
-        let totalImpressions = 0;
-        let sumOfCTR = 0;
-        let sumOfPositions = 0;
-		
-		// add up all values from all pages on specific date
-		const data = pagesData.data;
-
-		// get date X months before today
-		var d = new Date();
-		d.setMonth(d.getMonth() - 6);
-
-		const dateX_monthsago = this.convert(d);
-
-		// loop through all data to get specific dates data
-		for (let i = 0; i < data.length; i++) {
-			const element = data[i];
-
-			const allDates = element.data;
-			const todaysDate = new Date(Date.now()).toLocaleString();
-
-			// specific data for required time frame  (3/6 months)
-			filteredDates = this.getDates(allDates, todaysDate, dateX_monthsago);
-		}
-
 		let xAxis = [];
 		let filteredDatesArr = [];
 		let clickData = [];
 		let impressionData = [];
 		let ctrData = [];
 		let positionData = [];
+		
+		// add up all values from all pages on specific date
+		const data = pagesData.data;
 
+		// get date X months before today
+		var d = new Date();
+		console.log
+		d.setMonth(d.getMonth() - month);
+
+		const dateX_monthsago = this.formatDate(d);
+
+		// loop through all data to get specific dates data
+		for (let i = 0; i < data.length; i++) {
+			const element = data[i];
+
+			const allDates = element.data;
+
+			// specific data for required time frame  (3/6 months)
+			filteredDates = this.getDates(allDates, dateX_monthsago);
+		}
 
 		// loop through figures of 3months and add up for each
 		for (let f = 0; f < filteredDates.length; f++) {
@@ -76,117 +75,121 @@ export default class LineChart extends React.Component {
 			positionData.push(chartFiguresArr[j].figures[3])
 		}
 
-
-		console.log('clicks : ' + this.props.clicksVisible, 'impressions : ' + this.props.impressionsVisible, 'ctr : ' + this.props.averageCTRVisible, 'position : ' + this.props.averagePositionVisible)
-      this.myChart = new Chart(this.chartRef.current, {
-        type: 'line',
-        data: {
-            labels: xAxis,
-            datasets: [{
-            label: 'Clicks',
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: 'rgba(75,192,192,0.4)',
-            borderColor: 'rgba(75,192,192,1)',
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: 'rgba(75,192,192,1)',
-            pointBackgroundColor: '#fff',
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-            pointHoverBorderColor: 'rgba(220,220,220,1)',
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
-			data: clickData,
-			hidden: !this.props.clicksVisible
-          },{
-            label: 'Impressions',
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: 'rgba(75,192,192,0.4)',
-            borderColor: 'rgba(75,192,192,1)',
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: 'rgba(75,192,192,1)',
-            pointBackgroundColor: '#fff',
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-            pointHoverBorderColor: 'rgba(220,220,220,1)',
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
-			data: impressionData,
-			hidden: !this.props.impressionsVisible
-		  },{
-            label: 'CTR',
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: 'rgba(75,192,192,0.4)',
-            borderColor: 'rgba(75,192,192,1)',
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: 'rgba(75,192,192,1)',
-            pointBackgroundColor: '#fff',
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-            pointHoverBorderColor: 'rgba(220,220,220,1)',
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
-			data: ctrData,
-			hidden: !this.props.averageCTRVisible
-		  },{
-            label: 'Position',
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: 'rgba(75,192,192,0.4)',
-            borderColor: 'rgba(75,192,192,1)',
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: 'rgba(75,192,192,1)',
-            pointBackgroundColor: '#fff',
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-            pointHoverBorderColor: 'rgba(220,220,220,1)',
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
-			data: positionData,
-			hidden: !this.props.averagePositionVisible
-		  }]
-		},
-		options: {
-			responsive: true,
-			maintainAspectRatio: true,
-			legend: {
-				onClick: (e) => e.stopPropagation()
-			}
-		}
-      });
+		// Create Chart with data provided
+		this.createChart(xAxis, clickData, impressionData, ctrData, positionData)
 	}
 
-	
-	convert = (str) => {
+	createChart = (xAxis, clickData, impressionData, ctrData, positionData) => {
+		this.myChart = new Chart(this.chartRef.current, {
+			type: 'line',
+			data: {
+				labels: xAxis,
+				datasets: [{
+				label: 'Clicks',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(75,192,192,0.4)',
+				borderColor: 'rgba(75,192,192,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(75,192,192,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: clickData,
+				hidden: !this.props.clicksVisible
+			  },{
+				label: 'Impressions',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(75,192,192,0.4)',
+				borderColor: 'rgba(75,192,192,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(75,192,192,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: impressionData,
+				hidden: !this.props.impressionsVisible
+			  },{
+				label: 'CTR',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(75,192,192,0.4)',
+				borderColor: 'rgba(75,192,192,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(75,192,192,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: ctrData,
+				hidden: !this.props.averageCTRVisible
+			  },{
+				label: 'Position',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(75,192,192,0.4)',
+				borderColor: 'rgba(75,192,192,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(75,192,192,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: positionData,
+				hidden: !this.props.averagePositionVisible
+			  }]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: true,
+				legend: {
+					onClick: (e) => e.stopPropagation()
+				}
+			}
+		  });
+	}
+
+	// formats date from Thu Jan 30 2020 19:54:37 GMT+0000 - 2020-01-30
+	formatDate = (str) => {
 		var date = new Date(str),
 		mnth = ("0" + (date.getMonth() + 1)).slice(-2),
 		day = ("0" + date.getDate()).slice(-2);
 		return [date.getFullYear(), mnth, day].join("-");
 	}
 
-    getDates = (array, startDate, stopDate) => {
+	// gets dates before stop date from all data
+    getDates = (array, stopDate) => {
 		let all = [];
 		for (let j = 0; j < array.length; j++) {
 			const element = array[j];
@@ -194,42 +197,45 @@ export default class LineChart extends React.Component {
 				all.push(element)
 			}
 		}
-
 		return all;
-  }
+  	}
   
     componentDidUpdate() {
-		// get all the values here
-		const {averageCTRVisible, averagePositionVisible, clicksVisible, impressionsVisible} = this.props
-
-const myChart = this.myChart;
-
+		// get all the values from props
+		const {month, averageCTRVisible, averagePositionVisible, clicksVisible, impressionsVisible} = this.props
 		const chartDataSets = this.myChart.data.datasets;
 
-			for (let c = 0; c < chartDataSets.length; c++) {
-				const element = chartDataSets[c];
+		if (month === '6') {
+			this.displayChart(6);
+		} else {
+			this.displayChart(3);
+		}
 
-				switch(element.label) {
-					case "Clicks":
-						element.hidden = !clicksVisible
-						this.myChart.update();
-					  break;
-					case "Impressions":
-						element.hidden = !impressionsVisible
-						this.myChart.update();
-					  break;
-					case "CTR":
-						element.hidden = !averageCTRVisible
-						this.myChart.update();
-					  break;
-					case "Position":
-						element.hidden = !averagePositionVisible
-						this.myChart.update();
-					  break;
-					default:
-					  // code block
-				  }
-				}
+
+		for (let c = 0; c < chartDataSets.length; c++) {
+			const element = chartDataSets[c];
+
+			switch(element.label) {
+				case "Clicks":
+					element.hidden = !clicksVisible
+					this.myChart.update();
+					break;
+				case "Impressions":
+					element.hidden = !impressionsVisible
+					this.myChart.update();
+					break;
+				case "CTR":
+					element.hidden = !averageCTRVisible
+					this.myChart.update();
+					break;
+				case "Position":
+					element.hidden = !averagePositionVisible
+					this.myChart.update();
+					break;
+				default:
+					// code block
+			}
+		}
     }
 
     render() {

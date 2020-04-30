@@ -29,11 +29,6 @@ const monthOptions = monthNames.map(access => ({
     label: access.title,
 }));
 
-monthOptions.unshift({
-    value: 'all',
-    label: 'Select one',
-});
-
 const dtAllTitles = [{
     key: '0',
     type: 'string',
@@ -146,7 +141,7 @@ class Dashboard extends Component {
             siteUrl: [],
             permissionLevel: [],
             loading: true,
-            month: '',
+            month: '3 months',
             dtTitles: [],
             dtData: [],
             editable: 'true',
@@ -162,6 +157,9 @@ class Dashboard extends Component {
         // testing remote js file code
         // test();
         // end remote js file test
+
+console.log(this.state.month)
+
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
         this.setState({
@@ -547,6 +545,8 @@ class Dashboard extends Component {
 
     monthState = async (e) => {
         this.setState({ month: e.target.value });
+
+        console.log(e.target.value)
     };
 
     render() {
@@ -594,6 +594,7 @@ class Dashboard extends Component {
                     averagePositionVisible={this.state.averagePositionVisible}
                     clicksVisible={this.state.clicksVisible}
                     impressionsVisible={this.state.impressionsVisible}
+                    month={this.state.month}
                 />
 
                 <DataTable
