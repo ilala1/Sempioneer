@@ -3,6 +3,7 @@ import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
 
 import pagesData from '../data/users/desired_format.json';
+import monthNames from '../data/users/month.json';
 
 var uniqid = require('uniqid');
 
@@ -23,6 +24,15 @@ import { test } from '../lib/gsc';
 import { createFlash } from '../lib/flashes';
 import websites from '../pages/websites';
 
+const monthOptions = monthNames.map(access => ({
+    value: access.id,
+    label: access.title,
+}));
+
+monthOptions.unshift({
+    value: 'all',
+    label: 'Select one',
+});
 
 const dtAllTitles = [{
     key: '0',
@@ -46,7 +56,7 @@ const dtAllTitles = [{
 const dtTitles = [{
     key: '0',
     type: 'string',
-    label: 'URLt',
+    label: 'URL',
 }, {
     key: '1',
     type: 'string',
@@ -60,8 +70,6 @@ const dtTitles = [{
     type: 'string',
     label: 'Test',
 }];
-
-
 
 const UserStyles = styled.aside`
     width:100%;
@@ -138,10 +146,11 @@ class Dashboard extends Component {
             siteUrl: [],
             permissionLevel: [],
             loading: true,
+            month: '',
             dtTitles: [],
             dtData: [],
             editable: 'true',
-            averageCtaVisible: false,
+            averageCTRVisible: false,
             averagePositionVisible: false,
             clicksVisible: true,
             impressionsVisible: true,
@@ -151,7 +160,7 @@ class Dashboard extends Component {
 
     async componentDidMount() {
         // testing remote js file code
-        test();
+        // test();
         // end remote js file test
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
@@ -296,12 +305,12 @@ class Dashboard extends Component {
 
     filterAverageCTR = async (e) => {
         await this.setState({
-            averageCtaVisible: !this.state.averageCtaVisible
+            averageCTRVisible: !this.state.averageCTRVisible
         });
 
-        let {averageCtaVisible} = this.state;
+        let {averageCTRVisible} = this.state;
 
-        if (averageCtaVisible === true) {
+        if (averageCTRVisible === true) {
             console.log('true')
             
             var index = dtAllTitles.findIndex(x => x.key=="3")
@@ -338,7 +347,7 @@ class Dashboard extends Component {
             })
         }
 
-        if (averageCtaVisible === false) {
+        if (averageCTRVisible === false) {
             console.log('false')
             for (let i = 0; i < dtAllTitles.length; i++) {
                 if(dtAllTitles[i].key === '3') {
@@ -536,6 +545,10 @@ class Dashboard extends Component {
 
     }
 
+    monthState = async (e) => {
+        this.setState({ month: e.target.value });
+    };
+
     render() {
         return (
             <UserStyles>
@@ -564,7 +577,7 @@ class Dashboard extends Component {
                         <input type="checkbox" id="filter-postion" onChange={this.filterAveragePosition} /> 
                     </div>
                     
-                    {/* <div className="filterMonth">
+                    <div className="filterMonth">
                         <Select
                             label="Month"
                             name="monthName"
@@ -573,10 +586,14 @@ class Dashboard extends Component {
                             changeState={this.monthState}
                             errorMessage="Must choose a name"
                         />
-                    </div> */}
+                    </div>
                 </div>
                 <Chart
                     siteURL='https://phoenixandpartners.co.uk/'
+                    averageCTRVisible={this.state.averageCTRVisible}
+                    averagePositionVisible={this.state.averagePositionVisible}
+                    clicksVisible={this.state.clicksVisible}
+                    impressionsVisible={this.state.impressionsVisible}
                 />
 
                 <DataTable

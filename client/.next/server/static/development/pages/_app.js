@@ -291,7 +291,7 @@ var test = function test(ctx) {
   var j = schedule.scheduleJob('0 0 * * *', function () {
     console.log('The answer to life, the universe, and everything!');
   });
-}; // test();
+};
 
 /***/ }),
 
