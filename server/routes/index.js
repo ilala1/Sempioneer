@@ -1,6 +1,4 @@
 const authController = require('../controllers/authController');
-const voteController = require('../controllers/voteController');
-const nominationController = require('../controllers/nominationController');
 const defaultController = require('../controllers/defaultController');
 
 module.exports = (nextApp, expressApp) => {
@@ -23,21 +21,6 @@ module.exports = (nextApp, expressApp) => {
 
 
     expressApp.post('/api/valid', authController.auth);
-
-    // Nomination tasks
-    expressApp.post('/api/nomination', nominationController.newNomination);
-    expressApp.get('/api/nominations', nominationController.getMany);
-
-    expressApp.put('/api/delete/:id', nominationController.deleteOne);
-    expressApp.put('/api/bulk', nominationController.bulkActions);
-
-    expressApp.get('/api/nomination/:id', nominationController.getNomination);
-
-    expressApp.put('/api/nomination/:id', nominationController.updateNomination);
-
-    // Voting
-    expressApp.post('/api/vote', voteController.vote);
-    expressApp.get('/api/allVotes', voteController.getVotes);
 
 
 

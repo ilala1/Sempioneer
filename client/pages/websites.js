@@ -3,11 +3,9 @@ import styled from 'styled-components';
 import Flashes from '../components/Flashes';
 import { apiGet, apiPost } from '../lib/api';
 import { getCookie, removeCookie } from '../lib/session';
-import dataNominees from '../data/users/nominationNames.json';
 
 import { redirectIfNotAuthenticated } from '../lib/auth';
 import { createFlash } from '../lib/flashes';
-import VotingList from '../components/VotingList';
 import Header from '../components/Header';
 import Nav from '../components/Nav';
 import Websites from '../components/Websites';
