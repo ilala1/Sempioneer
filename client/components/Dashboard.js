@@ -2,8 +2,8 @@ import { Component, createRef } from 'react';
 import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
 
-import pagesData from '../data/users/desired_format.json';
-import monthNames from '../data/users/month.json';
+import pagesData from '../data/desired_format.json';
+import monthNames from '../data/month.json';
 
 var uniqid = require('uniqid');
 
@@ -117,6 +117,11 @@ const UserStyles = styled.aside`
         padding: 3rem 0;
     }
 
+    .testBtn {
+        color: #000;
+        text-decoration: none;
+    }
+
     @media only screen and (max-width: 640px) {
 
     }       
@@ -158,7 +163,6 @@ class Dashboard extends Component {
         // test();
         // end remote js file test
 
-console.log(this.state.month)
 
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
@@ -288,7 +292,7 @@ console.log(this.state.month)
                 value: Page.averagePosition,
             }, {
                 key: '5',
-                value: <button>Test</button>
+                value: <button><a className="testBtn" href="/experiment">Test</a></button>
             }],
         }));
         return dtData;

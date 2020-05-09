@@ -2,7 +2,7 @@
 import Chart from "chart.js";
 import moment from 'moment'
 import { Line } from 'react-chartjs-2';
-import pagesData from '../data/users/desired_format.json';
+import pagesData from '../data/desired_format.json';
 import { apiGet, apiPut, apiPost } from '../lib/api';
 
 export default class LineChart extends React.Component {
@@ -31,6 +31,13 @@ export default class LineChart extends React.Component {
 		let impressionData = [];
 		let ctrData = [];
 		let positionData = [];
+		let allPagesAllDates = [];
+
+		let sumOfClicksForChart = 0;
+		let sumOfImpressionsForChart = 0;
+		let sumOfCTRForChart = 0;
+		let sumOfPositionForChart = 0;
+		let groupingDatesWithFigures = {};
 		
 		// add up all values from all pages on specific date
 		const data = pagesData.data;
@@ -45,36 +52,71 @@ export default class LineChart extends React.Component {
 		// loop through all data to get specific dates data
 		for (let i = 0; i < data.length; i++) {
 			const element = data[i];
-
 			const allDates = element.data;
-
+			// loop through allthe dates and add them into an array of all the dates for all the pages
+			for (let j = 0; j < allDates.length; j++) {
+				allPagesAllDates.push(allDates[j])
+			}
 			// specific data for required time frame  (3/6 months)
-			filteredDates = this.getDates(allDates, dateX_monthsago);
+			filteredDates = this.getDates(allPagesAllDates, dateX_monthsago);
 		}
 
-		// loop through figures of 3months and add up for each
+		
+		// loop through figures of 3months create array of all relevant dates with all pages
 		for (let f = 0; f < filteredDates.length; f++) {
 			const filteredDate = filteredDates[f];
 			filteredDatesArr.push(filteredDate);
-			
 		}
 
-		// get every 9th value
-		var chartFiguresArr = filteredDatesArr.filter(function(value, index, Arr) {
-			return index % 9 == 0;
+		// group by date
+		var groupedDatesArray = filteredDatesArr.reduce(function (r, z) {
+			r[z.date] = r[z.date] || [];
+			r[z.date].push(z);
+			return r;
+		}, Object.create(null));
+	
+
+		// need to loop through each key and add up figures for each
+
+		for (let [key, value] of Object.entries(groupedDatesArray)) {			
+			let clicksData = 0;
+			let impressionsData = 0;
+			let ctrData = 0;
+			let positionData = 0;
+
+			// loop through and add all the values for each date
+			for (let b = 0; b < value.length; b++) {
+				clicksData += parseInt(value[b].figures[0]);
+				impressionsData += parseInt(value[b].figures[1]);
+				ctrData += parseInt(value[b].figures[2]);
+				positionData += parseInt(value[b].figures[3]);
+			}
+	
+			// grouping all the dates and their figures into object
+			groupingDatesWithFigures[`${key}`] = [`${clicksData}`, `${impressionsData}`, `${ctrData}`, `${positionData}`];
+		  }
+		
+		let arrOfArraysofAllRelevantDates = Object.entries(groupingDatesWithFigures);
+
+		// Split array into 16
+		var chartFiguresArr = arrOfArraysofAllRelevantDates.filter(function(value, index, Arr) {
+			return index % 5 == 0;
 		});
 
+		// sorting chartFiguresArr array
+		chartFiguresArr.sort((a, b) => (a.date > b.date) ? 1 : -1)
+
+
 		for (let j = 0; j < chartFiguresArr.length; j++) {
-
 			//create X axis labels for chart
-			xAxis.push(chartFiguresArr[j].date)
+			xAxis.push(chartFiguresArr[j][0])
 
-			clickData.push(chartFiguresArr[j].figures[0]);
-			impressionData.push(chartFiguresArr[j].figures[1])
-			ctrData.push(chartFiguresArr[j].figures[2])
-			positionData.push(chartFiguresArr[j].figures[3])
+			// adding all data into arrays
+			clickData.push(chartFiguresArr[j][1][0]);
+			impressionData.push(chartFiguresArr[j][1][1])
+			ctrData.push(chartFiguresArr[j][1][2])
+			positionData.push(chartFiguresArr[j][1][3])
 		}
-
 		// Create Chart with data provided
 		this.createChart(xAxis, clickData, impressionData, ctrData, positionData)
 	}
