@@ -17,6 +17,8 @@ client/.next/pages-manifest.json
 client/.next/static/runtime/webpack.js
 client/.next/static/runtime/webpack.js.map
 
+*compiled.js
+*.js.map
 
 # Runtime data
 pids

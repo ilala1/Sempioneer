@@ -99,7 +99,7 @@ export default class LineChart extends React.Component {
 		// split objects into array of arrays 
 		let arrOfArraysofAllRelevantDates = Object.entries(groupingDatesWithFigures);
 
-		// Split array into 16
+		// Split array into 16 
 		var chartFiguresArr = arrOfArraysofAllRelevantDates.filter(function(value, index, Arr) {
 			return index % 5 == 0;
 		});
