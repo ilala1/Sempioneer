@@ -96,6 +96,7 @@ export default class LineChart extends React.Component {
 			groupingDatesWithFigures[`${key}`] = [`${clicksData}`, `${impressionsData}`, `${ctrData}`, `${positionData}`];
 		  }
 		
+		// split objects into array of arrays 
 		let arrOfArraysofAllRelevantDates = Object.entries(groupingDatesWithFigures);
 
 		// Split array into 16
