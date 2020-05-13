@@ -140,8 +140,8 @@ exports.auth = async (req, res) => {
     // res.send(result);
     const {google} = require('googleapis');
     const oauth2Client = new google.auth.OAuth2(
-      '1056569297986-ghu1ojg1bedpfpghh4k9at82ngoajg1i.apps.googleusercontent.com',
-      'V05FVaiej7AKwoD8BCLhcnuL',
+      '45551424691-5ronoojbj87eftlnu82vcjsqrfo58tln.apps.googleusercontent.com',
+      'NpVNQs7MhXsBdzPT9KyJ--Yt',
       'http://localhost:3000'
     );
     
@@ -165,6 +165,7 @@ exports.auth = async (req, res) => {
       scope: scope
     });
     console.log(url);
+    res.send(url);
 };
 
 exports.access = async (req, res) => {
