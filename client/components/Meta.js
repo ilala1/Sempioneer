@@ -7,7 +7,7 @@ const Meta = () => (
         <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta name="robots" content="noindex" />
 
-        <title>Enigma DGWWP App</title>
+        <title>App</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
         <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
         <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" />
