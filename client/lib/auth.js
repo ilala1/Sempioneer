@@ -8,18 +8,16 @@ export const login = async (id) => {
     redirect('/');
 };
 
-export const adminLogin = (email, password) => {
-    const admin = [email, password];
-    addCookie({}, 'admin', admin);
-    redirect('/nominations');
-};
-
 export const isLoggedIn = (ctx) => {
     const userCookie = getCookie(ctx, 'user');
     const adminCookie = getCookie(ctx, 'admin');
 
     if (userCookie) {
-        return true;
+        if (userCookie === 'undefined') {
+            return false
+        } else {
+            return true;
+        }
     }
 
     if (adminCookie) {
