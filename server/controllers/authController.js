@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const request = require('request');
 const axios = require('axios');
 const admin = require('firebase-admin');
+const uniqid = require('uniqid');
 
 const {google} = require("googleapis");
 var serviceAccount = require("../lib/serviceAccountKey.json");
@@ -133,6 +134,11 @@ exports.getUser = async (req, res) => {
 
 
 // old stuff
+
+exports.getUid = async (req, res) => {
+    res.send(uniqid())
+}
+
 exports.auth = async (req, res) => {
   console.log('valid!');
     const result = {};
@@ -200,7 +206,7 @@ exports.access = async (req, res) => {
             console.error(error)
           })
 
-        updateExistingLoginTokens = await User.findOne({ name: getUserName });
+        // updateExistingLoginTokens = await User.findOne({ name: getUserName });
 
 
         // if user exists in db overwrite tokens or create new
@@ -228,7 +234,7 @@ exports.access = async (req, res) => {
             expiry_date: tokens.expiry_date,
             date: Date.now()
           };
-          (new User(userObj)).save();
+          // (new User(userObj)).save();
           res.send(userObj);
         }
       }

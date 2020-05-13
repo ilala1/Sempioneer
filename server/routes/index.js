@@ -19,10 +19,12 @@ module.exports = (nextApp, expressApp) => {
 
 
 
+// old login process
+
+
+    expressApp.get('/api/uid', authController.getUid);
 
     expressApp.post('/api/valid', authController.auth);
-
-
 
     expressApp.get('/api/index', authController.access);
 

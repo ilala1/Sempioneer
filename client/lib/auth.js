@@ -4,8 +4,9 @@ import { addCookie, getCookie } from './session';
 import { apiGet, apiPost } from '../lib/api';
 
 export const login = async (id) => {
+    console.log(id)
     addCookie({}, 'user', `${id}`);
-    redirect('/');
+    // redirect('/');
 };
 
 export const isLoggedIn = (ctx) => {
@@ -18,6 +19,7 @@ export const isLoggedIn = (ctx) => {
         } else {
             return true;
         }
+        return true;
     }
 
     if (adminCookie) {

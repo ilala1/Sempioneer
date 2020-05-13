@@ -113,12 +113,14 @@ class Login extends Component {
             user: [],
             isLoggedIn: false,
             username: '',
-            accessToken: ''
+            accessToken: '',
+            uid:''
         };
     }
 
     async componentDidMount() {
-        this.getURL();
+
+        this.getUniqueID();
     }
 
     // login = () => {
@@ -145,12 +147,19 @@ class Login extends Component {
     //     });
     // }
 
-    getURL = async () => {
+    getUniqueID = async () => {
+        const uid = await apiGet({}, '/uid', {});
+
+        this.getURL(uid);
+    }
+
+    getURL = async (uid) => {
+        console.log(uid);
         const response = await apiPost({}, '/valid', {});
         document.querySelector('.loginBtn').href = response;
 
         document.querySelector('.loginBtn').addEventListener('click', function() {
-            login();
+            login(uid);
         })
         
     }
