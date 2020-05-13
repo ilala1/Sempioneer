@@ -129,9 +129,7 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        this.getUser();
         this.getTokens();
-
     }
 
     getTokens = async () => {
@@ -151,24 +149,26 @@ class Home extends Component {
         })(window.location.search.substr(1).split('&'));
 
         let authCode = qs["code"];
-
-        const response = await apiGet({}, '/index', {authCode});
-        console.log(response);
-        if (response) {
-            login(response.uid);
-            this.setState({
-                user: response.name
-            })
+        if (authCode) {
+            const response = await apiGet({}, '/index', {authCode});
+            console.log(response);
+    
+            if (response) {
+                login(response.uid);
+                this.setState({
+                    user: response.displayName
+                })
+            }
         }
     }
 
     getUser = async () => {
         const userCookie = getCookie({}, 'user');
 
-        // const oneUser = await apiGet({}, '/oneUser', {userCookie});
-        // this.setState({
-        //     user: oneUser.name
-        // })
+        const oneUser = await apiGet({}, '/oneUser', {userCookie});
+        console.log(oneUser)
+
+        login(oneUser.uid);
     }
 
     logout = () => {
