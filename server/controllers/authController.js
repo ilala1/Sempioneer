@@ -153,16 +153,18 @@ exports.auth = async (req, res) => {
     
     // generate a url that asks permissions for user info and GSC scopes
     const scope = ['https://www.googleapis.com/auth/userinfo.profile',
+                  'https://www.googleapis.com/auth/userinfo.email',
                   'https://www.googleapis.com/auth/webmasters',
-                  'https://www.googleapis.com/auth/webmasters.readonly',
-                  'https://www.googleapis.com/auth/analytics.readonly',
-                  'https://www.googleapis.com/auth/drive',
-                  'https://www.googleapis.com/auth/drive.appdata',
-                  'https://www.googleapis.com/auth/drive.file',
-                  'https://www.googleapis.com/auth/drive.metadata',
-                  'https://www.googleapis.com/auth/spreadsheets',
-                  'https://www.googleapis.com/auth/presentations',
-                  'https://www.googleapis.com/auth/documents']
+                  'https://www.googleapis.com/auth/webmasters.readonly'
+                  // 'https://www.googleapis.com/auth/analytics.readonly',
+                  // 'https://www.googleapis.com/auth/drive',
+                  // 'https://www.googleapis.com/auth/drive.appdata',
+                  // 'https://www.googleapis.com/auth/drive.file',
+                  // 'https://www.googleapis.com/auth/drive.metadata',
+                  // 'https://www.googleapis.com/auth/spreadsheets',
+                  // 'https://www.googleapis.com/auth/presentations',
+                  // 'https://www.googleapis.com/auth/documents'
+                ]
     const url = oauth2Client.generateAuthUrl({
       // 'online' (default) or 'offline' (gets refresh_token)
       access_type: 'offline',
@@ -170,56 +172,79 @@ exports.auth = async (req, res) => {
       // If you only need one scope you can pass it as a string
       scope: scope
     });
-    console.log(url);
     res.send(url);
 };
 
 exports.access = async (req, res) => {
     const {google} = require('googleapis');
+    
+    let db = admin.firestore();
 
     let code = req.query.authCode;
-
     let updateExistingLoginTokens;
     let userObj;
     if (code) {
       const oauth2Client = new google.auth.OAuth2(
             // client ID
-            '1056569297986-ghu1ojg1bedpfpghh4k9at82ngoajg1i.apps.googleusercontent.com',
+            '45551424691-5ronoojbj87eftlnu82vcjsqrfo58tln.apps.googleusercontent.com',
             //client secret
-            'V05FVaiej7AKwoD8BCLhcnuL',
+            'NpVNQs7MhXsBdzPT9KyJ--Yt',
             //redirect URL
             'http://localhost:3000'
           );
           
           const {tokens} = await oauth2Client.getToken(code)
+
           oauth2Client.setCredentials(tokens);
 
+          //get user details URL
           const userDetails = `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokens.access_token}`;
 
-
-          let getUserName = await axios.get(userDetails, {})
+          // user details
+          let getUser = await axios.get(userDetails, {})
           .then((res) => {
-            // console.log(`statusCode: ${res.statusCode}`)
-            return res.data.name;
+            return res.data;
           })
           .catch((error) => {
             console.error(error)
           })
 
-        // updateExistingLoginTokens = await User.findOne({ name: getUserName });
+        
+        let userID = getUser.id;
 
+        let usersRef = db.collection('users');
+        let queryRef = await usersRef.where('uid', '==', userID).get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            console.log('No matching documents.');
+            return;
+          }  
+      
+          snapshot.forEach(doc => {
+            const user = doc.data();
+            updateExistingLoginTokens = user
+            // res.send(user);
+          });
+        })
+        .catch(err => {
+          console.log('Error getting documents', err);
+        });
 
         // if user exists in db overwrite tokens or create new
         if (updateExistingLoginTokens) {
-          console.log('existing user exists');
-          updateExistingLoginTokens.access_token = tokens.access_token;
-          if (tokens.refresh_token) {
-            updateExistingLoginTokens.refresh_token = tokens.refresh_token;
-          }
-          updateExistingLoginTokens.date = Date.now();
-  
+          console.log('existing user exists');  
           try {
-            await updateExistingLoginTokens.save();
+            // await updateExistingLoginTokens.save();
+            let userRef = db.collection('users').doc(getUser.email);
+
+            //update access token
+            let updateAccessTokenInDB = userRef.update({ access_token: tokens.access_token });
+            // if refresh token exists update
+            if (tokens.refresh_token) {
+              console.log('updating refresh token')
+              let updateRefreshTokenInDB = userRef.update({ refresh_token: tokens.refresh_token });
+            }
+
             res.send(updateExistingLoginTokens);
           } catch (error) {
             console.error(error)
@@ -227,16 +252,25 @@ exports.access = async (req, res) => {
           }
         } else {
           console.log('no user');
-          userObj = {
-            name: getUserName,
+        
+
+        
+          let setUser = userRef.set({
+            uid: getUser.id,
+            displayName: getUser.name,
+            email: getUser.email,
             access_token: tokens.access_token,
             refresh_token: tokens.refresh_token,
             expiry_date: tokens.expiry_date,
             date: Date.now()
-          };
+          });
+
+
           // (new User(userObj)).save();
           res.send(userObj);
         }
+      } else {
+        console.log('no code')
       }
 }
 

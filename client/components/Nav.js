@@ -44,8 +44,8 @@ class Nav extends Component {
         if (userCookie || adminCookie) {
             removeCookie({}, 'user');
             removeCookie({}, 'admin');
-            window.location.reload();
         }
+        window.location.href='http://localhost:3000/login';
     }
 
     render() {

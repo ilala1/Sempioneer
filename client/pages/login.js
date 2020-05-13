@@ -154,13 +154,12 @@ class Login extends Component {
     }
 
     getURL = async (uid) => {
-        console.log(uid);
         const response = await apiPost({}, '/valid', {});
         document.querySelector('.loginBtn').href = response;
 
-        document.querySelector('.loginBtn').addEventListener('click', function() {
-            login(uid);
-        })
+        // document.querySelector('.loginBtn').addEventListener('click', function() {
+        //     login(uid);
+        // })
         
     }
 

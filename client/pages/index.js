@@ -115,9 +115,9 @@ const HomeStyle = styled.section`
 
 class Home extends Component {
     static async getInitialProps(ctx) {
-        if (redirectIfNotAuthenticated(ctx)) {
-            return { };
-        }
+        // if (redirectIfNotAuthenticated(ctx)) {
+        //     return { };
+        // }
         return { };
     }
 
@@ -153,9 +153,9 @@ class Home extends Component {
         let authCode = qs["code"];
 
         const response = await apiGet({}, '/index', {authCode});
-        console.log(response.name);
+        console.log(response);
         if (response) {
-            login(response._id);
+            login(response.uid);
             this.setState({
                 user: response.name
             })
@@ -175,7 +175,7 @@ class Home extends Component {
         const userCookie = getCookie({}, 'user');
         if (userCookie) {
             removeCookie({}, 'user');
-            window.location.reload();
+            window.location.href = "localhost:3000/login";
         }
     }
 
