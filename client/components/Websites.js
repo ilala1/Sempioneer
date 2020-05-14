@@ -81,51 +81,45 @@ class Websites extends Component {
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
         
-        console.log(oneUser.accessToken);
         this.setState({
             user: oneUser.uid,
             userObject: oneUser
         })
-        const userID = this.state.userObject;
+        const userObj = this.state.userObject;
 
-        const accessToken = await apiGet({}, '/accessToken', {});
-        console.log(accessToken)
 
-        // const getWebsitesFromAPI = axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
-        //     "Access_Token": oneUser.accessToken,
-        //     "Refresh_Token": "three",
-        //     "Client_Secret": "two",
-        //     "Authorization_Code": "one"
-        // })
-        // .then((res) => {
-        //     console.log('testing');
-        //     console.log(res);
-        // //   const WebsiteList = res.data.siteEntry;
-        // //   let userObj = {};
-        // //   for(var i = 0; i < WebsiteList.length; i++) {
-        // //         WebsiteList[i].id = this.state.user;
-        // //         if (WebsiteList[i].permissionLevel === 'siteUnverifiedUser') {
-        // //             WebsiteList.splice(i, 1); 
-        // //         }
-        // //         userObj = {
-        // //             id: this.state.user,
-        // //             data: WebsiteList
-        // //         }
-        // //     }
-
-        // //     // this.addWebsite(userObj);
-        // //     this.setState({
-        // //         loading: false,
-        // //         dtTitles,
-        // //         dtData: this.createDataTable(userObj),
-        // //     });
-        // })
-        // .catch((error) => {
-        //     console.error('No website due to error (old access code maybe)');
-        //     // const userID = this.state.user;
-        //     // this.updateTokens(userID);
-        //     // console.error(error)
-        // })
+        const getWebsitesFromAPI = axios.post('http://sempioneer-api.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
+            "Access_Token": userObj.access_token,
+            "Refresh_Token": "three",
+            "Client_Secret": "two",
+            "Authorization_Code": "one"
+        })
+        .then((res) => {
+            const WebsiteList = res.data.siteEntry;
+            let websitesObj = {};
+            for(var i = 0; i < WebsiteList.length; i++) {
+                WebsiteList[i].id = this.state.user;
+                if (WebsiteList[i].permissionLevel === 'siteUnverifiedUser') {
+                    WebsiteList.splice(i, 1); 
+                }
+                websitesObj = {
+                    id: this.state.user,
+                    data: WebsiteList
+                }
+            }
+            this.addWebsite(websitesObj, userObj);
+            this.setState({
+                loading: false,
+                dtTitles,
+                dtData: this.createDataTable(websitesObj),
+            });
+        })
+        .catch((error) => {
+            console.error('No website due to error (old access code maybe)');
+            const userObject = this.state.userObject;
+            this.updateTokens(userObject);
+            console.error(error)
+        })
     }
 
     updateTokens = async (user) => {
@@ -138,8 +132,9 @@ class Websites extends Component {
 
     }
 
-    addWebsite = async (site) => {
-        const oneWebsite = await apiPost({}, '/website', {site});
+    addWebsite = async (site, user) => {
+
+        const oneWebsite = await apiPost({}, '/website', {site, user});
     }
 
     sortByKey = (array, key) => {
@@ -185,12 +180,14 @@ class Websites extends Component {
     btnClick = (siteURL) => {
         const accessToken = this.state.userObject.access_token;
         if (siteURL === '') {
-            // this.addFlash(createFlash('error', 'Please select a website.'));
+            this.addFlash(createFlash('error', 'Please select a website.'));
         } else {
-            // console.log('getAvailableDatesFromAPI?');
-            // localStorage.setItem('siteURL', siteURL);
-            // window.location.href = '/dashboard';
-            // this.props.navigation.navigate('/dashboard', { siteURL })
+            console.log(siteURL)
+            localStorage.setItem('siteURL', siteURL);
+            window.location.href = 'http://localhost:3000/dashboard';
+
+
+            // this.props.navigation.navigate('http://localhost:3000/dashboard', { siteURL })
             // const getAvailableDatesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_available_dates/', {
             //     "Access_Token": accessToken,
             //      "Refresh_Token": "three",
@@ -237,7 +234,7 @@ class Websites extends Component {
                     flashes={this.props.flashes}
                 />
                 <br/>
-                {/* <DataTable
+                <DataTable
                     loading={this.state.loading}
                     titles={this.state.dtTitles}
                     data={this.state.dtData}
@@ -248,7 +245,7 @@ class Websites extends Component {
                     handleEdit={this.selectForEdit}
                     getResponse={this.clickValidation}
                     btnClick={this.btnClick}
-                /> */}
+                />
             </UserStyles>
         );
     }

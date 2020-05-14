@@ -32,7 +32,7 @@ module.exports = (nextApp, expressApp) => {
 
   
 
-    expressApp.post('/api/website', defaultController.addWebsite);
+    expressApp.post('/api/website', defaultController.addWebsitesToDB);
     
     expressApp.post('/api/refreshTokens', authController.refreshTokens);
 

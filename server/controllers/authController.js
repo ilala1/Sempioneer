@@ -1,5 +1,3 @@
-require("../models/User");
-
 const mongoose = require("mongoose");
 const request = require("request");
 const axios = require("axios");
@@ -8,9 +6,7 @@ const uniqid = require("uniqid");
 
 const { google } = require("googleapis");
 var serviceAccount = require("../lib/serviceAccountKey.json");
-// require('../lib/config.js')
 
-const User = mongoose.model("User");
 
 const mongoErrors = (user, error) => {
   let errorMessage = "";
@@ -128,13 +124,6 @@ exports.getUser = async (req, res) => {
     .catch((err) => {
       console.log("Error getting documents", err);
     });
-
-  try {
-    const oneUser = await User.findOne({ _id: userID });
-  } catch (error) {
-    console.error(error);
-    return;
-  }
 };
 
 // old stuff
@@ -267,7 +256,7 @@ exports.access = async (req, res) => {
   }
 };
 
-getUserFromFirestore = async (req, res, userID) => {
+getUserFromFirestore = async (req, res) => {
   let userObj = {};
   let db = admin.firestore();
   let usersRef = db.collection("users");
@@ -298,28 +287,37 @@ exports.refreshTokens = async (req, res) => {
   const { google } = require("googleapis");
   const OAuth2 = google.auth.OAuth2;
 
-  const userID = req.body.userID;
-  console.log(userID);
+  const userObj = req.body.user;
+  
+  const singleUser = await getUserFromFirestore(userObj.uid)
   // const user = await User.findOne({ _id: userID });
+  console.log(singleUser)
 
   const oauth2Client = new OAuth2(
-    "1056569297986-ghu1ojg1bedpfpghh4k9at82ngoajg1i.apps.googleusercontent.com",
-    "V05FVaiej7AKwoD8BCLhcnuL",
+    "45551424691-5ronoojbj87eftlnu82vcjsqrfo58tln.apps.googleusercontent.com",
+    "NpVNQs7MhXsBdzPT9KyJ--Yt",
     "http://localhost:3000"
   );
 
-  // oauth2Client.setCredentials({
-  //   refresh_token:
-  //     userID.refresh_token
-  // });
+  oauth2Client.setCredentials({
+    refresh_token:
+      singleUser.refresh_token
+  });
 
-  // const newAccessToken = await oauth2Client.getAccessToken();
-  // user.access_token = newAccessToken.token;
+  const newAccessToken = await oauth2Client.getAccessToken();
+  singleUser.access_token = newAccessToken.token;
 
-  // try {
-  //   await user.save();
-  //   res.send(status)
-  // } catch (error) {
-  //     return { error: mongoErrors(user, error) };
-  // }
+  console.log(newAccessToken)
+
+  try {
+    let userRef = db.collection("users").doc(singleUser.email);
+
+    let updateRefreshTokenInDB = userRef.update({
+      refresh_token: tokens.refresh_token,
+    });
+    res.send(status)
+  } catch (error) {
+      return { error: mongoErrors(user, error) };
+  }
 };
+

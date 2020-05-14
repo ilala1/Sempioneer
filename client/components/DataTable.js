@@ -304,8 +304,9 @@ class DataTable extends Component {
                 this.setState({
                     siteURL: data[i].data[1].value
                 });
+                const siteURL = data[i].data[1].value;
                 console.log('match!');
-                const getWebsitesFromAPI = axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/test_single_website_for_traffic', {
+                const getWebsitesFromAPI = axios.post('http://sempioneer-api.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/test_websites_for_traffic/', {
                     "Access_Token": user.access_token,
                      "Refresh_Token": "three",
                      "Client_Secret": "two",
@@ -313,8 +314,10 @@ class DataTable extends Component {
                      "site_url": data[i].data[1].value
                  })
                 .then((res) => {
-                    const clicks = res.data.clicks
-                    this.props.getResponse(clicks);
+                    const websiteData = res.data;
+                    let SplittingWebsiteData = Object.entries(websiteData);
+                    const clicksFigure = SplittingWebsiteData[0][1].clicks;
+                    this.props.getResponse(clicksFigure);
                 })
                 .catch((error) => {
                   console.error(error)

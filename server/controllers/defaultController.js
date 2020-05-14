@@ -1,42 +1,35 @@
-require("../models/Website");
-require("../models/Page");
-
-
-const mongoose = require("mongoose");
-
-const Website = mongoose.model("Website");
-const Page = mongoose.model('Page');
-
 const axios = require("axios");
+const admin = require("firebase-admin");
 
-const mongoErrors = (user, error) => {
-  let errorMessage = "";
+const { google } = require("googleapis");
+var serviceAccount = require("../lib/serviceAccountKey.json");
 
-  // Incude name in error if provided
-  const { firstName, lastName } = user;
 
-  if (
-    firstName &&
-    firstName.trim().length > 0 &&
-    lastName &&
-    lastName.trim().length > 0
-  ) {
-    errorMessage += `Unable to create an account for <strong>${firstName} ${lastName}</strong>.`;
-  } else {
-    errorMessage += "Unable to create account";
+exports.addWebsitesToDB = async (req, res) => {
+  const result = {};
+  result.status = 200;
+  let db = admin.firestore();
+
+  console.log(req.body.site.data);
+
+  const userObj = req.body.user;
+  const sites = req.body.site.data;
+
+  let websiteRef = db.collection("websites").doc(userObj.email);
+
+  try {
+    let setWebsites = websiteRef.set({
+      id: userObj.uid,
+      sites
+    });
+    res.send(result);
+  } catch (error) {
+    result.status = 404;
+    console.log(error)
+    res.send(result)
+
   }
-
-  // Include any mongo validation errors
-  const { errors } = error;
-
-  Object.keys(errors).forEach(key => {
-    if (errors[key].message) {
-      errorMessage += `<br> - ${errors[key].message}`;
-    }
-  });
-
-  return errorMessage;
-};
+}
 
 exports.addWebsite = async (req, res) => {
   const result = {};
