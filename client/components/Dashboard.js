@@ -167,12 +167,15 @@ class Dashboard extends Component {
 
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
+
+
         this.setState({
             loading: true,
-            user: oneUser._id,
+            user: oneUser.uid,
             userObject: oneUser
         })
         const userID = this.state.user;
+        const userObject = this.state.userObject;
         const accessToken = this.state.userObject.access_token;
         const siteURL = localStorage.getItem('siteURL');
         // const domain = pagesData.domain;
@@ -192,19 +195,19 @@ class Dashboard extends Component {
             "Authorization_Code": "one",
             "site_url": siteURL,
             "userID": userID,
-            "dimensions": ['page']
+            "dimensions": "['page']"
         })
         .then((res) => {
             if (res) {
                 const pagesData = res.data;
                 console.log(pagesData);
                 const domain = pagesData.domain;
-                // this.postPagesDataToDB(pagesData, userID, domain);
                 this.setState({
                     loading: false,
                     dtTitles,
-                    dtData: this.createDataTable(pagesData),
+                    dtData: this.createDataTable(pagesData.data),
                 });
+                this.postPagesDataToDB(pagesData, userObject, domain);
             } else {
                 console.log('error - potentially need new access token')
                 this.updateTokens(userID);
@@ -216,6 +219,7 @@ class Dashboard extends Component {
     }
 
     postPagesDataToDB = async (data, userID, domain) => {
+        
         const post = await apiPost({}, '/pagesdata', {data, userID, domain});
     }
 

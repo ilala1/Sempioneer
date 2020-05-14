@@ -45,25 +45,41 @@ exports.getPagesData = async (req, res) => {
 }
 
 exports.postPagesData = async (req, res) => {
-  const {data, userID, domain} = req.body;
-  console.log(data); 
-  console.log(userID)
+  console.log(req.body.userID)
+  console.log(req.body.userID.email)
+  console.log(req.body.userID.uid)
+  // const {data, userID, domain} = req.body;
+  // console.log(data); 
   // console.log(domain)
 
-  const figureData = data.data;
+  // const figureData = data;
 
       // await new Page(pageObj).save();
 
-  for (let i = 0; i < figureData.length; i++) {
-    const page = figureData[i];
-    const pageObj = {
-      userID,
-      domain,
-      data: page
-    }
-    await new Page(pageObj).save();
-    
-  }
+  // for (let i = 0; i < figureData.length; i++) {
+  //   const page = figureData[i];
+  //   const pageObj = {
+  //     userID,
+  //     domain,
+  //     page
+  //   }
+  //   console.log(pageObj)
+  //   // await new Page(pageObj).save();
+  //   let pagesRef = db.collection("pages").doc(userObj.email);
+
+  //   try {
+  //     let setWebsites = pagesRef.set({
+  //       id: userObj.uid,
+  //       sites
+  //     });
+  //     res.send(result);
+  //   } catch (error) {
+  //     result.status = 404;
+  //     console.log(error)
+  //     res.send(result)
+  
+  //   }
+  // }
 }
 
 
