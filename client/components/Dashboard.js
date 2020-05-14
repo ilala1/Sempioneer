@@ -1,28 +1,29 @@
 import { Component, createRef } from 'react';
 import moment from 'moment';
 import styled, { ThemeProvider } from 'styled-components';
+const axios = require('axios');
+const uniqid = require('uniqid');
 
-import pagesData from '../data/desired_format.json';
-import monthNames from '../data/month.json';
-
-var uniqid = require('uniqid');
-
+// functions
 import { getCookie, removeCookie } from '../lib/session';
 import { apiGet, apiPut, apiPost } from '../lib/api';
+import { redirectIfNoAccess } from '../lib/auth';
+import { test } from '../lib/gsc';
+import { createFlash } from '../lib/flashes';
 
-
+// Components
 import DataTable from './DataTable';
 import Chart from './Chart';
 import Flashes from './Flashes';
 import Select from './forms/Select';
 
-const axios = require('axios');
+// Data
+// import pagesData from '../data/desired_format.json';
+import monthNames from '../data/month.json';
 
-import { redirectIfNoAccess } from '../lib/auth';
 
-import { test } from '../lib/gsc';
-import { createFlash } from '../lib/flashes';
 import websites from '../pages/websites';
+
 
 const monthOptions = monthNames.map(access => ({
     value: access.id,
@@ -177,39 +178,41 @@ class Dashboard extends Component {
         // const domain = pagesData.domain;
 
         // this.postPagesDataToDB(pagesData, userID, domain);
-        this.setState({
-            loading: false,
-            dtTitles,
-            dtData: this.createDataTable(pagesData.data),
-        });
-        // const historicalDataPulling = await axios.post('http://gsc-production.kggsendwcm.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
-        //     "Access_Token": accessToken,
-        //     "Refresh_Token": "three",
-        //     "Client_Secret": "two",
-        //     "Authorization_Code": "one",
-        //     "site_url": siteURL,
-        //     "userID": userID,
-        //     "dimensions": ['page']
-        // })
-        // .then((res) => {
-        //     if (res) {
-        //         console.log(res);
-        //         const pagesData = res.data;
-        //         const domain = pagesData.domain;
-        //         this.postPagesDataToDB(pagesData, userID, domain);
-        //         this.setState({
-        //             loading: false,
-        //             dtTitles,
-        //             dtData: this.createDataTable(pagesData.data),
-        //         });
-        //     } else {
-        //         console.log('error - potentially need new access token')
-        //         this.updateTokens(userID);
-        //     }
-        // })
-        // .catch((error) => {
-        //     console.error(error)
-        // })          
+        // this.setState({
+        //     loading: false,
+        //     dtTitles,
+        //     dtData: this.createDataTable(pagesData.data),
+        // });
+
+
+        const historicalDataPulling = await axios.post('http://sempioneer-api.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
+            "Access_Token": accessToken,
+            "Refresh_Token": "three",
+            "Client_Secret": "two",
+            "Authorization_Code": "one",
+            "site_url": siteURL,
+            "userID": userID,
+            "dimensions": ['page']
+        })
+        .then((res) => {
+            if (res) {
+                const pagesData = res.data;
+                console.log(pagesData);
+                const domain = pagesData.domain;
+                // this.postPagesDataToDB(pagesData, userID, domain);
+                this.setState({
+                    loading: false,
+                    dtTitles,
+                    dtData: this.createDataTable(pagesData),
+                });
+            } else {
+                console.log('error - potentially need new access token')
+                this.updateTokens(userID);
+            }
+        })
+        .catch((error) => {
+            console.error(error)
+        })          
     }
 
     postPagesDataToDB = async (data, userID, domain) => {
@@ -243,10 +246,12 @@ class Dashboard extends Component {
         let noOfDates = 0;
         let newArrayOfPages= [];
 
+        console.log(allPages.length)
+
 
         for(var i=0; i<allPages.length; i++){
             const page = allPages[i].data;
-            noOfDates = allPages[i].data.length;
+            noOfDates = page.length;
 
 
             for(var k=0; k<page.length; k++){

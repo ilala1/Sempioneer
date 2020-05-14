@@ -2,8 +2,10 @@
 import Chart from "chart.js";
 import moment from 'moment'
 import { Line } from 'react-chartjs-2';
-import pagesData from '../data/desired_format.json';
 import { apiGet, apiPut, apiPost } from '../lib/api';
+
+import pagesData from '../data/desired_format.json';
+
 
 export default class LineChart extends React.Component {
     constructor(props) {
