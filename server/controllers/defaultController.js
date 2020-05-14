@@ -31,43 +31,6 @@ exports.addWebsitesToDB = async (req, res) => {
   }
 }
 
-exports.addWebsite = async (req, res) => {
-  const result = {};
-  result.status = 200;
-  const UserObj = req.body.site;
-  const userWebsiteList = UserObj.data;
-
-  const dbUserWebsiteObj = await Website.find({ id: UserObj.id });
-
-  if (dbUserWebsiteObj.length > 0) {
-    console.log("existing user exists");
-
-    // if website list is the same as db then do nothing else update
-    for (let i = 0; i < userWebsiteList.length; i++) {
-        const dbUserWebsiteList = dbUserWebsiteObj[0].data;
-        for (let j = 0; j < dbUserWebsiteList.length; j++) {
-            if (
-                userWebsiteList[i].siteUrl === dbUserWebsiteList[j].siteUrl
-            ) {
-                console.log("same websites in list");
-                return;
-            } else {
-                console.log("new website in list");
-                if (dbUserWebsiteObj) {
-                  await UserObj.save();
-                } else {
-                  await new Website(UserObj).save();
-                }
-            }
-        }
-    }
-  } else {
-    console.log("no user");
-    await new Website(UserObj).save();
-  }
-  res.send(result);
-};
-
 exports.getPagesData = async (req, res) => {
   console.log(req.query.siteURL);
 
@@ -102,3 +65,43 @@ exports.postPagesData = async (req, res) => {
     
   }
 }
+
+
+// old stuff
+
+// exports.addWebsite = async (req, res) => {
+//   const result = {};
+//   result.status = 200;
+//   const UserObj = req.body.site;
+//   const userWebsiteList = UserObj.data;
+
+//   const dbUserWebsiteObj = await Website.find({ id: UserObj.id });
+
+//   if (dbUserWebsiteObj.length > 0) {
+//     console.log("existing user exists");
+
+//     // if website list is the same as db then do nothing else update
+//     for (let i = 0; i < userWebsiteList.length; i++) {
+//         const dbUserWebsiteList = dbUserWebsiteObj[0].data;
+//         for (let j = 0; j < dbUserWebsiteList.length; j++) {
+//             if (
+//                 userWebsiteList[i].siteUrl === dbUserWebsiteList[j].siteUrl
+//             ) {
+//                 console.log("same websites in list");
+//                 return;
+//             } else {
+//                 console.log("new website in list");
+//                 if (dbUserWebsiteObj) {
+//                   await UserObj.save();
+//                 } else {
+//                   await new Website(UserObj).save();
+//                 }
+//             }
+//         }
+//     }
+//   } else {
+//     console.log("no user");
+//     await new Website(UserObj).save();
+//   }
+//   res.send(result);
+// };
