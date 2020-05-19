@@ -278,18 +278,24 @@ var addFlash = function addFlash(ctx, flash) {
 /*!********************!*\
   !*** ./lib/gsc.js ***!
   \********************/
-/*! exports provided: test */
+/*! exports provided: signOut */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "test", function() { return test; });
-var schedule = __webpack_require__(/*! node-schedule */ "node-schedule");
-
-var test = function test(ctx) {
-  console.log('hellooo');
-  var j = schedule.scheduleJob('0 0 * * *', function () {
-    console.log('The answer to life, the universe, and everything!');
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "signOut", function() { return signOut; });
+// var schedule = require('node-schedule');
+// export const test = (ctx) => {
+//     console.log('hellooo');
+//     var j = schedule.scheduleJob('0 0 * * *', function(){
+//         console.log('The answer to life, the universe, and everything!');
+//       });
+// }
+var signOut = function signOut() {
+  console.log('signing out');
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function () {
+    console.log('User signed out.');
   });
 };
 
@@ -581,17 +587,6 @@ module.exports = require("next/config");
 /***/ (function(module, exports) {
 
 module.exports = require("next/head");
-
-/***/ }),
-
-/***/ "node-schedule":
-/*!********************************!*\
-  !*** external "node-schedule" ***!
-  \********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require("node-schedule");
 
 /***/ }),
 

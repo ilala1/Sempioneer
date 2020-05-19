@@ -8,6 +8,9 @@ module.exports = (nextApp, expressApp) => {
     // Auth
 
 
+    expressApp.post('/api/signout', authController.signout);
+
+
     expressApp.post('/api/newUser', authController.newUser);
 
     expressApp.get('/api/accessToken', authController.getAccessToken);

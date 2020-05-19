@@ -136,6 +136,7 @@ exports.auth = async (req, res) => {
   console.log("valid!");
   const result = {};
   result.status = 200;
+
   // res.send(result);
   const { google } = require("googleapis");
   const oauth2Client = new google.auth.OAuth2(
@@ -172,7 +173,7 @@ exports.auth = async (req, res) => {
 exports.access = async (req, res) => {
   const { google } = require("googleapis");
 
-  let db = admin.firestore();
+c
 
   let code = req.query.authCode;
   let updateExistingLoginTokens;
@@ -283,15 +284,16 @@ getUserFromFirestore = async (req, res) => {
 };
 
 exports.refreshTokens = async (req, res) => {
+  let db = admin.firestore();
   const status = 200;
   const { google } = require("googleapis");
   const OAuth2 = google.auth.OAuth2;
-
   const userObj = req.body.user;
   
   const singleUser = await getUserFromFirestore(userObj.uid)
-  // const user = await User.findOne({ _id: userID });
+
   console.log(singleUser)
+  // const user = await User.findOne({ _id: userID });
 
   const oauth2Client = new OAuth2(
     "45551424691-5ronoojbj87eftlnu82vcjsqrfo58tln.apps.googleusercontent.com",
@@ -305,19 +307,55 @@ exports.refreshTokens = async (req, res) => {
   });
 
   const newAccessToken = await oauth2Client.getAccessToken();
-  singleUser.access_token = newAccessToken.token;
+  singleUser.access_token = newAccessToken.res.data.access_token;
+  singleUser.refresh_token = newAccessToken.res.data.refresh_token;
 
-  console.log(newAccessToken)
+  const test = newAccessToken.res.data.access_token
 
+  // console.log('newAccessToken')
+  // console.log(newAccessToken.res.data.access_token)
+  // console.log(newAccessToken.res.data.refresh_token)
+
+
+  console.log(singleUser)
+  
   try {
+    console.log(test)
     let userRef = db.collection("users").doc(singleUser.email);
 
-    let updateRefreshTokenInDB = userRef.update({
-      refresh_token: tokens.refresh_token,
+    let updateAccessTokenInDB = userRef.update({
+      access_token: test,
     });
+
+    let updateRefreshTokenInDB = userRef.update({
+      refresh_token: newAccessToken.res.data.refresh_token,
+    });
+
     res.send(status)
   } catch (error) {
-      return { error: mongoErrors(user, error) };
+      return { error: error };
   }
 };
 
+exports.signout = async (req, res) => {
+  console.log('signing out')
+  const { google } = require("googleapis");
+  const oauth2Client = new google.auth.OAuth2(
+    // client ID
+    "45551424691-5ronoojbj87eftlnu82vcjsqrfo58tln.apps.googleusercontent.com",
+    //client secret
+    "NpVNQs7MhXsBdzPT9KyJ--Yt",
+    //redirect URL
+    "http://localhost:3000"
+  );
+
+  console.log(oauth2Client)
+
+  // const instance = await oauth2Client.getAuthInstance();
+  // oauth2Client.setCredentials(tokens);
+
+  // var auth2 = google.auth.OAuth2.getAuthInstance();
+  // auth2.signOut().then(function () {
+  //   console.log('User signed out.');
+  // });
+}

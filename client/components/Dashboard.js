@@ -144,7 +144,7 @@ class Dashboard extends Component {
         this.state = {
             user: '',
             userObject: {},
-            siteUrl: [],
+            siteUrl: '',
             permissionLevel: [],
             loading: true,
             month: '3 months',
@@ -167,17 +167,19 @@ class Dashboard extends Component {
 
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
-
+        const siteURL = localStorage.getItem('siteURL');
 
         this.setState({
             loading: true,
-            user: oneUser.uid,
-            userObject: oneUser
+            user: userCookie,
+            userObject: oneUser,
+            siteUrl: siteURL
+
         })
         const userID = this.state.user;
         const userObject = this.state.userObject;
         const accessToken = this.state.userObject.access_token;
-        const siteURL = localStorage.getItem('siteURL');
+
         // const domain = pagesData.domain;
 
         // this.postPagesDataToDB(pagesData, userID, domain);
@@ -188,38 +190,38 @@ class Dashboard extends Component {
         // });
 
 
-        const historicalDataPulling = await axios.post('http://sempioneer-api.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
-            "Access_Token": accessToken,
-            "Refresh_Token": "three",
-            "Client_Secret": "two",
-            "Authorization_Code": "one",
-            "site_url": siteURL,
-            "userID": userID,
-            "dimensions": "['page']"
-        })
-        .then((res) => {
-            if (res) {
-                const pagesData = res.data;
-                console.log(pagesData);
-                const domain = pagesData.domain;
-                this.setState({
-                    loading: false,
-                    dtTitles,
-                    dtData: this.createDataTable(pagesData.data),
-                });
-                this.postPagesDataToDB(pagesData, userObject, domain);
-            } else {
-                console.log('error - potentially need new access token')
-                this.updateTokens(userID);
-            }
-        })
-        .catch((error) => {
-            console.error(error)
-        })          
+        // const historicalDataPulling = await axios.post('http://sempioneer-api.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
+        //     "Access_Token": accessToken,
+        //     "Refresh_Token": "three",
+        //     "Client_Secret": "two",
+        //     "Authorization_Code": "one",
+        //     "site_url": siteURL,
+        //     "userID": userID,
+        //     "dimensions": "['page']"
+        // })
+        // .then((res) => {
+        //     if (res) {
+        //         const pagesData = res.data;
+        //         console.log(pagesData);
+        //         const domain = pagesData.domain;
+        //         this.setState({
+        //             loading: false,
+        //             dtTitles,
+        //             dtData: this.createDataTable(pagesData.data),
+        //         });
+        //         this.postPagesDataToDB(pagesData, userObject, domain);
+        //     } else {
+        //         console.log('error - potentially need new access token')
+        //         this.updateTokens(userID);
+        //     }
+        // })
+        // .catch((error) => {
+        //     console.error(error)
+        // })          
     }
 
     postPagesDataToDB = async (data, userID, domain) => {
-        
+        console.log(domain)
         const post = await apiPost({}, '/pagesdata', {data, userID, domain});
     }
 
@@ -602,7 +604,7 @@ class Dashboard extends Component {
                     </div>
                 </div>
                 <Chart
-                    siteURL='https://phoenixandpartners.co.uk/'
+                    siteURL={this.state.siteUrl}
                     averageCTRVisible={this.state.averageCTRVisible}
                     averagePositionVisible={this.state.averagePositionVisible}
                     clicksVisible={this.state.clicksVisible}

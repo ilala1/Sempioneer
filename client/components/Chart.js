@@ -3,6 +3,7 @@ import Chart from "chart.js";
 import moment from 'moment'
 import { Line } from 'react-chartjs-2';
 import { apiGet, apiPut, apiPost } from '../lib/api';
+import { getCookie, removeCookie } from '../lib/session';
 
 import pagesData from '../data/desired_format.json';
 
@@ -21,8 +22,11 @@ export default class LineChart extends React.Component {
     }
   
     async componentDidMount() {  
-
+		const userCookie = getCookie({}, 'user');
 		this.displayChart(this.props.month);
+		
+		const test = await apiGet({}, '/pagesData', {userCookie});
+		console.log(test)
 	}
 
 	displayChart = (month) => {
@@ -77,6 +81,7 @@ export default class LineChart extends React.Component {
 			return r;
 		}, Object.create(null));
 	
+		// console.log(groupedDatesArray)
 
 		// need to loop through each key and add up figures for each
 

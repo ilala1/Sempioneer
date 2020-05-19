@@ -77,7 +77,7 @@ class Websites extends Component {
 
     async componentDidMount() {
 
-
+        localStorage.removeItem('siteURL');
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
         
@@ -106,6 +106,7 @@ class Websites extends Component {
                     id: this.state.user,
                     data: WebsiteList
                 }
+
             }
             this.addWebsite(websitesObj, userObj);
             this.setState({
