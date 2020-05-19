@@ -20,6 +20,9 @@ client/.next/static/runtime/webpack.js.map
 *compiled.js
 *.js.map
 
+# ignore all . folders but include . files
+.*/
+
 # Runtime data
 pids
 *.pid
