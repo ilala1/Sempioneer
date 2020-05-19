@@ -172,9 +172,7 @@ exports.auth = async (req, res) => {
 
 exports.access = async (req, res) => {
   const { google } = require("googleapis");
-
-c
-
+  let db = admin.firestore();
   let code = req.query.authCode;
   let updateExistingLoginTokens;
   let userObj;
