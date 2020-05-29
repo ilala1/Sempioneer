@@ -7,7 +7,7 @@ const uniqid = require('uniqid');
 // functions
 import { getCookie, removeCookie } from '../lib/session';
 import { apiGet, apiPut, apiPost } from '../lib/api';
-import { redirectIfNoAccess } from '../lib/auth';
+import { redirectIfNotAuthenticated } from '../lib/auth';
 import { test } from '../lib/gsc';
 import { createFlash } from '../lib/flashes';
 
@@ -18,7 +18,8 @@ import Flashes from './Flashes';
 import Select from './forms/Select';
 
 // Data
-// import pagesData from '../data/desired_format.json';
+import oldPagesData from '../data/oldDesiredFormat.json';
+import pagesData from '../data/desired_format.json';
 import monthNames from '../data/month.json';
 
 
@@ -131,7 +132,7 @@ const UserStyles = styled.aside`
 
 class Dashboard extends Component {
     static async getInitialProps(ctx) {
-        if (redirectIfNoAccess(ctx)) {
+        if (redirectIfNotAuthenticated(ctx)) {
             return {};
         }
 
@@ -180,49 +181,71 @@ class Dashboard extends Component {
         const userObject = this.state.userObject;
         const accessToken = this.state.userObject.access_token;
 
-        // const domain = pagesData.domain;
 
-        // this.postPagesDataToDB(pagesData, userID, domain);
+        // local data test ----------------
         // this.setState({
         //     loading: false,
         //     dtTitles,
         //     dtData: this.createDataTable(pagesData.data),
         // });
 
+        // create array for db page data to go into
+        let DBpagesArray = [];
 
-        // const historicalDataPulling = await axios.post('http://sempioneer-api.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
-        //     "Access_Token": accessToken,
-        //     "Refresh_Token": "three",
-        //     "Client_Secret": "two",
-        //     "Authorization_Code": "one",
-        //     "site_url": siteURL,
-        //     "userID": userID,
-        //     "dimensions": "['page']"
-        // })
-        // .then((res) => {
-        //     if (res) {
-        //         const pagesData = res.data;
-        //         console.log(pagesData);
-        //         const domain = pagesData.domain;
-        //         this.setState({
-        //             loading: false,
-        //             dtTitles,
-        //             dtData: this.createDataTable(pagesData.data),
-        //         });
-        //         this.postPagesDataToDB(pagesData, userObject, domain);
-        //     } else {
-        //         console.log('error - potentially need new access token')
-        //         this.updateTokens(userID);
-        //     }
-        // })
-        // .catch((error) => {
-        //     console.error(error)
-        // })          
+        // check db to see if page exists in db
+        const DBpagesData = await apiGet({}, '/pagesdata', {userID, siteURL});
+
+        DBpagesData.forEach(element => {
+            DBpagesArray.push(element.page)
+        });
+
+        if (DBpagesData.length !== 0) {
+            console.log('database data exists')
+            
+            this.setState({
+                loading: false,
+                dtTitles,
+                dtData: this.createDataTable(DBpagesArray),
+            });
+
+        } else {
+            console.log('no database data -- pulling from live ')
+            //if not
+            const historicalDataPulling = await axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
+                "Access_Token": accessToken,
+                "Refresh_Token": "three",
+                "Client_Secret": "two",
+                "Authorization_Code": "one",
+                "site_url": siteURL,
+                "userID": userID,
+                "dimensions": "['page']"
+            })
+            .then((res) => {
+                console.log('got Data')
+                console.log(res)
+                if (res) {
+                    const pagesData = res.data;
+                    console.log(pagesData);
+                    const domain = pagesData.domain;
+                    this.setState({
+                        loading: false,
+                        dtTitles,
+                        dtData: this.createDataTable(pagesData.data),
+                    });
+                    this.postPagesDataToDB(pagesData, userObject, domain, siteURL);
+                } else {
+                    console.log('error - potentially need new access token')
+                    this.updateTokens(userID);
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            }) 
+        }
     }
 
-    postPagesDataToDB = async (data, userID, domain) => {
-        console.log(domain)
-        const post = await apiPost({}, '/pagesdata', {data, userID, domain});
+    postPagesDataToDB = async (data, userID, domain, siteURL) => {
+        const post = await apiPost({}, '/pagesdata', {data, userID, domain, siteURL});
     }
 
     updateTokens = async (userID) => {
@@ -252,8 +275,8 @@ class Dashboard extends Component {
         let noOfDates = 0;
         let newArrayOfPages= [];
 
-        console.log(allPages.length)
-
+        // const totalProps = allPages.reduce((a, obj) => a + Object.keys(obj).length, 0);
+        // console.log(totalProps);
 
         for(var i=0; i<allPages.length; i++){
             const page = allPages[i].data;
@@ -564,6 +587,24 @@ class Dashboard extends Component {
         console.log(e.target.value)
     };
 
+    getSelectedSite = (response) => {
+        console.log(response);
+        // if (response < 100) {
+        //     this.addFlash(createFlash('error', 'Please select a website with more than 100 clicks.'));
+        // }
+    }
+
+    // TODO ---------------------------------
+    // need to get siteURL through when clicking row to pass onto experiments page
+    btnClick = (siteURL) => {
+        const accessToken = this.state.userObject.access_token;
+        if (siteURL === '') {
+            this.addFlash(createFlash('error', 'Please select a website.'));
+        } else {
+            console.log(siteURL)
+        }
+    }
+
     render() {
         return (
             <UserStyles>
@@ -604,6 +645,7 @@ class Dashboard extends Component {
                     </div>
                 </div>
                 <Chart
+                    dtData={this.state.dtData}
                     siteURL={this.state.siteUrl}
                     averageCTRVisible={this.state.averageCTRVisible}
                     averagePositionVisible={this.state.averagePositionVisible}
@@ -621,7 +663,7 @@ class Dashboard extends Component {
                     sortDirection="dsc"
                     handleBulk={this.bulkIdsState}
                     handleEdit={this.selectForEdit}
-                    getResponse={this.clickValidation}
+                    test={this.getSelectedSite}
                     btnClick={this.btnClick}
                 />
             </UserStyles>
