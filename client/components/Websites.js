@@ -88,7 +88,7 @@ class Websites extends Component {
         const userObj = this.state.userObject;
 
 
-        const getWebsitesFromAPI = axios.post('http://sempioneer-api.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
+        const getWebsitesFromAPI = axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
             "Access_Token": userObj.access_token,
             "Refresh_Token": "three",
             "Client_Secret": "two",
