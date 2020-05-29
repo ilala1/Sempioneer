@@ -43,8 +43,6 @@ exports.getPagesData = async (req, res) => {
   let pagesRef = db.collection("pages");
   let queryRef = await pagesRef
   // // need to get data for page from specific user
-
-    // .where('id', '==', userID, '&&' ,'domain', '==', 'https://sempioneer.com/').get()
     .where('domain', '==', siteURL).get()
     .then((snapshot) => {
       if (snapshot.empty) {
@@ -53,7 +51,6 @@ exports.getPagesData = async (req, res) => {
       }
 
       snapshot.forEach((doc) => {
-        // console.log(doc.data())
         allData.push(doc.data())
       });
     })
@@ -69,15 +66,6 @@ exports.getPagesData = async (req, res) => {
       }
     });
     res.send(data);
-    
-  // const siteURL = req.query.siteURL;
-  // try {
-  //   const allPages = await Page.find({"data.data.site_url" : siteURL});
-  //   res.send(allPages);
-  // } catch (error) {
-  //     console.error(error)
-  //     return
-  // }
 }
 
 exports.postPagesData = async (req, res) => {
