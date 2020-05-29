@@ -14,8 +14,6 @@ exports.addWebsitesToDB = async (req, res) => {
   const userObj = req.body.user;
   const sites = req.body.site.data;
 
-  console.log(sites)
-
   let websiteRef = db.collection("websites").doc(userObj.email);
 
   try {
@@ -34,12 +32,20 @@ exports.addWebsitesToDB = async (req, res) => {
 
 exports.getPagesData = async (req, res) => {
   let db = admin.firestore();
-
+  let allData = [];
   let data = [];
-  const userID = req.query.userCookie;
+  const userID = req.query.userID;
+  const unformattedSiteURL = req.query.siteURL;
+
+  let siteURL = unformattedSiteURL.slice(8);
+  siteURL = siteURL.substring(0, siteURL.length - 1)
+
   let pagesRef = db.collection("pages");
   let queryRef = await pagesRef
-    .where('id', '==', userID).get()
+  // // need to get data for page from specific user
+
+    // .where('id', '==', userID, '&&' ,'domain', '==', 'https://sempioneer.com/').get()
+    .where('domain', '==', siteURL).get()
     .then((snapshot) => {
       if (snapshot.empty) {
         console.log("No matching documents.");
@@ -47,16 +53,22 @@ exports.getPagesData = async (req, res) => {
       }
 
       snapshot.forEach((doc) => {
-        console.log(doc.data())
-        data.push(doc.data())
-        res.send(data);
+        // console.log(doc.data())
+        allData.push(doc.data())
       });
     })
     .catch((err) => {
       console.log("Error getting documents", err);
     });
-
-
+    // console.log(allData)
+    
+    // only send over data for the user specified
+    allData.forEach((element) => {
+      if (element.id === userID) {
+          data.push(element);
+      }
+    });
+    res.send(data);
     
   // const siteURL = req.query.siteURL;
   // try {
@@ -82,8 +94,14 @@ exports.postPagesData = async (req, res) => {
   let pages = [];
 
   console.log(figureData)
+    
+
+
+
 
   
+
+
 
   for (let i = 0; i < figureData.length; i++) {
     const page = figureData[i];
