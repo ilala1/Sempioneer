@@ -54,6 +54,15 @@ class Nav extends Component {
                 <a href='/index'>
                     Home
                 </a>
+                <a href='/websites'>
+                    Websites
+                </a>
+                <a href='/dashboard'>
+                    Dashboard
+                </a>
+                <a href='/experiment'>
+                    Experiment
+                </a>
                 <div className="logout">
                     <button onClick={this.logout}>Logout</button>
                 </div>
