@@ -18,18 +18,11 @@ module.exports = (nextApp, expressApp) => {
 
     expressApp.get('/api/oneUser', authController.getUser);
 
-
-
-
-
-// old login process
-
-
     expressApp.get('/api/uid', authController.getUid);
-
     expressApp.post('/api/valid', authController.auth);
-
     expressApp.get('/api/index', authController.access);
+    expressApp.post('/api/refreshTokens', authController.refreshTokens);
+
 
 
 
@@ -37,7 +30,6 @@ module.exports = (nextApp, expressApp) => {
 
     expressApp.post('/api/website', defaultController.addWebsitesToDB);
     
-    expressApp.post('/api/refreshTokens', authController.refreshTokens);
 
     expressApp.post('/api/pagesdata', defaultController.postPagesData);
 
