@@ -203,6 +203,7 @@ class DataTable extends Component {
             selected: [],
             show: false,
             siteURL: '',
+            dataOfRowSelected: {}
         };
     }
 
@@ -259,25 +260,32 @@ class DataTable extends Component {
     }
 
     // Event handlers
-    clickSingleRow = (id) => {
+    clickSingleRow = (rowId, row) => {
         if (this.props.editable === 'true') {
             let updated = this.state.rowsSelected;
 
-            if (updated.includes(id)) {
-                updated = updated.filter(item => item !== id);
+            if (updated.includes(rowId)) {
+                updated = updated.filter(item => item !== rowId);
             } else {
-                updated.push(id);
-            }
+                if (updated.length === 0) {
+                    updated.push(rowId);
 
-            this.setState({ rowsSelected: updated });
+                } else {
+                    updated = [];
+                    updated.push(rowId);
+                }
+            }
+            this.setState({ rowsSelected: updated,
+                            dataOfRowSelected: row });
 
             // Update user state
             this.updateDataState(updated);
-            this.validateSelectedSite();
+            this.validateSelectedSite(row);
         }
     }
 
     checkSingleRow = (e) => {
+        console.log(id);
         e.persist();
         const { checked, value } = e.target;
         let updated = this.state.rowsSelected;
@@ -293,37 +301,38 @@ class DataTable extends Component {
         this.validateSelectedSite();
     }
 
-    validateSelectedSite = () => {
+    validateSelectedSite = (selectedRowData) => {
         console.log('validating');
         const { user, data, rowsSelected } = this.state;
 
-        // loop through data and match with row selected to get all details of row
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].id === rowsSelected[0]) {
+        console.log(selectedRowData.data[1].value)
 
-                this.setState({
-                    siteURL: data[i].data[1].value
-                });
-                const siteURL = data[i].data[1].value;
-                console.log('match!');
-                const getWebsitesFromAPI = axios.post('http://sempioneer-api.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/test_websites_for_traffic/', {
-                    "Access_Token": user.access_token,
-                     "Refresh_Token": "three",
-                     "Client_Secret": "two",
-                     "Authorization_Code": "one",
-                     "site_url": data[i].data[1].value
-                 })
-                .then((res) => {
-                    const websiteData = res.data;
-                    let SplittingWebsiteData = Object.entries(websiteData);
-                    const clicksFigure = SplittingWebsiteData[0][1].clicks;
-                    this.props.getResponse(clicksFigure);
-                })
-                .catch((error) => {
-                  console.error(error)
-                })
-            }
-        }
+        this.setState({
+            siteURL: selectedRowData.data[1].value
+        });
+        const siteURL = selectedRowData.data[1].value;
+        console.log('match!');
+        const getWebsitesFromAPI = axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/test_websites_for_traffic/', {
+            "Access_Token": user.access_token,
+                "Refresh_Token": "three",
+                "Client_Secret": "two",
+                "Authorization_Code": "one",
+                "site_url": siteURL
+            })
+        .then((res) => {
+            let websiteData = res.data;
+            let selectedSite = websiteData[siteURL];
+            this.props.getResponse(selectedSite.clicks);
+        })
+        .catch((error) => {
+            console.error(error)
+        })
+    }
+
+    getSelectedSite = (e) => {
+        console.log(e)
+        console.log('get website name');
+        this.props.test("hello");
     }
 
     btnClickDT = () => {
@@ -331,6 +340,7 @@ class DataTable extends Component {
     }
 
     handleBulkSelect = (e) => {
+        console.log(e);
         e.persist();
 
         // Add to selected array
@@ -455,7 +465,7 @@ class DataTable extends Component {
                                             <td
                                                 className="selectable"
                                                 key={single.key}
-                                                onClick={this.clickSingleRow.bind(this, row.id)}>
+                                                onClick={this.clickSingleRow.bind(this, row.id, row)}>
                                                 {single.value}
                                             </td>
                                         );

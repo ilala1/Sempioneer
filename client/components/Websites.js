@@ -72,6 +72,7 @@ class Websites extends Component {
             dtTitles: [],
             dtData: [],
             editable: 'true',
+            validated: false
         };
     }
 
@@ -171,6 +172,13 @@ class Websites extends Component {
         console.log(response);
         if (response < 100) {
             this.addFlash(createFlash('error', 'Please select a website with more than 100 clicks.'));
+            this.setState({
+                validated: false,
+            })
+        } else {
+            this.setState({
+                validated: true,
+            })
         }
     }
 
@@ -182,6 +190,8 @@ class Websites extends Component {
         const accessToken = this.state.userObject.access_token;
         if (siteURL === '') {
             this.addFlash(createFlash('error', 'Please select a website.'));
+        } else if (this.state.validated === false){
+            this.addFlash(createFlash('error', 'Please select a website with more than 100 clicks.'));
         } else {
             console.log(siteURL)
             localStorage.setItem('siteURL', siteURL);
