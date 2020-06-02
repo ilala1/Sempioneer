@@ -22,11 +22,7 @@ export default class LineChart extends React.Component {
     }
   
     async componentDidMount() {  
-		const userCookie = getCookie({}, 'user');
 		this.displayChart(this.props.month);
-		
-		const test = await apiGet({}, '/pagesData', {userCookie});
-		console.log(test)
 	}
 
 	displayChart = (month) => {
@@ -38,19 +34,19 @@ export default class LineChart extends React.Component {
 		let ctrData = [];
 		let positionData = [];
 		let allPagesAllDates = [];
+		let groupingDatesWithFigures = {};
 
 		let sumOfClicksForChart = 0;
 		let sumOfImpressionsForChart = 0;
 		let sumOfCTRForChart = 0;
 		let sumOfPositionForChart = 0;
-		let groupingDatesWithFigures = {};
 		
 		// add up all values from all pages on specific date
 		const data = pagesData.data;
 
+		// console.log(data)
 		// get date X months before today
 		var d = new Date();
-		console.log
 		d.setMonth(d.getMonth() - month);
 
 		const dateX_monthsago = this.formatDate(d);
@@ -66,7 +62,6 @@ export default class LineChart extends React.Component {
 			// specific data for required time frame  (3/6 months)
 			filteredDates = this.getDates(allPagesAllDates, dateX_monthsago);
 		}
-
 		
 		// loop through figures of 3months create array of all relevant dates with all pages
 		for (let f = 0; f < filteredDates.length; f++) {

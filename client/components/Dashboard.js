@@ -148,7 +148,7 @@ class Dashboard extends Component {
             siteUrl: '',
             permissionLevel: [],
             loading: true,
-            month: '3 months',
+            month: '3',
             dtTitles: [],
             dtData: [],
             editable: 'true',
@@ -201,12 +201,8 @@ class Dashboard extends Component {
 
         if (DBpagesData.length !== 0) {
             console.log('database data exists')
-            
-            this.setState({
-                loading: false,
-                dtTitles,
-                dtData: this.createDataTable(DBpagesArray),
-            });
+            let {month} = this.state;
+            this.filterDates(DBpagesArray, month);
 
         } else {
             console.log('no database data -- pulling from live ')
@@ -244,70 +240,187 @@ class Dashboard extends Component {
         }
     }
 
-    postPagesDataToDB = async (data, userID, domain, siteURL) => {
-        const post = await apiPost({}, '/pagesdata', {data, userID, domain, siteURL});
-    }
+    // get filtered timeframe worth of data
+    filterDates = async (data, month) => {
 
-    updateTokens = async (userID) => {
-        const status = await apiPost({}, '/refreshTokens', {userID});
- 
-        console.log(status);
-        if (status === 'OK') {
-             location.reload();
+console.log(data)
+
+		let filteredDates;
+		let xAxis = [];
+		let filteredDatesArr = [];
+		let clickData = [];
+		let impressionData = [];
+		let ctrData = [];
+		let positionData = [];
+        let allPagesAllDates = [];
+        let groupingDatesWithFigures = {};
+
+        // calculating the figures for table
+        let totalClicks = 0;
+        let totalImpressions = 0;
+        let sumOfCTR = 0;
+        let sumOfPositions = 0;
+        let averageCTR = 0;
+        let averagePosition = 0;
+
+        let newArrayOfPages= [];
+
+
+        var d = new Date();        
+
+		d.setMonth(d.getMonth() - month);
+
+        const dateX_monthsago = this.formatDate(d);
+
+		// loop through all data to get specific dates data
+		for (let i = 0; i < data.length; i++) {
+			const element = data[i];
+			const allDates = element.data;
+			// loop through allthe dates and add them into an array of all the dates for all the pages
+			for (let j = 0; j < allDates.length; j++) {
+				allPagesAllDates.push(allDates[j])
+			}
+			// specific data for required time frame  (3/6 months)
+            filteredDates = this.getDates(allPagesAllDates, dateX_monthsago);
         }
- 
-     }
+        
+		// loop through figures of 3months create array of all relevant dates with all pages
+		for (let f = 0; f < filteredDates.length; f++) {
+			const filteredDate = filteredDates[f];
+			filteredDatesArr.push(filteredDate);
+		}
+        
+		// group by site_url
+		var groupedDatesArray = filteredDatesArr.reduce(function (r, z) {
+			r[z.site_url] = r[z.site_url] || [];
+			r[z.site_url].push(z);
+			return r;
+        }, Object.create(null));
+        
+        // TODO
+        // Make sure figures are accurate for each page!
 
-    sortByKey = (array, key) => {
-        return array.sort(function(a, b) {
-            var x = a[key]; var y = b[key];
-            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+
+
+console.log(groupedDatesArray)
+
+        
+		// need to loop through each key and add up figures for each
+        
+		for (let [key, value] of Object.entries(groupedDatesArray)) {			
+            let test = []
+            let clicksData = 0;
+			let impressionsData = 0;
+			let ctrData = 0;
+            let positionData = 0;
+            let pageURL = '';
+
+			// loop through and add all the values for each date
+			for (let b = 0; b < value.length; b++) {
+                clicksData = parseInt(clicksData) + value[b].figures[0];
+                // console.log(value[b].figures[0])
+                // console.log(clicksData)
+				impressionsData += parseInt(value[b].figures[1], 10);
+				ctrData += parseInt(value[b].figures[2], 10);
+				positionData += parseInt(value[b].figures[3], 10);
+            }
+            
+			groupingDatesWithFigures[`${key}`] = [`${clicksData}`, `${impressionsData}`, `${ctrData}`, `${positionData}`];
+        }
+console.log(groupingDatesWithFigures)
+        
+
+
+		// split objects into array of arrays 
+        let arrOfArraysofAllRelevantDates = Object.entries(groupingDatesWithFigures);
+        
+        let noOfDates = arrOfArraysofAllRelevantDates.length;
+
+        console.log(arrOfArraysofAllRelevantDates)
+        for (let l = 0; l < arrOfArraysofAllRelevantDates.length; l++) {
+            console.log(arrOfArraysofAllRelevantDates[l])
+            let pageObj = {
+                url: arrOfArraysofAllRelevantDates[l][0],
+                totalClicks: arrOfArraysofAllRelevantDates[l][1][0],
+                totalImpressions: arrOfArraysofAllRelevantDates[l][1][1],
+                averageCTR: arrOfArraysofAllRelevantDates[l][1][2],
+                averagePosition: arrOfArraysofAllRelevantDates[l][1][3]
+            };
+            newArrayOfPages.push(pageObj);
+            // totalClicks += parseInt(arrOfArraysofAllRelevantDates[l][1][0]);
+            // totalImpressions += parseInt(arrOfArraysofAllRelevantDates[l][1][1]);
+            // sumOfCTR += parseInt(arrOfArraysofAllRelevantDates[l][1][2]);
+            // sumOfPositions += parseInt(arrOfArraysofAllRelevantDates[l][1][3]);
+
+            // averageCTR = sumOfCTR/noOfDates;
+            // averagePosition = sumOfPositions/noOfDates;
+        }
+
+        // for (let z = 0; z < data.length; z++) {
+            // let pageObj = {
+            //     url: data[z].Grouped_URL,
+            //     totalClicks,
+            //     totalImpressions,
+            //     averageCTR,
+            //     averagePosition
+            // };
+        //     newArrayOfPages.push(pageObj);
+        // }
+        console.log('newArrayOfPages')
+        console.log(newArrayOfPages)
+        this.setState({
+            loading: false,
+            dtTitles,
+            dtData: this.createDataTable(newArrayOfPages),
         });
     }
 
     createDataTable = (allPages) => {
-        let totalClicks = 0;
-        let totalImpressions = 0;
-        let sumOfCTR = 0;
-        let averageCTR = 0;
-        let sumOfPositions = 0;
-        let averagePosition = 0;
-        let noOfDates = 0;
-        let newArrayOfPages= [];
+        // let totalClicks = 0;
+        // let totalImpressions = 0;
+        // let sumOfCTR = 0;
+        // let sumOfPositions = 0;
+        // let averageCTR = 0;
+        // let averagePosition = 0;
+        // let noOfDates = 0;
+        // let newArrayOfPages= [];
 
-        // const totalProps = allPages.reduce((a, obj) => a + Object.keys(obj).length, 0);
-        // console.log(totalProps);
+        // // const totalProps = allPages.reduce((a, obj) => a + Object.keys(obj).length, 0);
+        // // console.log(totalProps);
 
-        for(var i=0; i<allPages.length; i++){
-            const page = allPages[i].data;
-            noOfDates = page.length;
+        // for(var i=0; i<allPages.length; i++){
+        //     const page = allPages[i].data;
+        //     noOfDates = page.length;
 
 
-            for(var k=0; k<page.length; k++){
-                // does all the calculations for the table figures
-                totalClicks += parseInt(page[k].figures[0]);
-                totalImpressions += parseInt(page[k].figures[1]);
+        //     for(var k=0; k<page.length; k++){
+        //         // does all the calculations for the table figures
+        //         totalClicks += parseInt(page[k].figures[0]);
+        //         totalImpressions += parseInt(page[k].figures[1]);
 
-                sumOfCTR += parseInt(page[k].figures[2]);
-                averageCTR = sumOfCTR/noOfDates;
+        //         sumOfCTR += parseInt(page[k].figures[2]);
+        //         averageCTR = sumOfCTR/noOfDates;
 
-                sumOfPositions += parseInt(page[k].figures[3]);
-                averagePosition = sumOfPositions/noOfDates;
-            }
+        //         sumOfPositions += parseInt(page[k].figures[3]);
+        //         averagePosition = sumOfPositions/noOfDates;
+        //     }
 
-            let pageObj = {
-                url: allPages[i].Grouped_URL,
-                totalClicks,
-                totalImpressions,
-                averageCTR,
-                averagePosition
-            };
-            newArrayOfPages.push(pageObj);
+        //     let pageObj = {
+        //         url: allPages[i].Grouped_URL,
+        //         totalClicks,
+        //         totalImpressions,
+        //         averageCTR,
+        //         averagePosition
+        //     };
+        //     newArrayOfPages.push(pageObj);
 
-        }
+            
+        // }
+        // console.log('old newArrayOfPages')
+        // console.log(newArrayOfPages)
         
         // returns object with id and title
-        const dtData = newArrayOfPages.map(Page => ({
+        const dtData = allPages.map(Page => ({
             id: uniqid(),
             data: [{
                 key: '0',
@@ -333,6 +446,47 @@ class Dashboard extends Component {
     }
 
     // Event Handlers
+
+    postPagesDataToDB = async (data, userID, domain, siteURL) => {
+        const post = await apiPost({}, '/pagesdata', {data, userID, domain, siteURL});
+    }
+
+    updateTokens = async (userID) => {
+        const status = await apiPost({}, '/refreshTokens', {userID});
+ 
+        console.log(status);
+        if (status === 'OK') {
+             location.reload();
+        }
+ 
+    }
+
+    // gets dates before stop date from all data
+    getDates = (array, stopDate) => {
+        let all = [];
+        for (let j = 0; j < array.length; j++) {
+            const element = array[j];
+            if (element.date > stopDate) {
+                all.push(element)
+            }
+        }
+        return all;
+    }
+
+    // formats date from Thu Jan 30 2020 19:54:37 GMT+0000 - 2020-01-30
+	formatDate = (str) => {
+		var date = new Date(str),
+		mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+		day = ("0" + date.getDate()).slice(-2);
+		return [date.getFullYear(), mnth, day].join("-");
+	}
+
+    sortByKey = (array, key) => {
+        return array.sort(function(a, b) {
+            var x = a[key]; var y = b[key];
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        });
+    }
 
     addFlash = (flash) => {
         console.log(flash);
