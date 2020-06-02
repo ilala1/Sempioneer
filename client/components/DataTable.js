@@ -216,6 +216,7 @@ class DataTable extends Component {
     }
 
     componentDidUpdate(prevProps) {
+        // console.log('data table updateing')
         if (prevProps.titles !== this.props.titles) {
             this.setState({ titles: this.props.titles });
         }
