@@ -207,7 +207,6 @@ class Dashboard extends Component {
         if (DBpagesData.length !== 0) {
             console.log('database data exists')
             let {month} = this.state;
-            console.log(month)
             const filteredDates = await this.filterDates(DBpagesArray, month);
             this.setState({
                 DBpagesArray,
@@ -231,7 +230,6 @@ class Dashboard extends Component {
             })
             .then((res) => {
                 console.log('got Data')
-                console.log(res)
                 if (res) {
                     const pagesData = res.data;
                     console.log(pagesData);
@@ -252,7 +250,6 @@ class Dashboard extends Component {
 
     // get filtered timeframe worth of data
     filterDates = async (data, month) => {
-        console.log('filtering dates')
 		let filteredDates;
 		let xAxis = [];
 		let filteredDatesArr = [];
@@ -675,9 +672,15 @@ class Dashboard extends Component {
     monthState = async (e) => {
         this.setState({ month: e.target.value });
         let { DBpagesArray } = this.state;
-        console.log(e.target.value)
         if (e.target.value === '6') {
             const filteredDates = await this.filterDates(DBpagesArray, 6);
+            this.setState({
+                loading: false,
+                dtTitles,
+                dtData: this.createDataTable(filteredDates),
+            });
+        } else if (e.target.value === '3') {
+            const filteredDates = await this.filterDates(DBpagesArray, 3);
             this.setState({
                 loading: false,
                 dtTitles,
