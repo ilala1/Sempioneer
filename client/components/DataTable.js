@@ -262,6 +262,7 @@ class DataTable extends Component {
 
     // Event handlers
     clickSingleRow = (rowId, row) => {
+        console.log(row)
         if (this.props.editable === 'true') {
             let updated = this.state.rowsSelected;
 
@@ -281,7 +282,16 @@ class DataTable extends Component {
 
             // Update user state
             this.updateDataState(updated);
-            this.validateSelectedSite(row);
+
+            // website page data length is 2
+            if (row.data.length === 2) {
+                this.validateSelectedSite(row);
+            // dashboard data length is 6
+            } else if (row.data.length === 6) {
+                this.getSelectedSite(row);
+            }
+
+
         }
     }
 
