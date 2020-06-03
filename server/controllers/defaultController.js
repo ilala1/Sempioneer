@@ -37,35 +37,43 @@ exports.getPagesData = async (req, res) => {
   const userID = req.query.userID;
   const unformattedSiteURL = req.query.siteURL;
 
-  let siteURL = unformattedSiteURL.slice(8);
-  siteURL = siteURL.substring(0, siteURL.length - 1)
-
-  let pagesRef = db.collection("pages");
-  let queryRef = await pagesRef
-  // // need to get data for page from specific user
-    .where('domain', '==', siteURL).get()
-    .then((snapshot) => {
-      if (snapshot.empty) {
-        console.log("No matching documents.");
-        return;
-      }
-
-      snapshot.forEach((doc) => {
-        allData.push(doc.data())
+  if (unformattedSiteURL) {
+    let siteURL = unformattedSiteURL.slice(8);
+    siteURL = siteURL.substring(0, siteURL.length - 1)
+  
+    let pagesRef = db.collection("pages");
+    let queryRef = await pagesRef
+    // // need to get data for page from specific user
+      .where('domain', '==', siteURL).get()
+      .then((snapshot) => {
+        if (snapshot.empty) {
+          console.log("No matching documents.");
+          return;
+        }
+  
+        snapshot.forEach((doc) => {
+          allData.push(doc.data())
+        });
+      })
+      .catch((err) => {
+        console.log("Error getting documents", err);
       });
-    })
-    .catch((err) => {
-      console.log("Error getting documents", err);
-    });
-    // console.log(allData)
-    
-    // only send over data for the user specified
-    allData.forEach((element) => {
-      if (element.id === userID) {
-          data.push(element);
-      }
-    });
-    res.send(data);
+      // console.log(allData)
+      
+      // only send over data for the user specified
+      allData.forEach((element) => {
+        if (element.id === userID) {
+            data.push(element);
+        }
+      });
+      res.send(data);
+  } else {
+    const error = {
+      status: 400,
+      error: 'No site URL, go back to website page and choose a website'
+    }
+    res.send(error)
+  }
 }
 
 exports.postPagesData = async (req, res) => {
