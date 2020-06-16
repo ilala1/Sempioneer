@@ -376,7 +376,6 @@ class DataTable extends Component {
         const { data } = this.state;
         let { sortField, sortDirection } = this.state;
 
-
         // Direction
         if (sortField !== title.key) {
             sortDirection = 'asc';
@@ -387,7 +386,8 @@ class DataTable extends Component {
         }
 
         sortField = title.key;
-        const test = [];
+
+        
         // Sorting
         switch (title.type) {
         case 'int':
