@@ -262,7 +262,6 @@ class DataTable extends Component {
 
     // Event handlers
     clickSingleRow = (rowId, row) => {
-        console.log(row)
         if (this.props.editable === 'true') {
             let updated = this.state.rowsSelected;
 
@@ -341,9 +340,7 @@ class DataTable extends Component {
     }
 
     getSelectedSite = (e) => {
-        console.log(e)
-        console.log('get website name');
-        // this.props.test("hello");
+        this.props.getSelectedSite(e);
     }
 
     btnClickDT = () => {
