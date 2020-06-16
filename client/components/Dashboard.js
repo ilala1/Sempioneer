@@ -34,14 +34,14 @@ const monthOptions = monthNames.map(access => ({
 const dtAllTitles = [{
     key: '0',
     type: 'string',
-    label: 'URLt',
+    label: 'URL',
 }, {
     key: '1',
-    type: 'string',
+    type: 'number',
     label: 'Total Clicks',
 }, {
     key: '2',
-    type: 'string',
+    type: 'number',
     label: 'Total Impressions',
 }, {
     key: '5',
@@ -56,11 +56,11 @@ const dtTitles = [{
     label: 'URL',
 }, {
     key: '1',
-    type: 'string',
+    type: 'number',
     label: 'Total Clicks',
 }, {
     key: '2',
-    type: 'string',
+    type: 'number',
     label: 'Total Impressions',
 }, {
     key: '5',
@@ -172,7 +172,6 @@ class Dashboard extends Component {
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
         const siteURL = localStorage.getItem('siteURL');
-
         this.setState({
             loading: true,
             user: userCookie,
@@ -191,64 +190,84 @@ class Dashboard extends Component {
         //     dtTitles,
         //     dtData: this.createDataTable(pagesData.data),
         // });
+        const data = await this.getData(userID, userObject, accessToken, siteURL)
+        if (data) {
+            this.setState({
+                loading: false,
+                dtTitles,
+                dtData: this.createDataTable(data),
+            });
+        } else {
+            this.addFlash(createFlash('error', 'no data'));
+        }
+    }
 
+    getData = async (userID, userObject, accessToken, siteURL) => {
         // create array for db page data to go into
         let DBpagesArray = [];
 
         // check db to see if page exists in db
         const DBpagesData = await apiGet({}, '/pagesdata', {userID, siteURL});
 
-        DBpagesData.forEach(element => {
-            DBpagesArray.push(element.page)
-        });
-
-
-
-        if (DBpagesData.length !== 0) {
-            console.log('database data exists')
-            let {month} = this.state;
-            const filteredDates = await this.filterDates(DBpagesArray, month);
-            this.setState({
-                DBpagesArray,
-                filteredDates,
-                loading: false,
-                dtTitles,
-                dtData: this.createDataTable(filteredDates),
+        // if theres not site URL 
+        if (DBpagesData.status === 400) {
+            this.addFlash(createFlash('error', DBpagesData.error));
+        } else {
+            DBpagesData.forEach(element => {
+                DBpagesArray.push(element.page)
             });
 
-        } else {
-            console.log('no database data -- pulling from live ')
-            //if not
-            const historicalDataPulling = await axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
-                "Access_Token": accessToken,
-                "Refresh_Token": "three",
-                "Client_Secret": "two",
-                "Authorization_Code": "one",
-                "site_url": siteURL,
-                "userID": userID,
-                "dimensions": "['page']"
-            })
-            .then((res) => {
-                console.log('got Data')
-                if (res) {
-                    const pagesData = res.data;
-                    console.log(pagesData);
-                    const domain = pagesData.domain;
-                    let {month} = this.state;
-                    this.filterDates(pagesData, month);
-                    this.postPagesDataToDB(pagesData, userObject, domain, siteURL);
-                } else {
-                    console.log('error - potentially need new access token')
-                    this.updateTokens(userID);
-                }
-            })
-            .catch((error) => {
-                console.error(error)
-            }) 
+            // console.log(DBpagesArray)
+            // if DBpagesData comes back with nothing means nothing in the database
+            if (DBpagesData.length !== 0) {
+                console.log('database data exists')
+                let {month} = this.state;
+                const filteredDates = await this.filterDates(DBpagesArray, month);
+                this.setState({
+                    DBpagesArray,
+                    filteredDates
+                });
+                return filteredDates;
+            // so get deta from API
+            } else {
+                console.log('no database data -- pulling from live ')
+                //if not
+                const historicalDataPulling = await axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/async_scraping/', {
+                    "Access_Token": accessToken,
+                    "Refresh_Token": "three",
+                    "Client_Secret": "two",
+                    "Authorization_Code": "one",
+                    "site_url": siteURL,
+                    "userID": userID,
+                    "dimensions": "['page']"
+                })
+                .then((res) => {
+                    console.log('got Data')
+                    if (res) {
+                        const pagesData = res.data;
+                        const data = pagesData.data
+                        // console.log(data);
+                        const domain = pagesData.domain;
+                        let {month} = this.state;
+                        this.postPagesDataToDB(pagesData, userObject, domain, siteURL);
+                        const filteredDates = this.filterDates(data, month);
+                        this.setState({
+                            filteredDates
+                        });
+                        return filteredDates;
+                    } else {
+                        console.log('error - potentially need new access token')
+                        this.updateTokens(userID);
+                    }
+                })
+                .catch((error) => {
+                    console.error(error)
+                }) 
+            }
         }
     }
 
-    // get filtered timeframe worth of data
+    // get filtered time-frame worth of data
     filterDates = async (data, month) => {
 		let filteredDates;
 		let xAxis = [];
@@ -279,16 +298,20 @@ class Dashboard extends Component {
 
 		// loop through all data to get specific dates data
 		for (let i = 0; i < data.length; i++) {
-			const element = data[i];
+            const element = data[i];
 			const allDates = element.data;
+            // console.log(allDates)
 			// loop through allthe dates and add them into an array of all the dates for all the pages
 			for (let j = 0; j < allDates.length; j++) {
+                // console.log(allDates[j])
 				allPagesAllDates.push(allDates[j])
-			}
+            }
+            // console.log(allPagesAllDates)
 			// specific data for required time frame  (3/6 months)
             filteredDates = this.getDates(allPagesAllDates, dateX_monthsago);
+            // console.log(filteredDates)
         }
-        
+
 		// loop through figures of 3months create array of all relevant dates with all pages
 		for (let f = 0; f < filteredDates.length; f++) {
 			const filteredDate = filteredDates[f];
@@ -380,7 +403,6 @@ class Dashboard extends Component {
     }
 
     // Event Handlers
-
     postPagesDataToDB = async (data, userID, domain, siteURL) => {
         const post = await apiPost({}, '/pagesdata', {data, userID, domain, siteURL});
     }
@@ -564,7 +586,7 @@ class Dashboard extends Component {
             if (index === -1){
                 dtAllTitles.unshift({
                     key: '1',
-                    type: 'string',
+                    type: 'number',
                     label: 'Total Clicks',
                 });
 
@@ -669,6 +691,7 @@ class Dashboard extends Component {
 
     }
 
+    // update month filter and data
     monthState = async (e) => {
         this.setState({ month: e.target.value });
         let { DBpagesArray } = this.state;
@@ -747,7 +770,7 @@ class Dashboard extends Component {
                     </div>
                 </div>
                 <Chart
-                    dtData={this.state.dtData}
+                    dtData={this.state.filteredDates}
                     siteURL={this.state.siteUrl}
                     averageCTRVisible={this.state.averageCTRVisible}
                     averagePositionVisible={this.state.averagePositionVisible}
