@@ -343,7 +343,7 @@ class DataTable extends Component {
     getSelectedSite = (e) => {
         console.log(e)
         console.log('get website name');
-        this.props.test("hello");
+        // this.props.test("hello");
     }
 
     btnClickDT = () => {
@@ -376,6 +376,7 @@ class DataTable extends Component {
         const { data } = this.state;
         let { sortField, sortDirection } = this.state;
 
+
         // Direction
         if (sortField !== title.key) {
             sortDirection = 'asc';
@@ -386,27 +387,50 @@ class DataTable extends Component {
         }
 
         sortField = title.key;
-
+        const test = [];
         // Sorting
         switch (title.type) {
         case 'int':
             break;
         case 'number':
+            console.log('number')
+            data.sort((a, b) => {
+                console.log(sortField)
+                const aRow = a.data.find(aData => aData.key === sortField);
+                const bRow = b.data.find(bData => bData.key === sortField);
+                const aValue = aRow.value;
+                const bValue = bRow.value;
+
+
+                if (sortDirection === 'dsc') {
+                    return parseFloat(aValue) < parseFloat(bValue) ? 1 : -1;
+                } else {
+                    return parseFloat(aValue) > parseFloat(bValue) ? 1 : -1;
+                }
+                
+            });
             break;
         default:
             // Default to sort by string
             data.sort((a, b) => {
+                console.log(sortField)
                 const aRow = a.data.find(aData => aData.key === sortField);
                 const bRow = b.data.find(bData => bData.key === sortField);
+                const aValue = aRow.value;
+                const bValue = bRow.value;
 
-                const aValue = (aRow.value) ? aRow.value.toString() : '';
-                const bValue = (bRow.value) ? bRow.value.toString() : '';
 
                 if (sortDirection === 'dsc') {
-                    return aValue < bValue ? 1 : -1;
+                    // return aValue < bValue ? 1 : -1;
+                    if (aValue < bValue) {
+                        return 1
+                    } else {
+                        return -1
+                    }
+                } else {
+                    return aValue > bValue ? 1 : -1;
                 }
-
-                return aValue > bValue ? 1 : -1;
+                
             });
         }
 
