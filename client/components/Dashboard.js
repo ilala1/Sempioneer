@@ -788,7 +788,7 @@ class Dashboard extends Component {
                     sortDirection="dsc"
                     handleBulk={this.bulkIdsState}
                     handleEdit={this.selectForEdit}
-                    test={this.getSelectedSite}
+                    getSelectedSite={this.getSelectedSite}
                     btnClick={this.btnClick}
                 />
             </UserStyles>
