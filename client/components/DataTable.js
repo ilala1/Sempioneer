@@ -390,9 +390,7 @@ class DataTable extends Component {
         case 'int':
             break;
         case 'number':
-            console.log('number')
             data.sort((a, b) => {
-                console.log(sortField)
                 const aRow = a.data.find(aData => aData.key === sortField);
                 const bRow = b.data.find(bData => bData.key === sortField);
                 const aValue = aRow.value;
@@ -410,7 +408,6 @@ class DataTable extends Component {
         default:
             // Default to sort by string
             data.sort((a, b) => {
-                console.log(sortField)
                 const aRow = a.data.find(aData => aData.key === sortField);
                 const bRow = b.data.find(bData => bData.key === sortField);
                 const aValue = aRow.value;
@@ -439,7 +436,7 @@ class DataTable extends Component {
     }
 
     render() {
-        const { editable, loading } = this.props;
+        const { editable, loading, submitBtn } = this.props;
         const {
             titles,
             data,
@@ -506,7 +503,10 @@ class DataTable extends Component {
                             </tbody>
                         </table>
                         <div className="btnWrap">
-                            <button onClick={this.btnClickDT}>Submit</button>
+                        {submitBtn === 'true'
+                        ? <button onClick={this.btnClickDT}>Submit</button>
+                        : '' }
+                            
                         </div>
                     </>
                 }
