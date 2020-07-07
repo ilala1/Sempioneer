@@ -46,7 +46,7 @@ const dtAllTitles = [{
 }, {
     key: '5',
     type: 'string',
-    label: 'Test',
+    label: '',
 }];
 
 
@@ -65,7 +65,7 @@ const dtTitles = [{
 }, {
     key: '5',
     type: 'string',
-    label: 'Test',
+    label: '',
 }];
 
 const UserStyles = styled.aside`
@@ -120,8 +120,12 @@ const UserStyles = styled.aside`
     }
 
     .testBtn {
-        color: #000;
-        text-decoration: none;
+        background: #006400;
+        color: #fff;
+        a {
+            text-decoration: none;
+            color: #fff;
+        }
     }
 
     @media only screen and (max-width: 640px) {
@@ -328,7 +332,6 @@ class Dashboard extends Component {
 		// need to loop through each key and add up figures for each
         
 		for (let [key, value] of Object.entries(groupedDatesArray)) {			
-            let test = []
             let clicksData = 0;
 			let impressionsData = 0;
 			let ctrData = 0;
@@ -394,14 +397,13 @@ class Dashboard extends Component {
                 value: Page.averagePosition,
             }, {
                 key: '5',
-                value: <button><a className="testBtn" href="/experiment">Test</a></button>
+                value: <button className="testBtn"><a href="/experiment">Create Test</a></button>
             }],
         }));
 
         
         return dtData;
     }
-
     // Event Handlers
     postPagesDataToDB = async (data, userID, domain, siteURL) => {
         const post = await apiPost({}, '/pagesdata', {data, userID, domain, siteURL});
@@ -713,7 +715,9 @@ class Dashboard extends Component {
     };
 
     getSelectedSite = (response) => {
-        console.log(response);
+        localStorage.removeItem('experimentURL');
+        let experimentURL = response.data[0].value;
+        localStorage.setItem('experimentURL', experimentURL);
         // if (response < 100) {
         //     this.addFlash(createFlash('error', 'Please select a website with more than 100 clicks.'));
         // }
@@ -790,6 +794,7 @@ class Dashboard extends Component {
                     handleEdit={this.selectForEdit}
                     getSelectedSite={this.getSelectedSite}
                     btnClick={this.btnClick}
+                    submitBtn="false"
                 />
             </UserStyles>
         );
