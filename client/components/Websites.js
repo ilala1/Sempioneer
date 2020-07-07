@@ -256,6 +256,7 @@ class Websites extends Component {
                     handleEdit={this.selectForEdit}
                     getResponse={this.clickValidation}
                     btnClick={this.btnClick}
+                    submitBtn="true"
                 />
             </UserStyles>
         );
