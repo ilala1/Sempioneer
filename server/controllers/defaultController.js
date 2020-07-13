@@ -2,7 +2,8 @@ const axios = require("axios");
 const admin = require("firebase-admin");
 const uniqid = require("uniqid");
 
-const { google } = require("googleapis");
+const schedule = require('node-schedule');
+
 var serviceAccount = require("../lib/serviceAccountKey.json");
 
 
@@ -28,6 +29,85 @@ exports.addWebsitesToDB = async (req, res) => {
     res.send(result)
 
   }
+}
+
+exports.scheduledJob = async () => {
+  const { google } = require("googleapis");
+  const OAuth2 = google.auth.OAuth2;
+  // getting all users in db
+  let db = admin.firestore();
+  let allData = [];
+  let data = [];
+  
+  let usersRef = db.collection("users");
+  let queryRef = await usersRef
+    .get()
+    .then((snapshot) => {
+      if (snapshot.empty) {
+        console.log("No matching documents.");
+        return;
+      }
+
+      snapshot.forEach((doc) => {
+        allData.push(doc.data())
+      });
+    })
+    .catch((err) => {
+      console.log("Error getting documents", err);
+    });
+
+  console.log('one set');
+
+  // loop through users array
+  for (let i = 0; i < allData.length; i++) {
+    console.log('old allData[i]');
+    console.log(allData[i]);
+    console.log('old allData[i]');
+
+    // get new access token
+    const oauth2Client = new OAuth2(
+      "45551424691-5ronoojbj87eftlnu82vcjsqrfo58tln.apps.googleusercontent.com",
+      "NpVNQs7MhXsBdzPT9KyJ--Yt",
+      "http://localhost:3000"
+    );
+
+    oauth2Client.setCredentials({
+      refresh_token:
+        allData[i].refresh_token
+    });
+    
+
+    const newAccessToken = await oauth2Client.getAccessToken();
+
+    console.log('newAccessToken')
+    console.log(newAccessToken.res.data.access_token)
+    console.log('newAccessToken')
+
+    // updated access token with new one
+    allData[i].access_token = newAccessToken.res.data.access_token;
+
+}
+console.log('allData')
+console.log(allData)
+console.log('allData')
+    // for each user get the selected site 
+    allData.forEach(user => {
+        
+    });
+    // based on the site, check pages data for that site
+
+    // get the soonest date of data
+
+    // call API to see the soonest available date
+
+    // update db with those dates
+
+  // var j = schedule.scheduleJob('*/5 * * * * *', function(){
+  //         // const oneUser = apiGet({}, '/oneUser', {103456017882470757103});
+  //         // console.log(oneUser)
+          
+  //         console.log('The answer to life, the universe, and everything is pizza!');
+  //   });
 }
 
 exports.getPagesData = async (req, res) => {
@@ -88,16 +168,6 @@ exports.postPagesData = async (req, res) => {
 
 
   let pages = [];
-
-  console.log(figureData)
-    
-
-
-
-
-  
-
-
 
   for (let i = 0; i < figureData.length; i++) {
     const page = figureData[i];

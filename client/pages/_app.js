@@ -3,7 +3,8 @@ import Page from '../components/Page';
 
 import { getFlashes } from '../lib/flashes';
 
-import '../lib/gsc';
+// import test from '../lib/gsc';
+import { apiGet, apiPut, apiPost } from '../lib/api';
 
 
 class MyApp extends App {
@@ -19,6 +20,10 @@ class MyApp extends App {
         pageProps.flashes = getFlashes(ctx);
 
         return { pageProps };
+    }
+
+    componentDidMount() {
+        const oneUser = apiGet({}, '/schedule', {});
     }
 
     render() {

@@ -25,6 +25,9 @@ module.exports = (nextApp, expressApp) => {
 
 
 
+    
+    expressApp.get('/api/schedule', defaultController.scheduledJob);
+    
 
   
 
