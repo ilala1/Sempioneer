@@ -209,7 +209,7 @@ exports.access = async (req, res) => {
       const singleUser = await getUserFromFirestore(userID);
 
       // if user exists in db overwrite tokens or create new
-      if (singleUser) {
+      if (singleUser.email) {
         console.log("existing user exists");
         try {
           let userRef = db.collection("users").doc(getUser.email);
@@ -266,7 +266,8 @@ getUserFromFirestore = async (req, res) => {
     .then((snapshot) => {
       if (snapshot.empty) {
         console.log("No matching documents.");
-        return;
+        userObj = {content: 'null'};
+        return userObj;
       }
 
       snapshot.forEach((doc) => {
