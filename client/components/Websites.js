@@ -109,7 +109,9 @@ class Websites extends Component {
                 }
 
             }
+            // add website to db
             this.addWebsite(websitesObj, userObj);
+
             this.setState({
                 loading: false,
                 dtTitles,

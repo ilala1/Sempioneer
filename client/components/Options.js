@@ -105,8 +105,8 @@ class Options extends Component {
         return (
             <OptionsWrapper>
                 <div className="optionsWrapper">
-                    <a className="options vote" href='/voting'>Vote</a>
-                    <a className="options nominate" href='/websites'>Nominate</a>
+                    {/* <a className="options vote" href='/voting'>Vote</a> */}
+                    <a className="options nominate" href='/websites'>A/B Testing</a>
                 </div>
             </OptionsWrapper>
         );
