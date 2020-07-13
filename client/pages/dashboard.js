@@ -15,7 +15,7 @@ import Dashboard from '../components/Dashboard';
 
 
 const DashboardStyle = styled.section`
-    padding: 2rem 0 10rem;
+    padding: 0rem 0 10rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -114,8 +114,8 @@ class dashboard extends Component {
     render() {
         return (
             <DashboardStyle>
-                <Nav/>
-                <Header title="Welcome to the dashboard" />
+                {/* <Nav/> */}
+                {/* <Header title="Welcome to the dashboard" /> */}
                 <Dashboard/>
             </DashboardStyle>
         );
