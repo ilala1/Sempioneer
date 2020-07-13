@@ -69,62 +69,92 @@ const dtTitles = [{
 }];
 
 const UserStyles = styled.aside`
-    width:100%;
-    .sub-nav {
-        display: flex;
-        justify-content: center;
-        padding: 1rem 0;
-
-        .filter {
-            padding: 0 5rem;
+    width: 100%;
+    position: absolute;
+    top: 0%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    .left {
+        background-color: #18A1E5;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 30%;
+        border: 1px solid green;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        .companyName {
+            text-align: center;
+        }
+    }
+    .right {
+        width: 68%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 30%;
+        border: 1px solid blue;
+        overflow-y: scroll;
+        .sub-nav {
+            width: 100%;
             display: flex;
-            align-items: center;
+            justify-content: center;
+            padding: 1rem 0;
 
-            >* { flex: 0 0 auto; }
+            .filter {
+                padding: 0 3rem;
+                display: flex;
+                align-items: center;
 
-            label { padding-right: 1rem; }
+                >* { flex: 0 0 auto; }
 
-            input[type="checkbox"] {
-                width: 1.8rem;
-                height: 1.8rem;
+                label { padding-right: 1rem; }
 
-                background: white;
+                input[type="checkbox"] {
+                    width: 1.8rem;
+                    height: 1.8rem;
 
-                border: 1px solid #ACACAC;
+                    background: white;
 
-                cursor: pointer;
+                    border: 1px solid #ACACAC;
 
-                &:checked { background-color: #9B2583; }
+                    cursor: pointer;
+
+                    &:checked { background-color: #9B2583; }
+                }
+            }
+
+            .filterMonth {
+                padding: 0 5rem;
+                select::-ms-expand {
+                    display: none;
+                }
+            }
+        }
+        .button {
+            border: 1px solid black;
+            padding: 0.6rem 0.8rem;
+            :hover {
+                background: #00a9e0;
+                color: #fff;
             }
         }
 
-        .filterMonth {
-            padding: 0 5rem;
-            select::-ms-expand {
-                display: none;
+        h2 {
+            text-align:center;
+            padding: 3rem 0;
+        }
+
+        .testBtn {
+            background: #006400;
+            color: #fff;
+            a {
+                text-decoration: none;
+                color: #fff;
             }
-        }
-    }
-    .button {
-        border: 1px solid black;
-        padding: 0.6rem 0.8rem;
-        :hover {
-            background: #00a9e0;
-            color: #fff;
-        }
-    }
-
-    h2 {
-        text-align:center;
-        padding: 3rem 0;
-    }
-
-    .testBtn {
-        background: #006400;
-        color: #fff;
-        a {
-            text-decoration: none;
-            color: #fff;
         }
     }
 
@@ -742,60 +772,70 @@ class Dashboard extends Component {
                     flashes={this.props.flashes}
                 />
                 <br/>
-                <div className="sub-nav">
-                <div className="filter">
-                        <label htmlFor="filter-clicks">Clicks?</label>
-                        <input type="checkbox" id="filter-clicks" onChange={this.filterClicks} defaultChecked={this.state.chkbox}/>
+                <div className="left">
+                    <div className="companyName">
+                        Sempioneer
                     </div>
-
-                    <div className="filter">
-                        <label htmlFor="filter-impressions">Impressions?</label>
-                        <input type="checkbox" id="filter-impressions" onChange={this.filterImpressions} defaultChecked={this.state.chkbox}/>
-                    </div>
-                    <div className="filter">
-                        <label htmlFor="filter-ctr">CTR?</label>
-                        <input type="checkbox" id="filter-ctr" onChange={this.filterAverageCTR} />
-                    </div>
-                   
-                    <div className="filter">
-                        <label htmlFor="filter-postion">Position?</label>
-                        <input type="checkbox" id="filter-postion" onChange={this.filterAveragePosition} /> 
-                    </div>
-                    
-                    <div className="filterMonth">
-                        <Select
-                            label="Month"
-                            name="monthName"
-                            value={this.state.month}
-                            options={monthOptions}
-                            changeState={this.monthState}
-                            errorMessage="Must choose a name"
-                        />
+                    <div className="websiteName">
+                        {this.state.siteUrl}
                     </div>
                 </div>
-                <Chart
-                    dtData={this.state.filteredDates}
-                    siteURL={this.state.siteUrl}
-                    averageCTRVisible={this.state.averageCTRVisible}
-                    averagePositionVisible={this.state.averagePositionVisible}
-                    clicksVisible={this.state.clicksVisible}
-                    impressionsVisible={this.state.impressionsVisible}
-                    month={this.state.month}
-                />
+                <div className="right">
+                    <div className="sub-nav">
+                        <div className="filter">
+                            <label htmlFor="filter-clicks">Clicks?</label>
+                            <input type="checkbox" id="filter-clicks" onChange={this.filterClicks} defaultChecked={this.state.chkbox}/>
+                        </div>
 
-                <DataTable
-                    loading={this.state.loading}
-                    titles={this.state.dtTitles}
-                    data={this.state.dtData}
-                    editable={this.state.editable}
-                    sortField="name"
-                    sortDirection="dsc"
-                    handleBulk={this.bulkIdsState}
-                    handleEdit={this.selectForEdit}
-                    getSelectedSite={this.getSelectedSite}
-                    btnClick={this.btnClick}
-                    submitBtn="false"
-                />
+                        <div className="filter">
+                            <label htmlFor="filter-impressions">Impressions?</label>
+                            <input type="checkbox" id="filter-impressions" onChange={this.filterImpressions} defaultChecked={this.state.chkbox}/>
+                        </div>
+                        <div className="filter">
+                            <label htmlFor="filter-ctr">CTR?</label>
+                            <input type="checkbox" id="filter-ctr" onChange={this.filterAverageCTR} />
+                        </div>
+                    
+                        <div className="filter">
+                            <label htmlFor="filter-postion">Position?</label>
+                            <input type="checkbox" id="filter-postion" onChange={this.filterAveragePosition} /> 
+                        </div>
+                        
+                        <div className="filterMonth">
+                            <Select
+                                label="Month"
+                                name="monthName"
+                                value={this.state.month}
+                                options={monthOptions}
+                                changeState={this.monthState}
+                                errorMessage="Must choose a name"
+                            />
+                        </div>
+                    </div>
+                    <Chart
+                        dtData={this.state.filteredDates}
+                        siteURL={this.state.siteUrl}
+                        averageCTRVisible={this.state.averageCTRVisible}
+                        averagePositionVisible={this.state.averagePositionVisible}
+                        clicksVisible={this.state.clicksVisible}
+                        impressionsVisible={this.state.impressionsVisible}
+                        month={this.state.month}
+                    />
+
+                    <DataTable
+                        loading={this.state.loading}
+                        titles={this.state.dtTitles}
+                        data={this.state.dtData}
+                        editable={this.state.editable}
+                        sortField="name"
+                        sortDirection="dsc"
+                        handleBulk={this.bulkIdsState}
+                        handleEdit={this.selectForEdit}
+                        getSelectedSite={this.getSelectedSite}
+                        btnClick={this.btnClick}
+                        submitBtn="false"
+                    />
+                </div>
             </UserStyles>
         );
     }
