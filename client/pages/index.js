@@ -1,119 +1,87 @@
-// import { Component } from 'react';
-// import styled from 'styled-components';
-
-// import { getCookie, removeCookie } from '../lib/session';
-// import { login, redirectIfAuthenticated, redirectIfNotAuthenticated } from '../lib/auth';
-// import { apiGet, apiPost } from '../lib/api';
-
-// import Nav from '../components/Nav';
-// import Header from '../components/Header';
-// import Options from '../components/Options';
-
-// const HomeStyle = styled.section`
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     flex-direction: column;
-//     padding: 2rem 0 10rem;
-//     #sign-in-or-out-button {
-//         margin-left: 25px
-//     }
-
-//     #revoke-access-button {
-//         display: none; 
-//         margin-left: 25px;
-//     }
-
-//     #auth-status {
-//         display: inline; 
-//         padding-left: 25px
-//     }
-//     @media only screen and (max-width: 640px) {
-//         padding: 0 2rem;
-//     }
-// `;
-
-// class Home extends Component {
-//     static async getInitialProps(ctx) {
-//         if (redirectIfNotAuthenticated(ctx)) {
-//             return { };
-//         }
-//         return { };
-//     }
-
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//         };
-//     }
-
-//     async componentDidMount() {
-//         // const usersRef = firebase.database().ref('users');
-//         // usersRef.on('value', (snapshot) => {
-//         //   let users = snapshot.val();
-//         //   console.log(users);
-//         // });
-//     }
-
-//     logout = () =>{
-//         auth.signOut().then(() => {
-//             this.setState({
-//                 user: [],
-//                 isLoggedIn: false,
-//             })
-//         })
-//     }
-
-//     render() {
-//         return (
-//             <HomeStyle>
-//                 <Nav/>
-//                 <Header title="What App do you want to use?" />
-//                 <Options />
-
-//             </HomeStyle>
-//         );
-//     }
-// }
-
-// export default Home;
-
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 import styled from 'styled-components';
-
-import { getCookie, removeCookie } from '../lib/session';
-import { login, redirectIfAuthenticated, redirectIfNotAuthenticated } from '../lib/auth';
+import Flashes from '../components/Flashes';
 import { apiGet, apiPost } from '../lib/api';
+import { login, redirectIfAuthenticated, redirectIfNotAuthenticated } from '../lib/auth';
+import { getCookie, removeCookie } from '../lib/session';
 
-import Nav from '../components/Nav';
+import { createFlash } from '../lib/flashes';
 import Header from '../components/Header';
-import Options from '../components/Options';
+import Nav from '../components/Nav';
+import Websites from '../components/Websites';
+
+const axios = require('axios');
 
 const HomeStyle = styled.section`
+    padding: 2rem 0 10rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding: 2rem 0 10rem;
-    #sign-in-or-out-button {
-        margin-left: 25px
+    .buttonContainer {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        .logout {
+            margin-left: auto;
+            padding-right: 2rem;
+            button {
+                border: 1px solid black;
+                padding: 0.6rem 0.8rem;
+                :hover {
+                    background: #00a9e0;
+                    color: #fff;
+                }
+            }
+        }
+        .nominate {
+            justify-content: flex-start;
+            padding-left: 2rem;
+            .button {
+                text-decoration:none;
+                color: #000;
+                border: 1px solid black;
+                padding: 0.6rem 0.8rem;
+                :hover {
+                    background: #00a9e0;
+                    color: #fff;
+                }
+            }
+        }
+
     }
 
-    #revoke-access-button {
-        display: none; 
-        margin-left: 25px;
+    h1 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        letter-spacing: 0.6rem;
+        padding-top: 7rem;
     }
 
-    #auth-status {
-        display: inline; 
-        padding-left: 25px
+    h2 {
+        padding-top: 2rem;
     }
-    @media only screen and (max-width: 640px) {
-        padding: 0 2rem;
+
+    h3 {
+        padding: 2rem 0;
     }
+
+    button {
+        border: 2px solid #000;
+        padding: 1rem 2rem;
+        :hover {
+            background: #00a9e0;
+            color: #fff;
+        }
+    }
+
 `;
 
-class Home extends Component {
+class websites extends Component {
     static async getInitialProps(ctx) {
         // if (redirectIfNotAuthenticated(ctx)) {
         //     return { };
@@ -123,8 +91,10 @@ class Home extends Component {
 
     constructor(props) {
         super(props);
+        this.flashesComponent = createRef();
         this.state = {
-            user: '',
+            updatedNominations: [],
+            user: ''
         };
     }
 
@@ -173,25 +143,25 @@ class Home extends Component {
 
     logout = () => {
         const userCookie = getCookie({}, 'user');
-        if (userCookie) {
+        const adminCookie = getCookie({}, 'admin');
+        if (userCookie || adminCookie) {
             removeCookie({}, 'user');
-            window.location.href = "localhost:3000/login";
+            removeCookie({}, 'admin');
+            window.location.reload();
         }
     }
 
-
+    // showHideDeleted = (nominations, include) => nominations.filter(user => (include || (!include && user.status !== 'deleted')));
 
     render() {
         return (
             <HomeStyle>
                 <Nav/>
-                Hello {this.state.user}
-                <Header title="What App do you want to use?" />
-                <Options />
-
+                <Header title="Select one website below to start creating your A/B tests." />
+                <Websites />
             </HomeStyle>
         );
     }
 }
 
-export default Home;
+export default websites;
