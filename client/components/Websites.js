@@ -174,16 +174,34 @@ class Websites extends Component {
 
     clickValidation = (response) => {
         console.log(response);
-        if (response < 100) {
-            this.addFlash(createFlash('error', 'Please select a website with more than 100 clicks.'));
-            this.setState({
-                validated: false,
+
+        const getWebsitesFromAPI = axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/test_websites_for_traffic/', {
+            "Access_Token": this.state.userObject.access_token,
+                "Refresh_Token": "three",
+                "Client_Secret": "two",
+                "Authorization_Code": "one",
+                "site_url": response
             })
-        } else {
-            this.setState({
-                validated: true,
-            })
-        }
+        .then((res) => {
+            let websiteData = res.data[response];
+            let selectedSiteClicks = websiteData.clicks;
+            console.log(selectedSiteClicks)
+            if (selectedSiteClicks < 100) {
+                this.addFlash(createFlash('error', 'Please select a website with more than 100 clicks.'));
+                this.setState({
+                    validated: false,
+                })
+            } else {
+                this.setState({
+                    validated: true,
+                })
+            }
+
+        })
+        .catch((error) => {
+            console.error(error)
+        })
+
     }
 
     // selectForEdit = (props) => {

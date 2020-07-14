@@ -208,9 +208,8 @@ class DataTable extends Component {
     }
 
     async componentDidMount() {
-        const userCookie = getCookie({}, 'user');
+        // const userCookie = getCookie({}, 'user');
         // const oneUser = await apiGet({}, '/oneUser', {userCookie});
-        // console.log(oneUser)
         // this.setState({
         //     user: oneUser
         // })
@@ -314,7 +313,7 @@ class DataTable extends Component {
 
     validateSelectedSite = (selectedRowData) => {
         console.log('validating');
-        const { user, data, rowsSelected } = this.state;
+        const { data, rowsSelected } = this.state;
 
         console.log(selectedRowData.data[1].value)
 
@@ -323,21 +322,7 @@ class DataTable extends Component {
         });
         const siteURL = selectedRowData.data[1].value;
         console.log('match!');
-        const getWebsitesFromAPI = axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/test_websites_for_traffic/', {
-            "Access_Token": user.access_token,
-                "Refresh_Token": "three",
-                "Client_Secret": "two",
-                "Authorization_Code": "one",
-                "site_url": siteURL
-            })
-        .then((res) => {
-            let websiteData = res.data;
-            let selectedSite = websiteData[siteURL];
-            this.props.getResponse(selectedSite.clicks);
-        })
-        .catch((error) => {
-            console.error(error)
-        })
+        this.props.getResponse(siteURL);
     }
 
     getSelectedSite = (e) => {

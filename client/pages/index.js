@@ -1,100 +1,50 @@
-import { Component, createRef } from 'react';
+import { Component } from 'react';
 import styled from 'styled-components';
-import Flashes from '../components/Flashes';
-import { apiGet, apiPost } from '../lib/api';
-import { login, redirectIfAuthenticated, redirectIfNotAuthenticated } from '../lib/auth';
+
 import { getCookie, removeCookie } from '../lib/session';
+import { login, redirectIfAuthenticated, redirectIfNotAuthenticated } from '../lib/auth';
+import { apiGet, apiPost } from '../lib/api';
 
-import { createFlash } from '../lib/flashes';
-import Header from '../components/Header';
 import Nav from '../components/Nav';
-import Websites from '../components/Websites';
-
-const axios = require('axios');
+import Header from '../components/Header';
+import Options from '../components/Options';
 
 const HomeStyle = styled.section`
-    padding: 2rem 0 10rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    .buttonContainer {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        .logout {
-            margin-left: auto;
-            padding-right: 2rem;
-            button {
-                border: 1px solid black;
-                padding: 0.6rem 0.8rem;
-                :hover {
-                    background: #00a9e0;
-                    color: #fff;
-                }
-            }
-        }
-        .nominate {
-            justify-content: flex-start;
-            padding-left: 2rem;
-            .button {
-                text-decoration:none;
-                color: #000;
-                border: 1px solid black;
-                padding: 0.6rem 0.8rem;
-                :hover {
-                    background: #00a9e0;
-                    color: #fff;
-                }
-            }
-        }
-
+    padding: 2rem 0 10rem;
+    #sign-in-or-out-button {
+        margin-left: 25px
     }
 
-    h1 {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        text-align: center;
-        letter-spacing: 0.6rem;
-        padding-top: 7rem;
+    #revoke-access-button {
+        display: none; 
+        margin-left: 25px;
     }
 
-    h2 {
-        padding-top: 2rem;
+    #auth-status {
+        display: inline; 
+        padding-left: 25px
     }
-
-    h3 {
-        padding: 2rem 0;
+    @media only screen and (max-width: 640px) {
+        padding: 0 2rem;
     }
-
-    button {
-        border: 2px solid #000;
-        padding: 1rem 2rem;
-        :hover {
-            background: #00a9e0;
-            color: #fff;
-        }
-    }
-
 `;
 
-class websites extends Component {
+class Home extends Component {
     static async getInitialProps(ctx) {
-        if (redirectIfNotAuthenticated(ctx)) {
-            return { };
-        }
+        // if (redirectIfNotAuthenticated(ctx)) {
+        //     return { };
+        // }
         return { };
     }
 
     constructor(props) {
         super(props);
-        this.flashesComponent = createRef();
         this.state = {
-            updatedNominations: [],
-            user: ''
+            user: '',
         };
     }
 
@@ -119,7 +69,6 @@ class websites extends Component {
         })(window.location.search.substr(1).split('&'));
 
         let authCode = qs["code"];
-        console.log(authCode)
         if (authCode) {
             const response = await apiGet({}, '/index', {authCode});
             console.log(response);
@@ -144,25 +93,25 @@ class websites extends Component {
 
     logout = () => {
         const userCookie = getCookie({}, 'user');
-        const adminCookie = getCookie({}, 'admin');
-        if (userCookie || adminCookie) {
+        if (userCookie) {
             removeCookie({}, 'user');
-            removeCookie({}, 'admin');
-            window.location.reload();
+            window.location.href = "localhost:3000/login";
         }
     }
 
-    // showHideDeleted = (nominations, include) => nominations.filter(user => (include || (!include && user.status !== 'deleted')));
+
 
     render() {
         return (
             <HomeStyle>
                 <Nav/>
-                <Header title="Select one website below to start creating your A/B tests." />
-                <Websites />
+                Hello {this.state.user}
+                <Header title="What App do you want to use?" />
+                <Options />
+
             </HomeStyle>
         );
     }
 }
 
-export default websites;
+export default Home;
