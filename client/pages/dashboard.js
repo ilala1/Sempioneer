@@ -64,10 +64,6 @@ const DashboardStyle = styled.section`
         padding-top: 7rem;
     }
 
-    h2 {
-        padding-top: 2rem;
-    }
-
     h3 {
         padding: 2rem 0;
     }
@@ -114,8 +110,6 @@ class dashboard extends Component {
     render() {
         return (
             <DashboardStyle>
-                {/* <Nav/> */}
-                {/* <Header title="Welcome to the dashboard" /> */}
                 <Dashboard/>
             </DashboardStyle>
         );

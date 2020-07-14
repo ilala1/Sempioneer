@@ -105,7 +105,6 @@ class Home extends Component {
         return (
             <HomeStyle>
                 <Nav/>
-                Hello {this.state.user}
                 <Header title="What App do you want to use?" />
                 <Options />
 

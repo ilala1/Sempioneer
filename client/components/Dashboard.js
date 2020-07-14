@@ -86,7 +86,62 @@ const UserStyles = styled.aside`
         overflow-x: hidden;
         overflow-y: scroll;
         .companyName {
+            padding-top: 2rem;
+            img {
+                width: 20%;
+            }
             text-align: center;
+
+        }
+
+        /* Dropdown Button */
+        .dropbtn {
+            /* background-color: #3498DB; */
+            color: white;
+            padding: 2rem 20%;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Dropdown button on hover & focus */
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #2980B9;
+        }
+
+        /* The container <div> - needed to position the dropdown content */
+        .dropdown {
+            /* position: relative;
+            display: inline-block; */
+        }
+
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 100%;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        /* Links inside the dropdown */
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Change color of dropdown links on hover */
+        .dropdown-content a:hover {background-color: #ddd}
+
+        /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+        .show {display:block;}
+
+        .websiteName {
+            padding-top: 2rem;
+            width: 100%;
         }
     }
     .right {
@@ -126,7 +181,6 @@ const UserStyles = styled.aside`
                     &:checked { background-color: #9B2583; }
                 }
             }
-
             .filterMonth {
                 padding: 0 5rem;
                 select::-ms-expand {
@@ -753,6 +807,24 @@ class Dashboard extends Component {
         // }
     }
 
+    dropdownFunction = () => {
+            document.getElementById("myDropdown").classList.toggle("show");
+          
+        //   Close the dropdown menu if the user clicks outside of it
+          window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+              var dropdowns = document.getElementsByClassName("dropdown-content");
+              var i;
+              for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                  openDropdown.classList.remove('show');
+                }
+              }
+            }
+        }
+    }
+
     // TODO ---------------------------------
     // need to get siteURL through when clicking row to pass onto experiments page
     btnClick = (siteURL) => {
@@ -764,7 +836,7 @@ class Dashboard extends Component {
         }
     }
 
-    render() {
+    render() {          
         return (
             <UserStyles>
                 <Flashes
@@ -774,10 +846,19 @@ class Dashboard extends Component {
                 <br/>
                 <div className="left">
                     <div className="companyName">
-                        Sempioneer
+                        <img src="../static/images/sempioneer-logo.png" />
+                        <h2>Sempioneer</h2>
                     </div>
                     <div className="websiteName">
-                        {this.state.siteUrl}
+                        <div className="dropdown">
+                            <button onClick={this.dropdownFunction} className="dropbtn">{this.state.siteUrl}</button>
+                            <div id="myDropdown" className="dropdown-content">
+                                <a href="#">Link 1</a>
+                                <a href="#">Link 2</a>
+                                <a href="#">Link 3</a>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
                 <div className="right">
