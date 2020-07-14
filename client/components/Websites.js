@@ -81,6 +81,7 @@ class Websites extends Component {
         localStorage.removeItem('siteURL');
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
+        console.log(oneUser);
         
         this.setState({
             user: oneUser.uid,
@@ -120,9 +121,11 @@ class Websites extends Component {
         })
         .catch((error) => {
             console.error('No website due to error (old access code maybe)');
+            this.addFlash(createFlash('error', 'No websites due to error. (old access code maybe.'));
             const userObject = this.state.userObject;
+            console.log(userObject)
             this.updateTokens(userObject);
-            console.error(error)
+            // console.error(error)
         })
     }
 
@@ -137,7 +140,6 @@ class Websites extends Component {
     }
 
     addWebsite = async (site, user) => {
-
         const oneWebsite = await apiPost({}, '/website', {site, user});
     }
 

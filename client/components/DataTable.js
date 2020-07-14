@@ -209,10 +209,11 @@ class DataTable extends Component {
 
     async componentDidMount() {
         const userCookie = getCookie({}, 'user');
-        const oneUser = await apiGet({}, '/oneUser', {userCookie});
-        this.setState({
-            user: oneUser
-        })
+        // const oneUser = await apiGet({}, '/oneUser', {userCookie});
+        // console.log(oneUser)
+        // this.setState({
+        //     user: oneUser
+        // })
     }
 
     componentDidUpdate(prevProps) {

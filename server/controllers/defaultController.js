@@ -8,6 +8,7 @@ var serviceAccount = require("../lib/serviceAccountKey.json");
 
 
 exports.addWebsitesToDB = async (req, res) => {
+  console.log('adding website');
   const result = {};
   result.status = 200;
   let db = admin.firestore();
@@ -32,6 +33,7 @@ exports.addWebsitesToDB = async (req, res) => {
 }
 
 exports.scheduledJob = async () => {
+  console.log('scheduling job')
   const { google } = require("googleapis");
   const OAuth2 = google.auth.OAuth2;
   // getting all users in db
@@ -56,13 +58,13 @@ exports.scheduledJob = async () => {
       console.log("Error getting documents", err);
     });
 
-  console.log('one set');
+  // console.log('one set');
 
   // loop through users array
   for (let i = 0; i < allData.length; i++) {
-    console.log('old allData[i]');
-    console.log(allData[i]);
-    console.log('old allData[i]');
+    // console.log('old allData[i]');
+    // console.log(allData[i]);
+    // console.log('old allData[i]');
 
     // get new access token
     const oauth2Client = new OAuth2(
@@ -79,17 +81,17 @@ exports.scheduledJob = async () => {
 
     const newAccessToken = await oauth2Client.getAccessToken();
 
-    console.log('newAccessToken')
-    console.log(newAccessToken.res.data.access_token)
-    console.log('newAccessToken')
+    // console.log('newAccessToken')
+    // console.log(newAccessToken.res.data.access_token)
+    // console.log('newAccessToken')
 
     // updated access token with new one
     allData[i].access_token = newAccessToken.res.data.access_token;
 
 }
-console.log('allData')
-console.log(allData)
-console.log('allData')
+// console.log('allData')
+// console.log(allData)
+// console.log('allData')
     // for each user get the selected site 
     allData.forEach(user => {
         

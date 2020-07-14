@@ -83,9 +83,9 @@ const HomeStyle = styled.section`
 
 class websites extends Component {
     static async getInitialProps(ctx) {
-        // if (redirectIfNotAuthenticated(ctx)) {
-        //     return { };
-        // }
+        if (redirectIfNotAuthenticated(ctx)) {
+            return { };
+        }
         return { };
     }
 
@@ -119,6 +119,7 @@ class websites extends Component {
         })(window.location.search.substr(1).split('&'));
 
         let authCode = qs["code"];
+        console.log(authCode)
         if (authCode) {
             const response = await apiGet({}, '/index', {authCode});
             console.log(response);

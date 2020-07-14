@@ -40,6 +40,7 @@ const mongoErrors = (user, error) => {
 //firebase
 
 exports.getAccessToken = async (req, res) => {
+  console.log('get access token')
   // Define the required scopes.
   var scopes = [
     "https://www.googleapis.com/auth/firebase.database",
@@ -104,9 +105,11 @@ exports.newUser = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
+  console.log('getUsers')
   let db = admin.firestore();
   const userID = req.query.userCookie;
   let usersRef = db.collection("users");
+  try {
   let queryRef = await usersRef
     .where("uid", "==", userID)
     .get()
@@ -124,6 +127,10 @@ exports.getUser = async (req, res) => {
     .catch((err) => {
       console.log("Error getting documents", err);
     });
+  } catch (error) {
+    console.log(error)
+    res.send('No user ID')
+  }
 };
 
 // old stuff
@@ -171,6 +178,7 @@ exports.auth = async (req, res) => {
 };
 
 exports.access = async (req, res) => {
+  console.log('access')
   const { google } = require("googleapis");
   let db = admin.firestore();
   let code = req.query.authCode;
@@ -256,6 +264,7 @@ exports.access = async (req, res) => {
 };
 
 getUserFromFirestore = async (req, res) => {
+  console.log('getting user from firestore')
   let userObj = {};
   let db = admin.firestore();
   let usersRef = db.collection("users");
@@ -283,6 +292,7 @@ getUserFromFirestore = async (req, res) => {
 };
 
 exports.refreshTokens = async (req, res) => {
+  console.log('refreshing tokens')
   let db = admin.firestore();
   const status = 200;
   const { google } = require("googleapis");

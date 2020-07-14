@@ -10,18 +10,13 @@ export const login = async (id) => {
 
 export const isLoggedIn = (ctx) => {
     const userCookie = getCookie(ctx, 'user');
-    const adminCookie = getCookie(ctx, 'admin');
-
+    console.log('islogged in')
     if (userCookie) {
         if (userCookie === 'undefined') {
             return false
         } else {
             return true;
         }
-    }
-
-    if (adminCookie) {
-        return true;
     }
     return false;
 };
