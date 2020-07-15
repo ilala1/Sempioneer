@@ -85,63 +85,101 @@ const UserStyles = styled.aside`
         border: 1px solid green;
         overflow-x: hidden;
         overflow-y: scroll;
-        .companyName {
-            padding-top: 2rem;
-            img {
-                width: 20%;
+        .top {
+            .companyName {
+                padding-top: 2rem;
+                img {
+                    width: 20%;
+                }
+                text-align: center;
+
             }
-            text-align: center;
 
+            /* Dropdown Button */
+            .dropbtn {
+                /* background-color: #3498DB; */
+                color: white;
+                padding: 2rem 20%;
+                font-size: 16px;
+                border: none;
+                cursor: pointer;
+            }
+
+            /* Dropdown button on hover & focus */
+            .dropbtn:hover, .dropbtn:focus {
+                background-color: #2980B9;
+            }
+
+            /* The container <div> - needed to position the dropdown content */
+            .dropdown {
+                /* position: relative;
+                display: inline-block; */
+            }
+
+            /* Dropdown Content (Hidden by Default) */
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background-color: #f1f1f1;
+                min-width: 100%;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                z-index: 1;
+            }
+
+            /* Links inside the dropdown */
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
+            /* Change color of dropdown links on hover */
+            .dropdown-content a:hover {background-color: #ddd}
+
+            /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+            .show {display:block;}
+
+            .websiteName {
+                padding-top: 2rem;
+                width: 100%;
+            }
         }
-
-        /* Dropdown Button */
-        .dropbtn {
-            /* background-color: #3498DB; */
-            color: white;
-            padding: 2rem 20%;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
+        .menuNav {
+            background: #1173A0;
+            ul {
+                li {
+                    padding: .5rem 1rem;
+                    span{
+                        display: flex;
+                        align-items: center;
+                        h2 {
+                            color: #fff;
+                            padding-left: 1rem;
+                            font-weight: 300;
+                        }
+                        .icon {
+                            width: 10%;
+                        }
+                    }
+                }
+            }
         }
-
-        /* Dropdown button on hover & focus */
-        .dropbtn:hover, .dropbtn:focus {
-            background-color: #2980B9;
-        }
-
-        /* The container <div> - needed to position the dropdown content */
-        .dropdown {
-            /* position: relative;
-            display: inline-block; */
-        }
-
-        /* Dropdown Content (Hidden by Default) */
-        .dropdown-content {
-            display: none;
+        .bottom {
             position: absolute;
-            background-color: #f1f1f1;
-            min-width: 100%;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-
-        /* Links inside the dropdown */
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        /* Change color of dropdown links on hover */
-        .dropdown-content a:hover {background-color: #ddd}
-
-        /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-        .show {display:block;}
-
-        .websiteName {
-            padding-top: 2rem;
-            width: 100%;
+            bottom: 0;
+            .account {
+                display: flex;
+                align-items: center;
+                h2 {
+                    color: #fff;
+                    padding-left: 1rem;
+                    font-weight: 300;
+                }
+                .icon {
+                    width: 30%;
+                }
+            }
         }
     }
     .right {
@@ -151,7 +189,7 @@ const UserStyles = styled.aside`
         right: 0;
         bottom: 0;
         left: 30%;
-        border: 1px solid blue;
+        /* border: 1px solid blue; */
         overflow-y: scroll;
         .sub-nav {
             width: 100%;
@@ -259,6 +297,7 @@ class Dashboard extends Component {
 
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
+        console.log(oneUser);
         const siteURL = localStorage.getItem('siteURL');
         this.setState({
             loading: true,
@@ -839,29 +878,71 @@ class Dashboard extends Component {
     render() {          
         return (
             <UserStyles>
-                <Flashes
-                    ref={this.flashesComponent}
-                    flashes={this.props.flashes}
-                />
-                <br/>
                 <div className="left">
-                    <div className="companyName">
-                        <img src="../static/images/sempioneer-logo.png" />
-                        <h2>Sempioneer</h2>
-                    </div>
-                    <div className="websiteName">
-                        <div className="dropdown">
-                            <button onClick={this.dropdownFunction} className="dropbtn">{this.state.siteUrl}</button>
-                            <div id="myDropdown" className="dropdown-content">
-                                <a href="#">Link 1</a>
-                                <a href="#">Link 2</a>
-                                <a href="#">Link 3</a>
-                            </div>
+                    <div className="top">
+                        <div className="companyName">
+                            <img src="../static/images/sempioneer-logo.png" />
+                            <h2>Sempioneer</h2>
                         </div>
-                        
+                        <div className="websiteName">
+                            <div className="dropdown">
+                                <button onClick={this.dropdownFunction} className="dropbtn">{this.state.siteUrl}</button>
+                                <div id="myDropdown" className="dropdown-content">
+                                    <a href="#">Link 1</a>
+                                    <a href="#">Link 2</a>
+                                    <a href="#">Link 3</a>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div className="menuNav">
+                        <ul>
+                            <li>
+                                <span>
+                                    <img className="icon" src="../static/images/dashboard.png"/>
+                                    <h2>Dashboard</h2>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <img className="icon" src="../static/images/pages.png"/>
+                                    <h2>Pages</h2>
+                                </span>                                
+                            </li>
+                            <li>
+                                <span>
+                                    <img className="icon" src="../static/images/platform.png"/>
+                                    <h2>Platform</h2>
+                                </span>                                
+                            </li>
+                            <li>
+                                <span>
+                                    <img className="icon" src="../static/images/bugs.png"/>
+                                    <h2>Issues</h2>
+                                </span>                                
+                            </li>
+                            <li>
+                                <span>
+                                    <img className="icon" src="../static/images/alerts.jpg"/>
+                                    <h2>Alerts</h2>
+                                </span>                                
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="bottom">
+                        <div className="account">
+                            <img className="icon" src="../static/images/account.png"/>
+                            <h2>Account</h2>
+                        </div>
+                        <div className="account">
+                            <img className="icon" src="../static/images/account.png"/>
+                            <h2>{this.state.userObject.displayName}</h2>
+                        </div>
                     </div>
                 </div>
                 <div className="right">
+                    <h2>Dashboard for {this.state.siteUrl}</h2>
                     <div className="sub-nav">
                         <div className="filter">
                             <label htmlFor="filter-clicks">Clicks?</label>
@@ -902,7 +983,10 @@ class Dashboard extends Component {
                         impressionsVisible={this.state.impressionsVisible}
                         month={this.state.month}
                     />
-
+                <Flashes
+                    ref={this.flashesComponent}
+                    flashes={this.props.flashes}
+                />
                     <DataTable
                         loading={this.state.loading}
                         titles={this.state.dtTitles}
