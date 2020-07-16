@@ -139,8 +139,8 @@ exports.getUid = async (req, res) => {
   res.send(uniqid());
 };
 
-exports.auth = async (req, res) => {
-  console.log("valid!");
+exports.getLoginURL = async (req, res) => {
+  console.log("getting login URL!");
   const result = {};
   result.status = 200;
 
@@ -345,26 +345,3 @@ exports.refreshTokens = async (req, res) => {
       return { error: error };
   }
 };
-
-exports.signout = async (req, res) => {
-  console.log('signing out')
-  const { google } = require("googleapis");
-  const oauth2Client = new google.auth.OAuth2(
-    // client ID
-    "45551424691-5ronoojbj87eftlnu82vcjsqrfo58tln.apps.googleusercontent.com",
-    //client secret
-    "NpVNQs7MhXsBdzPT9KyJ--Yt",
-    //redirect URL
-    "http://localhost:3000"
-  );
-
-  console.log(oauth2Client)
-
-  // const instance = await oauth2Client.getAuthInstance();
-  // oauth2Client.setCredentials(tokens);
-
-  // var auth2 = google.auth.OAuth2.getAuthInstance();
-  // auth2.signOut().then(function () {
-  //   console.log('User signed out.');
-  // });
-}

@@ -123,30 +123,6 @@ class Login extends Component {
         this.getUniqueID();
     }
 
-    // login = () => {
-    //     auth.signInWithPopup(provider) 
-    //         .then( async (result) => {
-    //             const user = result.user;
-    //             console.log(user);
-    //             login(user.uid)
-    //             this.setState({
-    //                 user,
-    //                 isLoggedIn: true
-    //             });
-    //             const accessToken = await apiGet({}, '/accessToken', {});
-    //             const userObj = {
-    //                 uid: this.state.user.uid,
-    //                 displayName: this.state.user.displayName,
-    //                 email: this.state.user.email,
-    //                 accessToken,
-    //                 refreshToken: this.state.user.refreshToken
-    //             }
-    //             console.log(userObj)
-
-    //             const newUser = await apiPost({}, '/newUser', {userObj});
-    //     });
-    // }
-
     getUniqueID = async () => {
         const uid = await apiGet({}, '/uid', {});
 
@@ -154,13 +130,8 @@ class Login extends Component {
     }
 
     getURL = async (uid) => {
-        const response = await apiPost({}, '/valid', {});
-        document.querySelector('.loginBtn').href = response;
-
-        // document.querySelector('.loginBtn').addEventListener('click', function() {
-        //     login(uid);
-        // })
-        
+        const response = await apiPost({}, '/loginURL', {});
+        document.querySelector('.loginBtn').href = response;        
     }
 
     render() {
