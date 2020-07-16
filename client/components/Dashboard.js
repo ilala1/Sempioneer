@@ -146,6 +146,7 @@ const UserStyles = styled.aside`
             }
         }
         .menuNav {
+            padding: 2rem 0;
             background: #1173A0;
             ul {
                 li {
@@ -167,7 +168,7 @@ const UserStyles = styled.aside`
         }
         .bottom {
             position: absolute;
-            bottom: 0;
+            bottom: 25px;
             .account {
                 display: flex;
                 align-items: center;
