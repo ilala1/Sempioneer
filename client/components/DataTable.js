@@ -315,13 +315,10 @@ class DataTable extends Component {
         console.log('validating');
         const { data, rowsSelected } = this.state;
 
-        console.log(selectedRowData.data[1].value)
-
         this.setState({
             siteURL: selectedRowData.data[1].value
         });
         const siteURL = selectedRowData.data[1].value;
-        console.log('match!');
         this.props.getResponse(siteURL);
     }
 
