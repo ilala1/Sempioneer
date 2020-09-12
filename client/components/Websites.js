@@ -89,6 +89,7 @@ class Websites extends Component {
         })
         const userObj = this.state.userObject;
 
+        // this.getWebsite();
 
         const getWebsitesFromAPI = axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
             "Access_Token": userObj.access_token,
@@ -110,9 +111,6 @@ class Websites extends Component {
                 }
 
             }
-            // add website to db
-            this.addWebsite(websitesObj, userObj);
-
             this.setState({
                 loading: false,
                 dtTitles,
@@ -139,8 +137,12 @@ class Websites extends Component {
 
     }
 
-    addWebsite = async (site, user) => {
-        const oneWebsite = await apiPost({}, '/website', {site, user});
+    addWebsite = async (user, siteURL) => {
+        const oneWebsite = await apiPost({}, '/website', {user, siteURL});
+    }
+
+    getWebsite = async () => {
+        const oneWebsite = await apiGet({}, '/allWebsite');
     }
 
     sortByKey = (array, key) => {
@@ -174,6 +176,11 @@ class Websites extends Component {
 
     clickValidation = (response) => {
         console.log(response);
+        //TODO
+        // see if the domain/website url already exists, if so modal pop up
+        // to request access page from the admin (then we email admin)
+        // if not then do below
+
 
         const getWebsitesFromAPI = axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/test_websites_for_traffic/', {
             "Access_Token": this.state.userObject.access_token,
@@ -184,6 +191,7 @@ class Websites extends Component {
             })
         .then((res) => {
             let websiteData = res.data[response];
+            console.log(websiteData)
             let selectedSiteClicks = websiteData.clicks;
             console.log(selectedSiteClicks)
             if (selectedSiteClicks < 100) {
@@ -204,12 +212,9 @@ class Websites extends Component {
 
     }
 
-    // selectForEdit = (props) => {
-    //     this.setState({ editID: props });
-    // }
-
     btnClick = (siteURL) => {
-        const accessToken = this.state.userObject.access_token;
+        const userObj = this.state.userObject;
+        const accessToken = userObj.access_token;
         if (siteURL === '') {
             this.addFlash(createFlash('error', 'Please select a website.'));
         } else if (this.state.validated === false){
@@ -217,45 +222,11 @@ class Websites extends Component {
         } else {
             console.log(siteURL)
             localStorage.setItem('siteURL', siteURL);
+            // add website to db
+            this.addWebsite(userObj, siteURL);
+            // add selected tag to website
             window.location.href = 'http://localhost:3000/dashboard';
 
-
-            // this.props.navigation.navigate('http://localhost:3000/dashboard', { siteURL })
-            // const getAvailableDatesFromAPI = axios.post('http://flask-env.idjm3vkzsw.us-east-2.elasticbeanstalk.com/api/gsc_data/get_available_dates/', {
-            //     "Access_Token": accessToken,
-            //      "Refresh_Token": "three",
-            //      "Client_Secret": "two",
-            //      "Authorization_Code": "one",
-            //      "site_url": siteURL
-            //  })
-            // .then((res) => {
-            //     const daysAvailableWTime = res.data;
-            //     let daysAvailable = [];
-            //     let test = [];
-            //     for(var i=0; i<daysAvailableWTime.length; i++){
-            //         const splitArray = daysAvailableWTime[i].split(',');
-            //         daysAvailable.push(splitArray[0]);
-            //         // console.log(res);
-
-            //     }
-            //     for(var k=0; k<daysAvailable.length; k++){
-            //         var trimmedDays = daysAvailable[k].substring(0, 2);
-            //         console.log(trimmedDays);
-            //         test.push(parseInt(trimmedDays));
-
-            //     }
-            //     var smallest = test[0];
-            //     for (var i=0; i<test.length; i++){
-            //         if (test[i]<smallest){
-            //             smallest = test[i];
-            //         }
-            //     }
-            //     console.log(smallest);
-                
-            // })
-            // .catch((error) => {
-            //   console.error(error)
-            // })
         }
     }
 

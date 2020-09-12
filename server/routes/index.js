@@ -18,6 +18,7 @@ module.exports = (nextApp, expressApp) => {
 
     // Website stuff
     expressApp.post('/api/website', defaultController.addWebsitesToDB);
+    expressApp.get('/api/allWebsite', defaultController.getWebsite);
     
     // dashboard pages stuff
     expressApp.post('/api/pagesdata', defaultController.postPagesData);

@@ -1,7 +1,7 @@
 const axios = require("axios");
 const admin = require("firebase-admin");
 const uniqid = require("uniqid");
-
+const {parseDomain, fromUrl} = require("parse-domain")
 const schedule = require('node-schedule');
 
 var serviceAccount = require("../lib/serviceAccountKey.json");
@@ -13,23 +13,96 @@ exports.addWebsitesToDB = async (req, res) => {
   result.status = 200;
   let db = admin.firestore();
 
+  const siteURL = req.body.siteURL;
   const userObj = req.body.user;
-  const sites = req.body.site.data;
 
-  let websiteRef = db.collection("websites").doc(userObj.email);
+  console.log(siteURL)
+
+  const {domain, topLevelDomains} = parseDomain(
+    fromUrl(siteURL),
+  );
+
+  let domainURL = domain + '.' + topLevelDomains;
+  domainURL = domainURL.replace(/,/g, '.')
+  let websiteRef = db.collection("websites").doc(domainURL);
 
   try {
     let setWebsites = websiteRef.set({
-      id: userObj.uid,
-      sites
+      adminID: userObj.uid,
+      website_url: siteURL,
+      sitemap_xml: '',
+      domain: domainURL,
+      crawler_frequencies:
+       { internal_link_graph_calculation_frequency: 1,
+         custom_pages_to_crawl: null,
+         internal_html_crawling_frequency: 1 },
+      data_checks:
+       { is_raw_google_search_console_data_populated: false,
+         is_html_differences_data_available: false,
+         is_crawled_raw_html_data_in_gsc: false,
+         is_raw_google_analytics_data_populated: false,
+         is_structured_markup_data_extracted: false,
+         are_domains_same_on_google_search_console_and_google_analytics: false },
+      raw_data_locations:
+       { raw_google_analytics_data_gsc_uri: '',
+         raw_google_search_console_data_gcs_uri: '',
+         raw_html_daily_data_gsc_uri: '' },
+      html_extractor_data_locations:
+       { keywords_entities_text_gsc_uri: '',
+         html_differences_gsc_uri: '',
+         html_features_gsc_uri: '',
+         structured_data_gsc_uri: '',
+         internal_link_graph_gcs_uri: '',
+         content_quality_gsc_uri: '' },
+      google_analytics_details: { ga_account_id: '', ga_property_id: '', ga_view_id: '' },
+      conditions:
+       { competitor_domains: null,
+         is_competitor_html_serp_scraping_activated: false },
+      feature_dates_data: { latest_html_differences_date_firebase: null },
+      raw_dates_data:
+       { latest_google_search_console_date_in_firebase: null,
+         last_internal_html_crawled_date: null,
+         latest_google_search_console_date_in_gcs: null,
+         latest_google_analytics_date_firebase: null,
+         latest_google_analytics_date_gcs: null,
+         last_link_graph_created_date: null },
+      cloudflare_integration_details: { cloudflare_id: '' },
+      integrations:
+       { is_google_search_console_integrated: false,
+         is_cloudflare_integrated: false,
+         is_ahrefs_api_integrated: false,
+         is_google_analytics_integrated: false } 
     });
     res.send(result);
   } catch (error) {
     result.status = 404;
     console.log(error)
     res.send(result)
-
   }
+}
+
+
+exports.getWebsite = async (req, res) => {
+  console.log('getting website')
+  let db = admin.firestore();
+  let pagesRef = db.collection("websites");
+  let queryRef = await pagesRef
+  // // need to get data for page from specific user
+    .get()
+    .then((snapshot) => {
+      if (snapshot.empty) {
+        console.log("No matching documents.");
+        return;
+      }
+
+      snapshot.forEach((doc) => {
+        console.log(doc.data())
+      });
+    })
+    .catch((err) => {
+      console.log("Error getting documents", err);
+    });
+
 }
 
 exports.scheduledJob = async () => {
