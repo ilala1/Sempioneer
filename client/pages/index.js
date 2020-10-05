@@ -8,6 +8,7 @@ import { apiGet, apiPost } from '../lib/api';
 import Nav from '../components/Nav';
 import Header from '../components/Header';
 import Options from '../components/Options';
+import Websites from '../components/Websites';
 
 const HomeStyle = styled.section`
     display: flex;
@@ -49,6 +50,7 @@ class Home extends Component {
     }
 
     componentDidMount() {
+        this.getUser()
         this.getTokens();
     }
 
@@ -105,8 +107,8 @@ class Home extends Component {
         return (
             <HomeStyle>
                 <Nav/>
-                <Header title="What App do you want to use?" />
-                <Options />
+                <Header title="Select one website below to start creating your A/B tests." />
+                <Websites />
 
             </HomeStyle>
         );

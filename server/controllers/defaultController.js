@@ -7,6 +7,33 @@ const schedule = require('node-schedule');
 var serviceAccount = require("../lib/serviceAccountKey.json");
 
 
+
+exports.checkActiveUserDB = async (req, res) => {
+  // NEED USER ID AND SITEURL
+  console.log('getting active users')
+  console.log(req.query)
+  let db = admin.firestore();
+  // need to get user id to look into for active sites
+  // let activeUsersRef = db.collection("active_user_dashboard_websites").doc(userID);
+  // let queryRef = await activeUsersRef
+  // // // need to see if the domain is under the user
+  //   .where('domain', '==', siteURL).get()
+  //   .then((snapshot) => {
+  //     if (snapshot.empty) {
+  //       console.log("No matching documents.");
+  //       return;
+  //     }
+
+  //     snapshot.forEach((doc) => {
+  //       console.log(doc.data())
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log("Error getting documents", err);
+  //   });
+}
+
+
 exports.addWebsitesToDB = async (req, res) => {
   console.log('adding website');
   const result = {};

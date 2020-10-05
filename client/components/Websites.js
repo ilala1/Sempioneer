@@ -89,42 +89,44 @@ class Websites extends Component {
         })
         const userObj = this.state.userObject;
 
-        // this.getWebsite();
 
-        const getWebsitesFromAPI = axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/get_website_list/', {
-            "Access_Token": userObj.access_token,
-            "Refresh_Token": "three",
-            "Client_Secret": "two",
-            "Authorization_Code": "one"
-        })
-        .then((res) => {
-            const WebsiteList = res.data.siteEntry;
-            let websitesObj = {};
-            for(var i = 0; i < WebsiteList.length; i++) {
-                WebsiteList[i].id = this.state.user;
-                if (WebsiteList[i].permissionLevel === 'siteUnverifiedUser') {
-                    WebsiteList.splice(i, 1); 
+        if(userObj) {
+            console.log('user obj exists')
+            const getWebsitesFromAPI = axios.post('https://europe-west2-sempioneer.cloudfunctions.net/get_gsc_websites', {
+                "Access_Token": userObj.access_token,
+                "Refresh_Token": "three",
+                "Client_Secret": "two",
+                "Authorization_Code": "one"
+            })
+            .then((res) => {
+                const WebsiteList = res.data.siteEntry;
+                let websitesObj = {};
+                for(var i = 0; i < WebsiteList.length; i++) {
+                    WebsiteList[i].id = this.state.user;
+                    if (WebsiteList[i].permissionLevel === 'siteUnverifiedUser') {
+                        WebsiteList.splice(i, 1); 
+                    }
+                    websitesObj = {
+                        id: this.state.user,
+                        data: WebsiteList
+                    }
+    
                 }
-                websitesObj = {
-                    id: this.state.user,
-                    data: WebsiteList
-                }
-
-            }
-            this.setState({
-                loading: false,
-                dtTitles,
-                dtData: this.createDataTable(websitesObj),
-            });
-        })
-        .catch((error) => {
-            console.error('No website due to error (old access code maybe)');
-            this.addFlash(createFlash('error', 'No websites due to error. (old access code maybe.'));
-            const userObject = this.state.userObject;
-            console.log(userObject)
-            this.updateTokens(userObject);
-            // console.error(error)
-        })
+                this.setState({
+                    loading: false,
+                    dtTitles,
+                    dtData: this.createDataTable(websitesObj),
+                });
+            })
+            .catch((error) => {
+                console.error('No website due to error (old access code maybe)');
+                this.addFlash(createFlash('error', 'No websites due to error. (old access code maybe or try <a href="/login">Log in</a>.)'));
+                const userObject = this.state.userObject;
+                console.log(userObject)
+                this.updateTokens(userObject);
+                // console.error(error)
+            })
+        }
     }
 
     updateTokens = async (user) => {
@@ -143,6 +145,10 @@ class Websites extends Component {
 
     getWebsite = async () => {
         const oneWebsite = await apiGet({}, '/allWebsite');
+    }
+
+    getActiveUsers = async (domain, userID) => {
+        const ActiveUsers = await apiGet({}, '/activeUser', {domain, userID});
     }
 
     sortByKey = (array, key) => {
@@ -174,23 +180,29 @@ class Websites extends Component {
         this.flashesComponent.current.addFlash(flash);
     };
 
-    clickValidation = (response) => {
-        console.log(response);
+    clickValidation = (domain) => {
+        console.log(domain);
+        console.log(this.state.userObject.uid)
+        const UserId = this.state.userObject.uid;
         //TODO
+        // check website table for admin user
+        // check if user id exists in active_user_dashboard table and website exists
+        this.getActiveUsers(domain, UserId);
         // see if the domain/website url already exists, if so modal pop up
         // to request access page from the admin (then we email admin)
         // if not then do below
 
 
-        const getWebsitesFromAPI = axios.post('http://sempioneer-api-prod.eba-vq3iddtp.us-west-2.elasticbeanstalk.com/api/gsc_data/test_websites_for_traffic/', {
+        const getWebsitesFromAPI = axios.post('https://europe-west2-sempioneer.cloudfunctions.net/test_single_website_for_traffic', {
             "Access_Token": this.state.userObject.access_token,
                 "Refresh_Token": "three",
                 "Client_Secret": "two",
                 "Authorization_Code": "one",
-                "site_url": response
+                "site_url": domain
             })
         .then((res) => {
-            let websiteData = res.data[response];
+            console.log(res);
+            let websiteData = res.data[domain];
             console.log(websiteData)
             let selectedSiteClicks = websiteData.clicks;
             console.log(selectedSiteClicks)

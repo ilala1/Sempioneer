@@ -108,28 +108,34 @@ exports.getUser = async (req, res) => {
   console.log('getUsers')
   let db = admin.firestore();
   const userID = req.query.userCookie;
+  console.log('userID ' + userID)
   let usersRef = db.collection("users");
-  try {
-  let queryRef = await usersRef
-    .where("uid", "==", userID)
-    .get()
-    .then((snapshot) => {
-      if (snapshot.empty) {
-        console.log("No matching documents.");
-        return;
-      }
+  if (userID !== 'undefined') {
+    try {
+      let queryRef = await usersRef
+        .where("uid", "==", userID)
+        .get()
+        .then((snapshot) => {
+          if (snapshot.empty) {
+            console.log("No matching documents.");
+            return;
+          }
 
-      snapshot.forEach((doc) => {
-        const user = doc.data();
-        res.send(user);
-      });
-    })
-    .catch((err) => {
-      console.log("Error getting documents", err);
-    });
-  } catch (error) {
-    console.log(error)
-    res.send('No user ID')
+          snapshot.forEach((doc) => {
+            const user = doc.data();
+            res.send(user);
+          });
+        })
+        .catch((err) => {
+          console.log("Error getting documents", err);
+        });
+    } catch (error) {
+      console.log(error)
+      res.send('No user ID')
+    }
+  } else {
+    console.log('no user iD')
+    res.redirect('/login')
   }
 };
 
@@ -275,7 +281,7 @@ getUserFromFirestore = async (req, res) => {
     .then((snapshot) => {
       if (snapshot.empty) {
         console.log("No matching documents.");
-        userObj = {content: 'null'};
+        userObj = { content: 'null' };
         return userObj;
       }
 
@@ -298,7 +304,7 @@ exports.refreshTokens = async (req, res) => {
   const { google } = require("googleapis");
   const OAuth2 = google.auth.OAuth2;
   const userObj = req.body.user;
-  
+
   const singleUser = await getUserFromFirestore(userObj.uid)
 
   console.log(singleUser)
@@ -327,7 +333,7 @@ exports.refreshTokens = async (req, res) => {
 
 
   console.log(singleUser)
-  
+
   try {
     console.log(test)
     let userRef = db.collection("users").doc(singleUser.email);
@@ -342,6 +348,6 @@ exports.refreshTokens = async (req, res) => {
 
     res.send(status)
   } catch (error) {
-      return { error: error };
+    return { error: error };
   }
 };

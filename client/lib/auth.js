@@ -13,8 +13,10 @@ export const isLoggedIn = (ctx) => {
     console.log('islogged in')
     if (userCookie) {
         if (userCookie === 'undefined') {
+            console.log('no user ID -- auth.js')
             return false
         } else {
+            console.log('user ID -- auth.js')
             return true;
         }
     }
@@ -40,7 +42,9 @@ export const redirectIfAuthenticated = (ctx) => {
 };
 
 export const redirectIfNotAuthenticated = (ctx) => {
+    console.log('redirect in not authenticatred')
     if (!isLoggedIn(ctx)) {
+        console.log('not logged in')
         // Build error flash and then bounce to login`
         const flash = createFlash('error', 'You must be logged in to view this page');
         addFlash(ctx, flash);
