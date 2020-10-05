@@ -7,33 +7,6 @@ const schedule = require('node-schedule');
 var serviceAccount = require("../lib/serviceAccountKey.json");
 
 
-
-exports.checkActiveUserDB = async (req, res) => {
-  // NEED USER ID AND SITEURL
-  console.log('getting active users')
-  console.log(req.query)
-  let db = admin.firestore();
-  // need to get user id to look into for active sites
-  // let activeUsersRef = db.collection("active_user_dashboard_websites").doc(userID);
-  // let queryRef = await activeUsersRef
-  // // // need to see if the domain is under the user
-  //   .where('domain', '==', siteURL).get()
-  //   .then((snapshot) => {
-  //     if (snapshot.empty) {
-  //       console.log("No matching documents.");
-  //       return;
-  //     }
-
-  //     snapshot.forEach((doc) => {
-  //       console.log(doc.data())
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     console.log("Error getting documents", err);
-  //   });
-}
-
-
 exports.addWebsitesToDB = async (req, res) => {
   console.log('adding website');
   const result = {};
@@ -107,7 +80,6 @@ exports.addWebsitesToDB = async (req, res) => {
     res.send(result)
   }
 }
-
 
 exports.getWebsite = async (req, res) => {
   console.log('getting website')
@@ -292,6 +264,45 @@ exports.postPagesData = async (req, res) => {
   }
 }
 
+exports.checkActiveUserDB = async (req, res) => {
+  // NEED USER ID AND SITEURL
+  console.log('getting active users')
+  const userID = req.query.userID;
+  const unformattedDomain = req.query.domain;
+
+  let siteURL = unformattedDomain.slice(8);
+  siteURL = siteURL.substring(0, siteURL.length - 1)
+
+  console.log(siteURL);
+
+  // console.log(userID)
+  let db = admin.firestore();
+  // need to get user id to look into for active sites
+  // // need to see if the domain is under the user
+  let activeUsersRef = await db.collection("active_user_dashboard_websites").doc(userID);
+  let queryRef = await activeUsersRef
+    .get();
+    let activeWebsites = queryRef.data();
+  console.log(activeWebsites.activeWebsites);
+  activeWebsites = activeWebsites.activeWebsites;
+
+  var n = activeWebsites.includes(siteURL);
+
+  console.log(n)
+    // .then((snapshot) => {
+    //   if (snapshot.empty) {
+    //     console.log("No matching documents.");
+    //     return;
+    //   }
+
+    //   snapshot.forEach((doc) => {
+    //     console.log(doc.data())
+    //   });
+    // })
+    // .catch((err) => {
+    //   console.log("Error getting documents", err);
+    // });
+}
 
 // old stuff
 
