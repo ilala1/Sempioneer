@@ -52,13 +52,13 @@ const UserStyles = styled.aside`
 
 
 class Websites extends Component {
-    static async getInitialProps(ctx) {
-        if (redirectIfNotAuthenticated(ctx)) {
-            return {};
-        }
+    // static async getInitialProps(ctx) {
+    //     if (redirectIfNotAuthenticated(ctx)) {
+    //         return {};
+    //     }
 
-        return {};
-    }
+    //     return {};
+    // }
 
     constructor(props) {
         super(props);
@@ -72,7 +72,8 @@ class Websites extends Component {
             dtTitles: [],
             dtData: [],
             editable: 'true',
-            validated: false
+            validated: false,
+            anyWebsites: false
         };
     }
 
@@ -81,14 +82,16 @@ class Websites extends Component {
         localStorage.removeItem('siteURL');
         const userCookie = getCookie({}, 'user');
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
+        console.log('oneUser');
         console.log(oneUser);
+        console.log('oneUser');
         
         this.setState({
             user: oneUser.uid,
             userObject: oneUser
         })
         const userObj = this.state.userObject;
-
+        console.log(userObj)
 
         if(userObj) {
             console.log('user obj exists')
@@ -114,18 +117,29 @@ class Websites extends Component {
                 }
                 this.setState({
                     loading: false,
+                    // anyWebsites: true,
                     dtTitles,
                     dtData: this.createDataTable(websitesObj),
                 });
             })
             .catch((error) => {
                 console.error('No website due to error (old access code maybe)');
+                // this.noWebsitesErrorFlash();
                 this.addFlash(createFlash('error', 'No websites due to error. (old access code maybe or try <a href="/login">Log in</a>.)'));
                 const userObject = this.state.userObject;
                 console.log(userObject)
                 this.updateTokens(userObject);
                 // console.error(error)
             })
+        }
+    }
+
+    noWebsitesErrorFlash = () => {
+        if (this.state.anyWebsites === false) {
+            this.addFlash(createFlash('error', 'No websites due to error. (old access code maybe or try <a href="/login">Log in</a>.)'));
+            const userObject = this.state.userObject;
+            console.log(userObject)
+            this.updateTokens(userObject);
         }
     }
 

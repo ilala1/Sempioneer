@@ -69,6 +69,7 @@ nextApp
         expressApp.renderAsync = util.promisify(expressApp.render);
 
         // Requests into req.body
+        expressApp.use(express.static(__dirname + '/public')); // Website part added
         expressApp.use(bodyParser.json({limit: "50mb"}));
         expressApp.use(
             bodyParser.urlencoded({

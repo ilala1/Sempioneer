@@ -5,7 +5,7 @@ import Flashes from '../components/Flashes';
 import Header from '../components/Header';
 
 import { createFlash } from '../lib/flashes';
-import { login, redirectIfAuthenticated } from '../lib/auth';
+import { login, redirectIfNotAuthenticated } from '../lib/auth';
 import { apiGet, apiPost } from '../lib/api';
 import { auth, provider } from '../../config/config.js';
 
@@ -97,13 +97,13 @@ const LoginStyle = styled.section`
 `;
 
 class Login extends Component {
-    static async getInitialProps(ctx) {
-        if (redirectIfAuthenticated(ctx)) {
-            return {};
-        }
+    // static async getInitialProps(ctx) {
+    //     // if (redirectIfNotAuthenticated(ctx)) {
+    //     //     return {};
+    //     // }
 
-        return {};
-    }
+    //     return {};
+    // }
 
     constructor(props) {
         super(props);
@@ -119,7 +119,7 @@ class Login extends Component {
     }
 
     async componentDidMount() {
-
+        console.log('loginnn page')
         this.getUniqueID();
     }
 

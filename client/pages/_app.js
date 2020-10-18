@@ -23,7 +23,7 @@ class MyApp extends App {
     }
 
     componentDidMount() {
-        const oneUser = apiGet({}, '/schedule', {});
+        // const oneUser = apiGet({}, '/schedule', {});
     }
 
     render() {

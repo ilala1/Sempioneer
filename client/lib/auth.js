@@ -10,17 +10,17 @@ export const login = async (id) => {
 
 export const isLoggedIn = (ctx) => {
     const userCookie = getCookie(ctx, 'user');
-    console.log('islogged in')
+    console.log('checking if user is logged in')
+
+
     if (userCookie) {
-        if (userCookie === 'undefined') {
-            console.log('no user ID -- auth.js')
-            return false
-        } else {
-            console.log('user ID -- auth.js')
-            return true;
+        if (userCookie === undefined) {
+            console.log('no user ID -- auth.js ----- not logged in')
+            // redirect('/login');
         }
     }
-    return false;
+    console.log('user ID -- auth.js ------ Logged in')
+    return true;
 };
 
 export const isAdmin = (ctx) => {
@@ -42,7 +42,7 @@ export const redirectIfAuthenticated = (ctx) => {
 };
 
 export const redirectIfNotAuthenticated = (ctx) => {
-    console.log('redirect in not authenticatred')
+    console.log('redirect if not Authenticated')
     if (!isLoggedIn(ctx)) {
         console.log('not logged in')
         // Build error flash and then bounce to login`

@@ -106,10 +106,14 @@ exports.newUser = async (req, res) => {
 
 exports.getUser = async (req, res) => {
   console.log('getUsers')
+  const status = 400;
   let db = admin.firestore();
   const userID = req.query.userCookie;
   // console.log('userID ' + userID)
   let usersRef = db.collection("users");
+  console.log('userID')
+  console.log(userID)
+  console.log('userID')
   if (userID !== 'undefined') {
     try {
       let queryRef = await usersRef
@@ -131,15 +135,20 @@ exports.getUser = async (req, res) => {
         });
     } catch (error) {
       console.log(error)
-      res.send('No user ID')
+      res.send('No user ID from DB')
     }
-  } else {
-    console.log('no user iD')
-    res.redirect('/login')
   }
+  console.log('no user iD')
+  res.send(status)
+  // res.redirect('/login')
+
 };
 
+
+
 // old stuff
+
+
 
 exports.getUid = async (req, res) => {
   res.send(uniqid());
@@ -271,30 +280,35 @@ exports.access = async (req, res) => {
 
 getUserFromFirestore = async (req, res) => {
   console.log('getting user from firestore')
-  let userObj = {};
-  let db = admin.firestore();
-  let usersRef = db.collection("users");
 
-  let queryRef = await usersRef
-    .where("uid", "==", req)
-    .get()
-    .then((snapshot) => {
-      if (snapshot.empty) {
-        console.log("No matching documents.");
-        userObj = { content: 'null' };
-        return userObj;
-      }
-
-      snapshot.forEach((doc) => {
-        const user = doc.data();
-        userObj = user;
+  if (req === undefined) {
+    console.log('user cookie - undefined')
+  } else {
+    let userObj = {};
+    let db = admin.firestore();
+    let usersRef = db.collection("users");
+  
+    let queryRef = await usersRef
+      .where("uid", "==", req)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.empty) {
+          console.log("No matching documents.");
+          userObj = { content: 'null' };
+          return userObj;
+        }
+  
+        snapshot.forEach((doc) => {
+          const user = doc.data();
+          userObj = user;
+        });
+      })
+      .catch((err) => {
+        console.log("Error getting documents", err);
       });
-    })
-    .catch((err) => {
-      console.log("Error getting documents", err);
-    });
-
-  return userObj;
+  
+    return userObj;
+  }
 };
 
 exports.refreshTokens = async (req, res) => {

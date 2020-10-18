@@ -83,9 +83,13 @@ const HomeStyle = styled.section`
 
 class websites extends Component {
     static async getInitialProps(ctx) {
-        if (redirectIfNotAuthenticated(ctx)) {
-            return { };
-        }
+        // redirectIfNotAuthenticated(ctx);
+        // if (redirectIfNotAuthenticated(ctx)) {
+        //     console.log('helloo')
+        //     return { };
+        // } else {
+        //     console.log('not hello')
+        // }
         return { };
     }
 

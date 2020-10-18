@@ -35,12 +35,12 @@ const HomeStyle = styled.section`
 `;
 
 class Home extends Component {
-    static async getInitialProps(ctx) {
-        // if (redirectIfNotAuthenticated(ctx)) {
-        //     return { };
-        // }
-        return { };
-    }
+    // static async getInitialProps(ctx) {
+    //     if (redirectIfNotAuthenticated(ctx)) {
+    //         return { };
+    //     }
+    //     return { };
+    // }
 
     constructor(props) {
         super(props);
@@ -50,6 +50,7 @@ class Home extends Component {
     }
 
     componentDidMount() {
+        // redirectIfNotAuthenticated();
         this.getUser()
         this.getTokens();
     }
@@ -86,11 +87,18 @@ class Home extends Component {
 
     getUser = async () => {
         const userCookie = getCookie({}, 'user');
+        console.log(userCookie);
+        if (userCookie === 'undefined') {
+            console.log('no users present')
+            // window.location.replace("/login");
+        } else {
+
+            // login(oneUser.uid);
+        }
 
         const oneUser = await apiGet({}, '/oneUser', {userCookie});
         console.log(oneUser)
 
-        login(oneUser.uid);
     }
 
     logout = () => {
