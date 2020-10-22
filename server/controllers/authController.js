@@ -114,7 +114,8 @@ exports.getUser = async (req, res) => {
   console.log('userID')
   console.log(userID)
   console.log('userID')
-  if (userID !== 'undefined') {
+  if (userID !== undefined) {
+    console.log('User ID not undefined')
     try {
       let queryRef = await usersRef
         .where("uid", "==", userID)
@@ -137,9 +138,10 @@ exports.getUser = async (req, res) => {
       console.log(error)
       res.send('No user ID from DB')
     }
+  } else {
+    console.log('no user iD')
+    res.sendStatus(status)
   }
-  console.log('no user iD')
-  res.send(status)
   // res.redirect('/login')
 
 };

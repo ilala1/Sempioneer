@@ -1,8 +1,13 @@
 import { Component } from 'react';
 import styled from 'styled-components';
+import React from "react";
+import FadeIn from "react-fade-in";
+import Lottie from "react-lottie";
+import ReactLoading from "react-loading";
 
 import { getCookie, removeCookie } from '../lib/session';
 import { login, redirectIfAuthenticated, redirectIfNotAuthenticated } from '../lib/auth';
+import * as doneData from "../lib/doneloading.json";
 import { apiGet, apiPost } from '../lib/api';
 
 import Nav from '../components/Nav';
@@ -34,6 +39,16 @@ const HomeStyle = styled.section`
     }
 `;
 
+
+  const defaultOptions2 = {
+    loop: false,
+    autoplay: true,
+    animationData: doneData.default,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  };
+  
 class Home extends Component {
     // static async getInitialProps(ctx) {
     //     if (redirectIfNotAuthenticated(ctx)) {
@@ -46,6 +61,7 @@ class Home extends Component {
         super(props);
         this.state = {
             user: '',
+            done: undefined
         };
     }
 
@@ -53,6 +69,27 @@ class Home extends Component {
         // redirectIfNotAuthenticated();
         this.getUser()
         this.getTokens();
+
+            this.setState({ loading: true });
+
+            setTimeout(() => {
+                const userCookie = getCookie({}, 'user');
+                if (userCookie === undefined) {
+                    console.log('no users present')
+                    this.setState({
+                        loading: true
+                    })
+                    window.location.replace("/login"); 
+                } else {
+                        console.log('user cookie present@')
+                        this.setState({ done: true });
+                        this.getUser(userCookie)
+                        this.getTokens();
+                    // const oneUser = await apiGet({}, '/oneUser', {userCookie});
+                    
+                    
+                }
+            }, 5000);
     }
 
     getTokens = async () => {
@@ -85,19 +122,27 @@ class Home extends Component {
         }
     }
 
-    getUser = async () => {
-        const userCookie = getCookie({}, 'user');
-        console.log(userCookie);
-        if (userCookie === 'undefined') {
-            console.log('no users present')
-            // window.location.replace("/login");
-        } else {
+    getUser = async (cookie) => {
+        console.log('getting user')
+        // console.log('userCookie');
+        // console.log(userCookie);
+        // console.log('userCookie');
+        // if (userCookie === undefined) {
+        //     console.log('no users present')
+        //     // this.setState({
+        //     //     loading: true
+        //     // })
+        //     // window.location.replace("/login");
+        // } else {
+        //     // setTimeout(() => {
+        //     //     this.setState({ done: true });
+        //     //     console.log(oneUser)
+        //     //   }, 1000);
+            
+        // }
+        
+        const oneUser = await apiGet({}, '/oneUser', {cookie});
 
-            // login(oneUser.uid);
-        }
-
-        const oneUser = await apiGet({}, '/oneUser', {userCookie});
-        console.log(oneUser)
 
     }
 
@@ -116,8 +161,21 @@ class Home extends Component {
             <HomeStyle>
                 <Nav/>
                 <Header title="Select one website below to start creating your A/B tests." />
-                <Websites />
+                {!this.state.done ? (
+                    <FadeIn>
+                        <div class="d-flex justify-content-center align-items-center">
+                        <h1>Please wait</h1>
+                        {!this.state.loading ? (
+                            <h1>Testing</h1>
+                        ) : (
+                            <Lottie options={defaultOptions2} height={120} width={120} />
+                        )}
+                        </div>
+                    </FadeIn>
+                    ) : (
 
+                    <Websites />
+                )}
             </HomeStyle>
         );
     }
