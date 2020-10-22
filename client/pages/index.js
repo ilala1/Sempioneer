@@ -124,26 +124,7 @@ class Home extends Component {
 
     getUser = async (cookie) => {
         console.log('getting user')
-        // console.log('userCookie');
-        // console.log(userCookie);
-        // console.log('userCookie');
-        // if (userCookie === undefined) {
-        //     console.log('no users present')
-        //     // this.setState({
-        //     //     loading: true
-        //     // })
-        //     // window.location.replace("/login");
-        // } else {
-        //     // setTimeout(() => {
-        //     //     this.setState({ done: true });
-        //     //     console.log(oneUser)
-        //     //   }, 1000);
-            
-        // }
-        
         const oneUser = await apiGet({}, '/oneUser', {cookie});
-
-
     }
 
     logout = () => {

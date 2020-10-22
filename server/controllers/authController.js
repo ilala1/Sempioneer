@@ -109,11 +109,7 @@ exports.getUser = async (req, res) => {
   const status = 400;
   let db = admin.firestore();
   const userID = req.query.userCookie;
-  // console.log('userID ' + userID)
   let usersRef = db.collection("users");
-  console.log('userID')
-  console.log(userID)
-  console.log('userID')
   if (userID !== undefined) {
     console.log('User ID not undefined')
     try {
