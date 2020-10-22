@@ -85,6 +85,14 @@ class Websites extends Component {
         console.log('oneUser');
         console.log(oneUser);
         console.log('oneUser');
+
+        //TODO
+        // check website table for admin user
+        // check if user id exists in active_user_dashboard table and website exists
+        this.getActiveUsers(oneUser.uid);
+        // see if the domain/website url already exists, if so modal pop up
+        // to request access page from the admin (then we email admin)
+        // if not then do below
         
         this.setState({
             user: oneUser.uid,
@@ -161,8 +169,13 @@ class Websites extends Component {
         const oneWebsite = await apiGet({}, '/allWebsite');
     }
 
-    getActiveUsers = async (domain, userID) => {
-        const ActiveUsers = await apiGet({}, '/activeUser', {domain, userID});
+    getActiveUsers = async (userID) => {
+        const firstActiveWebsiteFromDB = await apiGet({}, '/activeUser', {userID});
+        console.log(firstActiveWebsiteFromDB);
+        localStorage.setItem('siteURL', firstActiveWebsiteFromDB);
+        window.location.href = 'http://localhost:3000/dashboard';
+        return
+
     }
 
     sortByKey = (array, key) => {
@@ -196,18 +209,8 @@ class Websites extends Component {
 
     clickValidation = (domain) => {
         console.log(domain);
-        console.log(this.state.userObject.uid)
-        const UserId = this.state.userObject.uid;
-        //TODO
-        // check website table for admin user
-        // check if user id exists in active_user_dashboard table and website exists
-        this.getActiveUsers(domain, UserId);
-        // see if the domain/website url already exists, if so modal pop up
-        // to request access page from the admin (then we email admin)
-        // if not then do below
 
-
-        const getWebsitesFromAPI = axios.post('https://europe-west2-sempioneer.cloudfunctions.net/test_single_website_for_traffic', {
+        const getSingleWebsitesStatsFromAPI = axios.post('https://europe-west2-sempioneer.cloudfunctions.net/test_single_website_for_traffic', {
             "Access_Token": this.state.userObject.access_token,
                 "Refresh_Token": "three",
                 "Client_Secret": "two",
@@ -216,7 +219,7 @@ class Websites extends Component {
             })
         .then((res) => {
             console.log(res);
-            let websiteData = res.data[domain];
+            let websiteData = res.data;
             console.log(websiteData)
             let selectedSiteClicks = websiteData.clicks;
             console.log(selectedSiteClicks)
@@ -248,6 +251,11 @@ class Websites extends Component {
         } else {
             console.log(siteURL)
             localStorage.setItem('siteURL', siteURL);
+
+            // TODO: check if website exists
+            
+            
+            // if not
             // add website to db
             this.addWebsite(userObj, siteURL);
             // add selected tag to website

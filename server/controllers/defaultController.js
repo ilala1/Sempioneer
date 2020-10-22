@@ -268,14 +268,7 @@ exports.checkActiveUserDB = async (req, res) => {
   // NEED USER ID AND SITEURL
   console.log('getting active users')
   const userID = req.query.userID;
-  const unformattedDomain = req.query.domain;
 
-  let siteURL = unformattedDomain.slice(8);
-  siteURL = siteURL.substring(0, siteURL.length - 1)
-
-  console.log(siteURL);
-
-  // console.log(userID)
   let db = admin.firestore();
   // need to get user id to look into for active sites
   // // need to see if the domain is under the user
@@ -283,12 +276,10 @@ exports.checkActiveUserDB = async (req, res) => {
   let queryRef = await activeUsersRef
     .get();
     let activeWebsites = queryRef.data();
-  console.log(activeWebsites.activeWebsites);
-  activeWebsites = activeWebsites.activeWebsites;
+    activeWebsites = activeWebsites.activeWebsites;
+    console.log(activeWebsites[0]);
 
-  var n = activeWebsites.includes(siteURL);
-
-  console.log(n)
+    res.send(activeWebsites[0]);
     // .then((snapshot) => {
     //   if (snapshot.empty) {
     //     console.log("No matching documents.");

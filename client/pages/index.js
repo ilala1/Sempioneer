@@ -144,7 +144,7 @@ class Home extends Component {
                 <Header title="Select one website below to start creating your A/B tests." />
                 {!this.state.done ? (
                     <FadeIn>
-                        <div class="d-flex justify-content-center align-items-center">
+                        <div className="d-flex justify-content-center align-items-center">
                         <h1>Please wait</h1>
                         {!this.state.loading ? (
                             <h1>Testing</h1>
