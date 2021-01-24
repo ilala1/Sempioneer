@@ -28,51 +28,60 @@ exports.addWebsitesToDB = async (req, res) => {
 
   try {
     let setWebsites = websiteRef.set({
-      adminID: userObj.uid,
-      website_url: siteURL,
-      sitemap_xml: '',
-      domain: domainURL,
-      crawler_frequencies:
-       { internal_link_graph_calculation_frequency: 1,
-         custom_pages_to_crawl: null,
-         internal_html_crawling_frequency: 1 },
-      data_checks:
-       { is_raw_google_search_console_data_populated: false,
-         is_html_differences_data_available: false,
-         is_crawled_raw_html_data_in_gsc: false,
-         is_raw_google_analytics_data_populated: false,
-         is_structured_markup_data_extracted: false,
-         are_domains_same_on_google_search_console_and_google_analytics: false },
-      raw_data_locations:
-       { raw_google_analytics_data_gsc_uri: '',
-         raw_google_search_console_data_gcs_uri: '',
-         raw_html_daily_data_gsc_uri: '' },
-      html_extractor_data_locations:
-       { keywords_entities_text_gsc_uri: '',
-         html_differences_gsc_uri: '',
-         html_features_gsc_uri: '',
-         structured_data_gsc_uri: '',
-         internal_link_graph_gcs_uri: '',
-         content_quality_gsc_uri: '' },
-      google_analytics_details: { ga_account_id: '', ga_property_id: '', ga_view_id: '' },
-      conditions:
-       { competitor_domains: null,
-         is_competitor_html_serp_scraping_activated: false },
-      feature_dates_data: { latest_html_differences_date_firebase: null },
-      raw_dates_data:
-       { latest_google_search_console_date_in_firebase: null,
-         last_internal_html_crawled_date: null,
-         latest_google_search_console_date_in_gcs: null,
-         latest_google_analytics_date_firebase: null,
-         latest_google_analytics_date_gcs: null,
-         last_link_graph_created_date: null },
-      cloudflare_integration_details: { cloudflare_id: '' },
-      integrations:
-       { is_google_search_console_integrated: false,
-         is_cloudflare_integrated: false,
-         is_ahrefs_api_integrated: false,
-         is_google_analytics_integrated: false } 
-    });
+        adminID: userObj.uid,
+        website_url: siteURL,
+        domain: domainURL,
+        crawler_frequencies:
+         { internal_link_graph_calculation_frequency: 1,
+           custom_pages_to_crawl: null,
+           internal_html_crawling_frequency: 1 },
+        data_checks:
+         { is_raw_google_search_console_data_populated: false,
+           is_html_differences_data_available: false,
+           is_crawled_raw_html_data_in_gsc: false,
+           is_raw_google_analytics_data_populated: false,
+           is_structured_markup_data_extracted: false,
+           are_domains_same_on_google_search_console_and_google_analytics: false },
+        raw_data_locations:
+         { raw_google_analytics_data_gsc_uri: {},
+           raw_google_search_console_data_gcs_uri: {},
+           raw_html_daily_data_gsc_uri: {}},
+        html_extractor_data_locations:
+         { keywords_entities_text_gsc_uri: {},
+           html_differences_gsc_uri: {},
+           html_features_gsc_uri: {},
+           structured_data_gsc_uri: {},
+           internal_link_graph_gcs_uri: {},
+           content_quality_gsc_uri: {} 
+          },
+        google_analytics_details: 
+        { 
+          ga_account_id: '', 
+          ga_property_id: '', 
+          ga_view_id: '',
+          ga_account_name: '', 
+          ga_view_name: '', 
+          ga_property_name: ''
+        },
+        conditions:
+         { competitor_domains: null,
+           is_competitor_html_serp_scraping_activated: false },
+        feature_dates_data: { latest_html_differences_date_firebase: null },
+        raw_dates_data:
+         { latest_google_search_console_date_in_firebase: null,
+           last_internal_html_crawled_date: null,
+           latest_google_search_console_date_in_gcs: null,
+           latest_google_analytics_date_firebase: null,
+           latest_google_analytics_date_gcs: null,
+           last_link_graph_created_date: null },
+        integrations:
+         { is_google_search_console_integrated: false,
+           is_ahrefs_api_integrated: false,
+           is_google_analytics_integrated: false 
+        },
+       uid: '',
+       website_sitemap_data: {}
+      });
     res.send(result);
   } catch (error) {
     result.status = 404;
@@ -134,9 +143,6 @@ exports.scheduledJob = async () => {
 
   // loop through users array
   for (let i = 0; i < allData.length; i++) {
-    // console.log('old allData[i]');
-    // console.log(allData[i]);
-    // console.log('old allData[i]');
 
     // get new access token
     const oauth2Client = new OAuth2(
@@ -153,17 +159,10 @@ exports.scheduledJob = async () => {
 
     const newAccessToken = await oauth2Client.getAccessToken();
 
-    // console.log('newAccessToken')
-    // console.log(newAccessToken.res.data.access_token)
-    // console.log('newAccessToken')
-
     // updated access token with new one
     allData[i].access_token = newAccessToken.res.data.access_token;
 
 }
-// console.log('allData')
-// console.log(allData)
-// console.log('allData')
     // for each user get the selected site 
     allData.forEach(user => {
         
@@ -176,12 +175,12 @@ exports.scheduledJob = async () => {
 
     // update db with those dates
 
-  // var j = schedule.scheduleJob('*/5 * * * * *', function(){
-  //         // const oneUser = apiGet({}, '/oneUser', {103456017882470757103});
-  //         // console.log(oneUser)
-          
-  //         console.log('The answer to life, the universe, and everything is pizza!');
-  //   });
+    // var j = schedule.scheduleJob('*/5 * * * * *', function(){
+    //         // const oneUser = apiGet({}, '/oneUser', {103456017882470757103});
+    //         // console.log(oneUser)
+            
+    //         console.log('The answer to life, the universe, and everything is pizza!');
+    //   });
 }
 
 exports.getPagesData = async (req, res) => {
