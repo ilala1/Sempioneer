@@ -1,4 +1,4 @@
-# Enigma Event Tool
+# Private Project
 
 An internal app for making nominations and voting for monthly company meetings.  Includes an administrator restricted area for viewing the nominations and presenting.
 
