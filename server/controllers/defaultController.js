@@ -113,62 +113,6 @@ exports.getWebsite = async (req, res) => {
 
 }
 
-exports.scheduledJob = async () => {
-  console.log('scheduling job')
-  const { google } = require("googleapis");
-  const OAuth2 = google.auth.OAuth2;
-  // getting all users in db
-  let db = admin.firestore();
-  let allData = [];
-  let data = [];
-  
-  let usersRef = db.collection("users");
-  let queryRef = await usersRef
-    .get()
-    .then((snapshot) => {
-      if (snapshot.empty) {
-        console.log("No matching documents.");
-        return;
-      }
-
-      snapshot.forEach((doc) => {
-        allData.push(doc.data())
-      });
-    })
-    .catch((err) => {
-      console.log("Error getting documents", err);
-    });
-
-  // console.log('one set');
-
-  // loop through users array
-  for (let i = 0; i < allData.length; i++) {
-
-    // get new access token
-    const oauth2Client = new OAuth2(
-      "45551424691-5ronoojbj87eftlnu82vcjsqrfo58tln.apps.googleusercontent.com",
-      "NpVNQs7MhXsBdzPT9KyJ--Yt",
-      "http://localhost:3000"
-    );
-
-    oauth2Client.setCredentials({
-      refresh_token:
-        allData[i].refresh_token
-    });
-    
-
-    const newAccessToken = await oauth2Client.getAccessToken();
-
-    // updated access token with new one
-    allData[i].access_token = newAccessToken.res.data.access_token;
-
-}
-    // for each user get the selected site 
-    allData.forEach(user => {
-        
-    });
-}
-
 exports.getPagesData = async (req, res) => {
   let db = admin.firestore();
   let allData = [];
