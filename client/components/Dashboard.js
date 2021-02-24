@@ -312,12 +312,6 @@ class Dashboard extends Component {
         const accessToken = this.state.userObject.access_token;
 
 
-        // local data test ----------------
-        // this.setState({
-        //     loading: false,
-        //     dtTitles,
-        //     dtData: this.createDataTable(pagesData.data),
-        // });
         const data = await this.getData(userID, userObject, accessToken, siteURL)
         if (data) {
             this.setState({
