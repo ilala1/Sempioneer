@@ -53,9 +53,6 @@ nextApp
 
         // View engine (DustJS)
         expressApp.set('views', path.join(__dirname, '../client/pages'));
-
-        // expressApp.engine('jsx', require('express-react-views').createEngine());
-        // expressApp.set('view engine', 'jsx');
         
         expressApp.engine(
             'dust',
