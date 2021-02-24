@@ -1,18 +1,14 @@
 {
-    "name": "frontend",
+    "name": "SemPioneer",
     "version": "1.0.0",
-    "description": "DGWWP",
+    "description": "Persona",
     "main": "server",
     "scripts": {
         "dev": "nodemon -e js,dust,json -w server",
         "build": "next build ./client",
         "start": "NODE_ENV=production node server"
     },
-    "repository": {
-        "type": "git",
-        "url": "git@gitlab.com:enigma-marketing/enigma-marketing/enigma-dgwwp-app.git"
-    },
-    "author": "Richard Chapman",
+    "author": "Imran",
     "license": "ISC",
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^1.2.14",
