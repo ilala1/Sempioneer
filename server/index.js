@@ -3,7 +3,6 @@ require('dotenv').config({ path: '../config' });
 const bodyParser = require('body-parser');
 const dustjs = require('adaro');
 const express = require('express');
-const mongoose = require('mongoose');
 const next = require('next');
 const path = require('path');
 const util = require('util');
@@ -32,38 +31,13 @@ nextApp
         });
       }
 
-
-        // const dbString = `mongodb://${
-        //     process.env.DB_USER && process.env.DB_PASS
-        //         ? `${process.env.DB_USER}:${encodeURIComponent(process.env.DB_PASS)}@`
-        //         : ''
-        // }localhost:27017/${process.env.DB_NAME}`;
-        // mongoose.connect(process.env.DATABASE || dbString, {
-        //     useNewUrlParser: true,
-        //     useCreateIndex: true,
-        // });
-
-        // mongoose.connection.on('error', (err) => {
-        //     console.error(err);
-        //     process.exit(1);
-        // });
-
         // Express
         const expressApp = express();
 
-        // View engine (DustJS)
         expressApp.set('views', path.join(__dirname, '../client/pages'));
 
-        // expressApp.engine('jsx', require('express-react-views').createEngine());
-        // expressApp.set('view engine', 'jsx');
-        
-        expressApp.engine(
-            'dust',
-            dustjs.dust({
-                helpers: ['dustjs-helpers'],
-            }),
-        );
-        expressApp.set('view engine', 'dust');
+        expressApp.engine('jsx', require('express-react-views').createEngine());
+        expressApp.set('view engine', 'jsx');
 
         // Use app.render asynchronously
         expressApp.renderAsync = util.promisify(expressApp.render);

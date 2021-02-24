@@ -79,7 +79,6 @@ class Home extends Component {
                     this.setState({
                         loading: true
                     })
-                    window.location.replace("/login"); 
                 } else {
                         console.log('user cookie present@')
                         this.setState({ done: true });
