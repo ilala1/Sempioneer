@@ -1,7 +1,6 @@
 require('dotenv').config({ path: '../config' });
 
 const bodyParser = require('body-parser');
-const dustjs = require('adaro');
 const express = require('express');
 const next = require('next');
 const path = require('path');
@@ -18,7 +17,6 @@ const nextApp = next({
     dir: './client',
     dev,
 });
-
 
 nextApp
     .prepare()

@@ -113,76 +113,6 @@ exports.getWebsite = async (req, res) => {
 
 }
 
-exports.scheduledJob = async () => {
-  console.log('scheduling job')
-  const { google } = require("googleapis");
-  const OAuth2 = google.auth.OAuth2;
-  // getting all users in db
-  let db = admin.firestore();
-  let allData = [];
-  let data = [];
-  
-  let usersRef = db.collection("users");
-  let queryRef = await usersRef
-    .get()
-    .then((snapshot) => {
-      if (snapshot.empty) {
-        console.log("No matching documents.");
-        return;
-      }
-
-      snapshot.forEach((doc) => {
-        allData.push(doc.data())
-      });
-    })
-    .catch((err) => {
-      console.log("Error getting documents", err);
-    });
-
-  // console.log('one set');
-
-  // loop through users array
-  for (let i = 0; i < allData.length; i++) {
-
-    // get new access token
-    const oauth2Client = new OAuth2(
-      "45551424691-5ronoojbj87eftlnu82vcjsqrfo58tln.apps.googleusercontent.com",
-      "NpVNQs7MhXsBdzPT9KyJ--Yt",
-      "http://localhost:3000"
-    );
-
-    oauth2Client.setCredentials({
-      refresh_token:
-        allData[i].refresh_token
-    });
-    
-
-    const newAccessToken = await oauth2Client.getAccessToken();
-
-    // updated access token with new one
-    allData[i].access_token = newAccessToken.res.data.access_token;
-
-}
-    // for each user get the selected site 
-    allData.forEach(user => {
-        
-    });
-    // based on the site, check pages data for that site
-
-    // get the soonest date of data
-
-    // call API to see the soonest available date
-
-    // update db with those dates
-
-    // var j = schedule.scheduleJob('*/5 * * * * *', function(){
-    //         // const oneUser = apiGet({}, '/oneUser', {103456017882470757103});
-    //         // console.log(oneUser)
-            
-    //         console.log('The answer to life, the universe, and everything is pizza!');
-    //   });
-}
-
 exports.getPagesData = async (req, res) => {
   let db = admin.firestore();
   let allData = [];
@@ -253,7 +183,6 @@ exports.postPagesData = async (req, res) => {
         domain,
         page
       });
-      // res.send(result);
     } catch (error) {
       result.status = 404;
       console.log(error)
@@ -279,56 +208,4 @@ exports.checkActiveUserDB = async (req, res) => {
     console.log(activeWebsites[0]);
 
     res.send(activeWebsites[0]);
-    // .then((snapshot) => {
-    //   if (snapshot.empty) {
-    //     console.log("No matching documents.");
-    //     return;
-    //   }
-
-    //   snapshot.forEach((doc) => {
-    //     console.log(doc.data())
-    //   });
-    // })
-    // .catch((err) => {
-    //   console.log("Error getting documents", err);
-    // });
 }
-
-// old stuff
-
-// exports.addWebsite = async (req, res) => {
-//   const result = {};
-//   result.status = 200;
-//   const UserObj = req.body.site;
-//   const userWebsiteList = UserObj.data;
-
-//   const dbUserWebsiteObj = await Website.find({ id: UserObj.id });
-
-//   if (dbUserWebsiteObj.length > 0) {
-//     console.log("existing user exists");
-
-//     // if website list is the same as db then do nothing else update
-//     for (let i = 0; i < userWebsiteList.length; i++) {
-//         const dbUserWebsiteList = dbUserWebsiteObj[0].data;
-//         for (let j = 0; j < dbUserWebsiteList.length; j++) {
-//             if (
-//                 userWebsiteList[i].siteUrl === dbUserWebsiteList[j].siteUrl
-//             ) {
-//                 console.log("same websites in list");
-//                 return;
-//             } else {
-//                 console.log("new website in list");
-//                 if (dbUserWebsiteObj) {
-//                   await UserObj.save();
-//                 } else {
-//                   await new Website(UserObj).save();
-//                 }
-//             }
-//         }
-//     }
-//   } else {
-//     console.log("no user");
-//     await new Website(UserObj).save();
-//   }
-//   res.send(result);
-// };
